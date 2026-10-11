@@ -1,0 +1,23 @@
+{
+  "name": "@bull/core",
+  "version": "0.1.0",
+  "description": "Bull's MVVM architecture analysis engine.",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean"
+  },
+  "dependencies": {
+    "@typescript-eslint/typescript-estree": "^8.71.1",
+    "picocolors": "^1.1.1"
+  }
+}
