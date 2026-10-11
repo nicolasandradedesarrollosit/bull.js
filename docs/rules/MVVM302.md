@@ -1,6 +1,6 @@
 # MVVM302 · ViewModel exposes mutable state
 
-> **ViewModel** · error · cannot be disabled · ESLint rule: `triad/viewmodel-exposes-mutable-state`
+> **ViewModel** · error · cannot be disabled · ESLint rule: `triad/viewmodel-exposes-mutable-state` · auto-fixable with `triad fix`
 
 The ViewModel's public surface is read-only: readonly state, computeds and commands.
 

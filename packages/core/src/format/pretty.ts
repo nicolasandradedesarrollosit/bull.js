@@ -244,7 +244,8 @@ export function ruleToMarkdown(meta: RuleMeta): string {
   out.push("");
   out.push(
     `> **${CATEGORY_LABEL[meta.category]}** · ${meta.severity === "error" ? "error" : "warning"} · ` +
-      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`triad/${meta.slug}\``,
+      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`triad/${meta.slug}\`` +
+      (meta.fixable ? " · auto-fixable with `triad fix`" : ""),
   );
   out.push("");
   out.push(meta.summary);

@@ -1,6 +1,6 @@
 # MVVM100 · View imports Model
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/view-imports-model`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/view-imports-model` · auto-fixable with `triad fix`
 
 The View can only depend on the ViewModel, never on the Model.
 
