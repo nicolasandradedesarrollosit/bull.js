@@ -1,0 +1,30 @@
+{
+  "name": "@bull/cli",
+  "version": "0.1.0",
+  "description": "Bull: the React bundler that refuses to build unless you respect MVVM.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "bull": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --external @bull/core"
+  },
+  "dependencies": {
+    "@bull/core": "^0.1.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "cac": "^6.7.14",
+    "picocolors": "^1.1.1",
+    "vite": "^8.3.4"
+  }
+}
