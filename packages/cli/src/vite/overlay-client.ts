@@ -31,6 +31,7 @@ interface OverlayDiagnostic {
   fix: string[];
   notes?: string[];
   explain: string;
+  fixable?: boolean;
   frame?: FrameLine[];
 }
 
@@ -105,6 +106,7 @@ export function overlayMain(hot: HotLike | undefined): void {
       padding: 1px 6px; border-radius: 5px; color: #ffd4e0;
     }
     .explain { font-size: 12px; color: #6f6f88; }
+    .fixable { font-size: 12.5px; color: #8fd3ff; margin-bottom: 6px; }
     .pill {
       position: fixed; right: 16px; bottom: 16px; z-index: 2147483646; cursor: pointer;
       display: flex; gap: 8px; align-items: center; border: 1px solid #3a2330;
@@ -164,6 +166,7 @@ export function overlayMain(hot: HotLike | undefined): void {
         <p class="why">${inline(d.why)}</p>
         <div class="fix-title">How to fix</div>
         <ol>${fix}</ol>
+        ${d.fixable ? `<div class="fixable">✦ Auto-fixable: run <code>triad fix</code></div>` : ""}
         <div class="explain">More info in the terminal: <code>${esc(d.explain)}</code></div>
       </section>`;
   }
