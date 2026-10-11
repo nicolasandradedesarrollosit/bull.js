@@ -1,0 +1,89 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`format > explain and markdown 1`] = `
+"MVVM201 · VIEW OWNS STATE (view-owns-state)
+View · error · configurable · also in ESLint
+
+State and effects live in the ViewModel, not in View hooks.
+
+Why
+  In MVVM the View has no state: it only reflects the ViewModel's and delegates actions
+  to it. With useState/useEffect in the View, logic gets scattered across components
+  and can no longer be tested without rendering.
+
+How to fix
+  1. Move that state to the ViewModel with this.state(...) and expose it with
+     .readonly.
+  2. Read it in the View with useBinding(vm.x) and change it with a command.
+  3. If it is purely visual state (an open dropdown), you can allow it with
+     view.allowHooks in triad.config.ts.
+
+✗ Don't
+  │ const [count, setCount] = useState(0);
+  │ <button onClick={() => setCount(count + 1)}>
+
+✓ Do
+  │ // viewmodel
+  │ readonly #count = this.state(0);
+  │ readonly count = this.#count.readonly;
+  │ readonly increment = this.command(() => this.#count.update((n) => n + 1));
+  │ 
+  │ // view
+  │ const count = useBinding(vm.count);
+  │ <button onClick={vm.increment.execute}>
+"
+`;
+
+exports[`format > terminal report 1`] = `
+"── VIEW IMPORTS MODEL ───────────────────────────── src/view/label.view.tsx:2:1  MVVM100
+
+  The View imports CounterRepository directly from the Model.
+
+  1 │ import { useState } from "react";
+  2 │ import { CounterRepository } from "../model/counter.repository";
+    │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  The View only knows its ViewModel. If it talks to the Model directly, presentation
+  logic gets tied to the UI: it can no longer be tested without React, and changing
+  where the data comes from means touching components. The ViewModel exists precisely
+  to translate between both layers.
+
+  How to fix:
+    1. Move the use of CounterRepository to LabelViewModel (inject it through the
+       constructor).
+    2. Expose the data as state/computed and the actions as command.
+    3. In the View, use useViewModel(...) and useBinding(...).
+
+  More info: triad explain MVVM100
+
+── VIEW OWNS STATE ─────────────────────────────── src/view/label.view.tsx:5:27  MVVM201
+
+  The View uses useState.
+
+  4 │ export function LabelView(props: { text: string }) {
+  5 │   const [open, setOpen] = useState(false);
+    │                           ^^^^^^^^^^^^^^^
+  6 │   return <span>{props.text}</span>;
+
+  In MVVM the View has no state: it only reflects the ViewModel's and delegates
+  actions to it. With useState/useEffect in the View, logic gets scattered across
+  components and can no longer be tested without rendering.
+
+  How to fix:
+    1. Move that state to LabelViewModel with this.state(...) and expose it with
+       .readonly.
+    2. Read it in the View with useBinding(vm.x) and change it with a command.
+    3. If it is purely visual state (an open dropdown), you can allow it with
+       view.allowHooks in triad.config.ts.
+
+  More info: triad explain MVVM201
+
+  ✗ MVVM architecture: 2 errors in 1 file · Xms
+
+  Allowed direction:  View ──▶ ViewModel ──▶ Model
+  Dependencies that break the direction:
+    ✗ View ──▶ Model               ×1    MVVM100
+  Other rules:
+    ✗ View owns state                      ×1    MVVM201
+"
+`;
