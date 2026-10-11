@@ -6,6 +6,7 @@ import { checkCommand } from "./commands/check";
 import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
+import { fixCommand } from "./tooling/fix";
 import { generateCommand } from "./tooling/generate";
 import { graphCommand } from "./tooling/graph";
 import { bullArt, VERSION } from "./ui/brand";
@@ -68,6 +69,11 @@ cli
   .example("bull graph --format html --open")
   .example("bull graph --format mermaid > docs/architecture.mmd")
   .action((root: string | undefined, options) => graphCommand(root, options));
+
+cli
+  .command("fix [root]", "Applies the safe automatic fixes (renames, readonly state, type re-exports)")
+  .option("--dry-run", "Show a diff of the changes without writing them")
+  .action((root: string | undefined, options) => fixCommand(root, options));
 
 cli.help((sections) => {
   // cac's first section is "bull/<version>": the bull replaces it.
