@@ -59,6 +59,8 @@ export interface MemberFact {
   readonly: boolean;
   static: boolean;
   init: MemberInit;
+  /** Declared type name of a constructor dependency (`repo: TodoRepository` → `TodoRepository`). */
+  type?: string;
   range: Range;
 }
 
@@ -272,6 +274,13 @@ function memberInit(value: AnyNode | null): MemberInit {
   return "other";
 }
 
+function typeName(node: AnyNode): string | undefined {
+  const annotation = "typeAnnotation" in node ? (node.typeAnnotation as TSESTree.TSTypeAnnotation | undefined) : undefined;
+  const type = annotation?.typeAnnotation;
+  if (type?.type === "TSTypeReference" && type.typeName.type === "Identifier") return type.typeName.name;
+  return undefined;
+}
+
 function classFact(node: TSESTree.ClassDeclaration | TSESTree.ClassExpression, exported: boolean): ClassFact {
   const members: MemberFact[] = [];
   for (const element of node.body.body) {
@@ -316,6 +325,7 @@ function classFact(node: TSESTree.ClassDeclaration | TSESTree.ClassExpression, e
               readonly: param.readonly,
               static: false,
               init: "other",
+              type: typeName(param.parameter),
               range: toRange(param),
             });
           }
