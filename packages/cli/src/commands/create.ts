@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pc from "picocolors";
-import { banner, fail } from "./shared";
+import { bullArt } from "../ui/brand";
+import { fail } from "./shared";
 
 /** `templates/` sits next to `dist/` (published) or `src/` (development). */
 function templatesDir(): string {
@@ -34,7 +35,7 @@ function copyTemplate(from: string, to: string, vars: Record<string, string>): s
 }
 
 export function createCommand(name: string, options: { template?: string }): void {
-  banner("create");
+  console.log(`\n${bullArt("create")}\n`);
   const target = path.resolve(name);
   if (fs.existsSync(target) && fs.readdirSync(target).length > 0) {
     fail(`The folder ${pc.bold(name)} already exists and is not empty.`);
