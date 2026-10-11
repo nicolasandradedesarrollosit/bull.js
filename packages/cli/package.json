@@ -1,6 +1,6 @@
 {
   "name": "@triad/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Triad: the React bundler that refuses to build unless you respect MVVM.",
   "type": "module",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --external @triad/core"
   },
   "dependencies": {
-    "@triad/core": "^0.1.0",
+    "@triad/core": "^0.2.0",
     "@vitejs/plugin-react": "^6.1.2",
     "cac": "^6.7.14",
     "picocolors": "^1.1.1",
