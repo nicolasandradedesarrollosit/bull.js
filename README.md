@@ -12,6 +12,8 @@ Triad is a Vite/Next-style CLI (`triad dev`, `triad build`) with a twist: the
 missing, if the View talks to the Model or if the ViewModel touches the DOM, the build stops. And it
 does not stop with a cryptic error: it tells you what happened, why it breaks MVVM and how to fix it.
 
+<p align="center"><img src="docs/overlay.png" width="760" alt="Triad dev overlay showing MVVM violations"></p>
+
 ```
 ── VIEW IMPORTS MODEL ───────────────────────────── src/view/label.view.tsx:2:1  MVVM100
 
@@ -99,6 +101,26 @@ message:
 `triad explain MVVM201` (or `201`, or `view-owns-state`) prints the full explanation with
 "don't / do" examples. Every rule is documented in [docs/rules](docs/rules/README.md).
 
+## Tooling
+
+```bash
+triad g feature shopping-cart   # repository + ViewModel (injected) + test + View, registered in main.tsx
+triad g model user --kind repository
+triad fix --dry-run             # safe codemods: renames, readonly state, type re-exports (shows a diff)
+triad graph --format html --open  # interactive import graph, violating edges in red
+triad graph --format mermaid    # paste it into your docs
+triad doctor                    # Node, React, single React copy, config, tsconfig, ESLint, architecture
+triad info                      # files per layer, each ViewModel's public API and who binds it
+```
+
+| Command | What it does |
+|---|---|
+| `generate` (`g`) | Scaffolds `feature`, `model` (`--kind model\|entity\|repository\|service`), `viewmodel` or `view` with the right names and folders. Never overwrites, supports `--dry-run`. |
+| `fix` | Repairs what has a single correct answer: MVVM003 (rename + update imports), MVVM302 (privatize state, add `readonly`, make dependencies private), MVVM100 for type-only imports (re-export from the ViewModel). |
+| `graph` | `tree`, `mermaid`, `dot`, `json` or a self-contained `html` page with a layered SVG layout. Exits 1 if an edge breaks the direction. |
+| `doctor` | Environment and setup checklist with a hint for every problem. |
+| `info` | Project summary, `--json` available. |
+
 ## Rules
 
 29 rules in 6 groups. **Structure** and **dependency direction** rules are the core of MVVM and
@@ -131,7 +153,7 @@ export default defineConfig({
 |---|---|
 | [`@triad/core`](packages/core) | Analysis engine: scanner, AST fact extraction (ESTree), import graph, rules and formatters. No dependency on Vite or ESLint. |
 | [`@triad/runtime`](packages/runtime) | Home-grown signals (`state`, `computed`, `effect`, `batch`), `ViewModel`, `Command`, DI container and React bindings (`useViewModel`, `useBinding`). |
-| [`@triad/cli`](packages/cli) | `triad dev / build / preview / check / explain / create`, Vite plugin and browser overlay. |
+| [`@triad/cli`](packages/cli) | `dev / build / preview / check / explain / create` plus the tooling (`generate / fix / graph / doctor / info`), Vite plugin and browser overlay. |
 | [`@triad/eslint-plugin`](packages/eslint-plugin) | File-level rules as ESLint 9+ rules (flat config). |
 
 **Key design decision:** rules do not look at the AST directly but at `ModuleFacts`, a summary of
