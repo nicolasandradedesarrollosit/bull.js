@@ -14,6 +14,8 @@ export interface RuleMeta {
   configurable: boolean;
   /** `file` when it can be evaluated by looking at a single file (it also runs in ESLint). */
   scope: "file" | "project";
+  /** `bull fix` can repair it automatically (see `isAutoFixable` for per-case limits). */
+  fixable?: boolean;
   /** One-line summary. */
   summary: string;
   /** Why this breaks MVVM. */
@@ -74,6 +76,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
+    fixable: true,
     summary: "Each layer has its convention: *.model.ts, *.viewmodel.ts, *.view.tsx.",
     why:
       "The file name says what role it plays, and Bull uses it to verify the architecture. The Model " +
@@ -130,6 +133,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
+    fixable: true,
     summary: "The View can only depend on the ViewModel, never on the Model.",
     why:
       "The View only knows its ViewModel. If it talks to the Model directly, presentation logic gets " +
@@ -438,6 +442,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
+    fixable: true,
     summary: "The ViewModel's public surface is read-only: readonly state, computeds and commands.",
     why:
       "If the View can write state directly, commands lose their meaning and any component can change " +
@@ -570,6 +575,14 @@ export const RULES: Record<RuleCode, RuleMeta> = {
 
 function lowerFirst(s: string): string {
   return s[0]!.toLowerCase() + s.slice(1);
+}
+
+/** Whether `bull fix` can repair this specific diagnostic. */
+export function isAutoFixable(d: { code: RuleCode; data: Record<string, string> }): boolean {
+  if (!RULES[d.code].fixable) return false;
+  // Only type-only imports can be re-exported from the ViewModel automatically.
+  if (d.code === "MVVM100") return d.data.typeOnly === "true";
+  return true;
 }
 
 export const RULE_LIST: RuleMeta[] = Object.values(RULES);

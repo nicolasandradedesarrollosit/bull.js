@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { AnalysisResult } from "../analyze";
-import { RULES, type RuleCategory } from "../rules/meta";
+import { isAutoFixable, RULES, type RuleCategory } from "../rules/meta";
 import type { Diagnostic, FileKind, RuleCode, Severity } from "../types";
 import { buildFrame, type FrameLine } from "./frame";
 
@@ -21,6 +21,8 @@ export interface SerializedDiagnostic {
   why: string;
   fix: string[];
   notes?: string[];
+  /** `bull fix` can repair it automatically. */
+  fixable: boolean;
   explain: string;
   frame?: FrameLine[];
 }
@@ -57,6 +59,7 @@ export function serializeDiagnostic(
     why: meta.why,
     fix: meta.fix(d.data),
     notes: d.notes,
+    fixable: isAutoFixable(d),
     explain: `bull explain ${d.code}`,
     frame: source && d.range ? buildFrame(source, d.range) : undefined,
   };
