@@ -7,11 +7,7 @@ import { mergeConfig, type InlineConfig } from "vite";
 import { loadBullConfig, type BullConfig } from "../config";
 import { bullPlugin } from "../vite/plugin";
 
-export const VERSION = "0.1.0";
-
-export function banner(command: string): void {
-  console.log(`\n  ${pc.bold(pc.magenta("▲ bull"))} ${pc.dim(`v${VERSION}`)}  ${pc.dim("·")} ${command}\n`);
-}
+export { banner, VERSION } from "../ui/brand";
 
 export function fail(message: string, hint?: string): void {
   console.error(`  ${pc.red("✗")} ${message}`);

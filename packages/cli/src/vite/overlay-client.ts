@@ -55,10 +55,7 @@ export function overlayMain(hot: HotLike | undefined): void {
     }
     .panel { max-width: 920px; margin: 0 auto; }
     header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-    .logo {
-      display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, #7c5cff, #ff5c8a); font-weight: 800; color: #fff;
-    }
+    .logo { display: block; width: 40px; height: 40px; flex: none; }
     header h1 { font-size: 18px; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
     header p { margin: 0; color: #9a9ab0; font-size: 13px; }
     .spacer { flex: 1; }
@@ -117,6 +114,20 @@ export function overlayMain(hot: HotLike | undefined): void {
     .pill.warning { background: #1f1a10; color: #ffd98a; border-color: #3d3220; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
   `;
+
+  // The Bull logo (assets/brand/bull-logo.svg), inlined so the overlay has no dependencies.
+  const bull = `<svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M19 20C10.5 20 4.5 15 4 5.5c3.5 5.8 9 8.6 17 9.2Z" fill="#ffd9bf"/>
+    <path d="M45 20c8.5 0 14.5-5 15-14.5c-3.5 5.8-9 8.6-17 9.2Z" fill="#ffd9bf"/>
+    <path d="M19.5 21 9 24.5l11.5 4Z" fill="#5a3df0"/><path d="M44.5 21 55 24.5l-11.5 4Z" fill="#e2456f"/>
+    <path d="M18 15h28L32 36Z" fill="#a78bfa"/>
+    <path d="M18 15l14 21v21h-6L20.5 34Z" fill="#6b4dff"/>
+    <path d="M46 15 32 36v21h6l5.5-23Z" fill="#f0507c"/>
+    <path d="m23.5 28.5 4.5 1.5-4 1.8Z" fill="#160f24"/><path d="m40.5 28.5-4.5 1.5 4 1.8Z" fill="#160f24"/>
+    <rect x="23" y="45" width="18" height="12" rx="6" fill="#33224a"/>
+    <ellipse cx="28" cy="50.5" rx="1.6" ry="2.2" fill="#ff7aa2"/><ellipse cx="36" cy="50.5" rx="1.6" ry="2.2" fill="#ff7aa2"/>
+    <path d="M28.5 56.5a3.5 3.5 0 0 0 7 0" fill="none" stroke="#fff4e6" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>`;
 
   const esc = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -220,7 +231,7 @@ export function overlayMain(hot: HotLike | undefined): void {
         <div class="backdrop" role="dialog" aria-label="MVVM architecture errors">
           <div class="panel">
             <header>
-              <div class="logo">T</div>
+              ${bull}
               <div>
                 <h1>The MVVM architecture is broken</h1>
                 <p>${summary}${p.mode === "blocking" ? " · the app unlocks once you fix it" : " · Esc to close"}</p>

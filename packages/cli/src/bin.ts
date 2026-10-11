@@ -6,7 +6,7 @@ import { checkCommand } from "./commands/check";
 import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
-import { VERSION } from "./commands/shared";
+import { bullArt, VERSION } from "./ui/brand";
 
 const cli = cac("bull");
 
@@ -45,7 +45,11 @@ cli
   .option("--template <template>", "Template", { default: "default" })
   .action((name: string, options) => createCommand(name, options));
 
-cli.help();
+cli.help((sections) => {
+  // cac's first section is "bull/<version>": the bull replaces it.
+  sections[0] = { body: `\n${bullArt()}\n` };
+  return sections;
+});
 cli.version(VERSION);
 
 try {
