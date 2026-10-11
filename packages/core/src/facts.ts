@@ -21,7 +21,7 @@ export interface ModuleFacts {
   assignments: ChainRef[];
   news: NamedRef[];
   /** `const x = something(...)`: tells which variables come from `useViewModel` or `useBinding`. */
-  declarators: Array<{ name: string; callee: string; range: Range }>;
+  declarators: Array<{ name: string; callee: string; /** First argument as a chain (`TodoListViewModel`, `vm.todos`). */ arg: string | null; range: Range }>;
   /** Function parameter names (including destructuring). */
   params: string[];
   classes: ClassFact[];
@@ -474,7 +474,9 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
       case "VariableDeclarator":
         if (node.id.type === "Identifier" && node.init?.type === "CallExpression") {
           const callee = chainOf(node.init.callee).path.join(".");
-          if (callee) facts.declarators.push({ name: node.id.name, callee, range: toRange(node) });
+          const first = node.init.arguments[0];
+          const arg = first && first.type !== "SpreadElement" ? chainOf(first).path.join(".") || null : null;
+          if (callee) facts.declarators.push({ name: node.id.name, callee, arg, range: toRange(node) });
         }
         break;
       case "Identifier":

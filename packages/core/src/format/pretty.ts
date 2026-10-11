@@ -86,6 +86,7 @@ export function formatDiagnostic(d: SerializedDiagnostic, options: PrettyOptions
     for (const line of rest) out.push(`       ${code(line, c)}`);
   }
   out.push("");
+  if (d.fixable) out.push(`  ${c.cyan("✦")} Auto-fixable: run ${c.cyan("triad fix")}`);
   out.push(c.dim(`  More info: ${d.explain}`));
   return out.join("\n");
 }
@@ -189,7 +190,7 @@ export function formatExplain(meta: RuleMeta, options: PrettyOptions = {}): stri
   out.push(
     c.dim(`${CATEGORY_LABEL[meta.category]} · `) +
       sev +
-      c.dim(` · ${meta.configurable ? "configurable" : "cannot be disabled"} · ${meta.scope === "file" ? "also in ESLint" : "build/check only"}`),
+      c.dim(` · ${meta.configurable ? "configurable" : "cannot be disabled"} · ${meta.scope === "file" ? "also in ESLint" : "build/check only"}${meta.fixable ? " · auto-fixable" : ""}`),
   );
   out.push("");
   for (const line of wrap(meta.summary, width)) out.push(c.bold(line));
