@@ -6,6 +6,7 @@ import { checkCommand } from "./commands/check";
 import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
+import { generateCommand } from "./tooling/generate";
 import { bullArt, VERSION } from "./ui/brand";
 
 const cli = cac("triad");
@@ -44,6 +45,19 @@ cli
   .command("create <name>", "Creates a new project with the MVVM structure")
   .option("--template <template>", "Template", { default: "default" })
   .action((name: string, options) => createCommand(name, options));
+
+cli
+  .command("generate <type> [name]", "Scaffolds a feature, model, viewmodel or view with the right names")
+  .alias("g")
+  .option("--kind <kind>", "Model kind: model | entity | repository | service")
+  .option("--dry-run", "Show what would be written without writing it")
+  .option("--no-test", "Do not generate a ViewModel test")
+  .option("--root <dir>", "Project root (defaults to the current folder)")
+  .example("triad g feature todo-list")
+  .example("triad g model user --kind repository")
+  .action((type: string, name: string | undefined, options) =>
+    generateCommand(type, name, { ...options, test: options.test === false ? false : undefined }),
+  );
 
 cli.help((sections) => {
   // cac's first section is "triad/<version>": the bull replaces it.
