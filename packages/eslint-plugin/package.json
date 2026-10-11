@@ -1,0 +1,26 @@
+{
+  "name": "@bull/eslint-plugin",
+  "version": "0.1.0",
+  "description": "Bull's MVVM architecture rules, in your editor.",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean --external @bull/core"
+  },
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
+  "dependencies": {
+    "@bull/core": "^0.1.0",
+    "@typescript-eslint/parser": "^8.71.1"
+  }
+}
