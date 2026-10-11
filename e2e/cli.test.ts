@@ -96,3 +96,45 @@ describe("bull create", () => {
 
 fs.mkdirSync(path.join(repo, ".tmp"), { recursive: true });
 afterAll(() => fs.rmSync(path.join(repo, ".tmp"), { recursive: true, force: true }));
+
+describe("tooling", () => {
+  function tempProject(prefix: string): string {
+    const dir = fs.mkdtempSync(path.join(repo, ".tmp", prefix));
+    fs.rmSync(dir, { recursive: true });
+    return dir;
+  }
+
+  it("generate feature keeps the project valid", () => {
+    const dir = tempProject("gen-");
+    expect(bull(["create", dir]).code).toBe(0);
+    const generated = bull(["g", "feature", "shopping-cart", "--root", dir]);
+    expect(generated.code).toBe(0);
+    expect(generated.out).toContain("+ src/viewmodel/shopping-cart.viewmodel.ts");
+    expect(generated.out).toContain("~ src/main.tsx");
+    expect(bull(["check", dir]).code).toBe(0);
+  });
+
+  it("fix repairs the fixable fixture", () => {
+    const dir = tempProject("fix-");
+    fs.cpSync(path.join(repo, "fixtures/fixable"), dir, { recursive: true });
+    expect(bull(["check", dir]).code).toBe(1);
+    const fixed = bull(["fix", dir]);
+    expect(fixed.out).toContain("✔ MVVM003");
+    expect(fixed.code).toBe(0);
+    expect(bull(["check", dir]).code).toBe(0);
+  });
+
+  it("graph prints mermaid with the violating edge and exits 1", () => {
+    const { code, out } = bull(["graph", "fixtures/view-imports-model", "--format", "mermaid"]);
+    expect(code).toBe(1);
+    expect(out).toMatch(/-->\|MVVM100\|/);
+  });
+
+  it("doctor and info on the example app", () => {
+    const doctor = bull(["doctor", "examples/todo-app"]);
+    expect(doctor.out).toContain("Healthy");
+    expect(doctor.code).toBe(0);
+    const info = JSON.parse(bull(["info", "examples/todo-app", "--json"]).out);
+    expect(info.viewModels[0].name).toBe("TodoListViewModel");
+  });
+});
