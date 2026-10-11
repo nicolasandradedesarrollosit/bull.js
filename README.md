@@ -1,6 +1,11 @@
-# Triad
+<p align="center">
+  <img src="assets/brand/triad-bull.svg" width="120" alt="Triad bull logo">
+</p>
 
-**The React bundler that refuses to build unless you respect MVVM.**
+<h1 align="center">Triad</h1>
+
+<p align="center"><strong>Stubborn about architecture.</strong><br>
+The React bundler that refuses to build unless you respect MVVM.</p>
 
 Triad is a Vite/Next-style CLI (`triad dev`, `triad build`) with a twist: the
 **Model–View–ViewModel** architecture is not a suggestion, it is part of the compiler. If a layer is
