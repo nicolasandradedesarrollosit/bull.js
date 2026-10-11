@@ -244,7 +244,8 @@ export function ruleToMarkdown(meta: RuleMeta): string {
   out.push("");
   out.push(
     `> **${CATEGORY_LABEL[meta.category]}** · ${meta.severity === "error" ? "error" : "warning"} · ` +
-      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`bull/${meta.slug}\``,
+      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`bull/${meta.slug}\`` +
+      (meta.fixable ? " · auto-fixable with `bull fix`" : ""),
   );
   out.push("");
   out.push(meta.summary);

@@ -1,6 +1,6 @@
 # MVVM003 · Wrong file name
 
-> **Structure** · error · cannot be disabled · ESLint rule: `bull/file-naming`
+> **Structure** · error · cannot be disabled · ESLint rule: `bull/file-naming` · auto-fixable with `bull fix`
 
 Each layer has its convention: *.model.ts, *.viewmodel.ts, *.view.tsx.
 
