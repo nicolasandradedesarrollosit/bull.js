@@ -7,6 +7,7 @@ import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
 import { generateCommand } from "./tooling/generate";
+import { graphCommand } from "./tooling/graph";
 import { bullArt, VERSION } from "./ui/brand";
 
 const cli = cac("bull");
@@ -58,6 +59,15 @@ cli
   .action((type: string, name: string | undefined, options) =>
     generateCommand(type, name, { ...options, test: options.test === false ? false : undefined }),
   );
+
+cli
+  .command("graph [root]", "Shows the import graph between layers and the edges that break MVVM")
+  .option("--format <format>", "tree | mermaid | dot | html | json", { default: "tree" })
+  .option("--out <file>", "Write the output to a file (html defaults to bull-graph.html)")
+  .option("--open", "Open the HTML graph in the browser")
+  .example("bull graph --format html --open")
+  .example("bull graph --format mermaid > docs/architecture.mmd")
+  .action((root: string | undefined, options) => graphCommand(root, options));
 
 cli.help((sections) => {
   // cac's first section is "bull/<version>": the bull replaces it.
