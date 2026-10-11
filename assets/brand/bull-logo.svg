@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Bull logo">
+  <title>Bull</title>
+  <defs>
+    <linearGradient id="bull-horn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff4e6"/>
+      <stop offset="1" stop-color="#ffc9a8"/>
+    </linearGradient>
+    <linearGradient id="bull-top" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9a3ff"/>
+      <stop offset="1" stop-color="#8f6bff"/>
+    </linearGradient>
+    <linearGradient id="bull-left" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="1" stop-color="#5a3df0"/>
+    </linearGradient>
+    <linearGradient id="bull-right" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff7aa2"/>
+      <stop offset="1" stop-color="#e2456f"/>
+    </linearGradient>
+  </defs>
+  <!-- horns -->
+  <path d="M19 20C10.5 20 4.5 15 4 5.5c3.5 5.8 9 8.6 17 9.2Z" fill="url(#bull-horn)"/>
+  <path d="M45 20c8.5 0 14.5-5 15-14.5c-3.5 5.8-9 8.6-17 9.2Z" fill="url(#bull-horn)"/>
+  <!-- ears -->
+  <path d="M19.5 21 9 24.5l11.5 4Z" fill="#5a3df0"/>
+  <path d="M44.5 21 55 24.5l-11.5 4Z" fill="#e2456f"/>
+  <!-- the three facets: View, ViewModel, Model -->
+  <path d="M18 15h28L32 36Z" fill="url(#bull-top)"/>
+  <path d="M18 15l14 21v21h-6L20.5 34Z" fill="url(#bull-left)"/>
+  <path d="M46 15 32 36v21h6l5.5-23Z" fill="url(#bull-right)"/>
+  <!-- eyes -->
+  <path d="m23.5 28.5 4.5 1.5-4 1.8Z" fill="#160f24"/>
+  <path d="m40.5 28.5-4.5 1.5 4 1.8Z" fill="#160f24"/>
+  <!-- muzzle and nose ring -->
+  <rect x="23" y="45" width="18" height="12" rx="6" fill="#33224a"/>
+  <ellipse cx="28" cy="50.5" rx="1.6" ry="2.2" fill="#ff7aa2"/>
+  <ellipse cx="36" cy="50.5" rx="1.6" ry="2.2" fill="#ff7aa2"/>
+  <path d="M28.5 56.5a3.5 3.5 0 0 0 7 0" fill="none" stroke="#fff4e6" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

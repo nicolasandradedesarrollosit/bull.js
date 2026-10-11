@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Bull logo" fill="currentColor">
+  <title>Bull</title>
+  <path d="M19 20C10.5 20 4.5 15 4 5.5c3.5 5.8 9 8.6 17 9.2Z"/>
+  <path d="M45 20c8.5 0 14.5-5 15-14.5c-3.5 5.8-9 8.6-17 9.2Z"/>
+  <path d="M19.5 21 9 24.5l11.5 4Z" opacity=".7"/>
+  <path d="M44.5 21 55 24.5l-11.5 4Z" opacity=".7"/>
+  <path d="M18 15h28L32 36Z" opacity=".55"/>
+  <path d="M18 15l14 21v21h-6L20.5 34Z" opacity=".85"/>
+  <path d="M46 15 32 36v21h6l5.5-23Z"/>
+  <rect x="23" y="45" width="18" height="12" rx="6"/>
+</svg>

@@ -1,6 +1,11 @@
-# Bull
+<p align="center">
+  <img src="assets/brand/bull-logo.svg" width="120" alt="Bull logo">
+</p>
 
-**The React bundler that refuses to build unless you respect MVVM.**
+<h1 align="center">Bull</h1>
+
+<p align="center"><strong>Stubborn about architecture.</strong><br>
+The React bundler that refuses to build unless you respect MVVM.</p>
 
 Bull is a Vite/Next-style CLI (`bull dev`, `bull build`) with a twist: the
 **Model–View–ViewModel** architecture is not a suggestion, it is part of the compiler. If a layer is
