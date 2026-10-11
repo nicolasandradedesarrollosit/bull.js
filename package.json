@@ -1,0 +1,33 @@
+{
+  "name": "triad-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/runtime",
+    "packages/core",
+    "packages/eslint-plugin",
+    "packages/cli",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @triad/runtime -w @triad/core -w @triad/eslint-plugin -w @triad/cli",
+    "test": "vitest run",
+    "test:e2e": "npm run build && vitest run -c vitest.e2e.config.ts",
+    "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit",
+    "docs": "node packages/cli/dist/bin.js explain --all --format md --out docs/rules"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@typescript-eslint/parser": "^8.71.1",
+    "eslint": "^10.12.0",
+    "jsdom": "^30.1.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
+  }
+}
