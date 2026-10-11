@@ -6,7 +6,9 @@ import { checkCommand } from "./commands/check";
 import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
+import { doctorCommand } from "./tooling/doctor";
 import { fixCommand } from "./tooling/fix";
+import { infoCommand } from "./tooling/info";
 import { generateCommand } from "./tooling/generate";
 import { graphCommand } from "./tooling/graph";
 import { bullArt, VERSION } from "./ui/brand";
@@ -74,6 +76,15 @@ cli
   .command("fix [root]", "Applies the safe automatic fixes (renames, readonly state, type re-exports)")
   .option("--dry-run", "Show a diff of the changes without writing them")
   .action((root: string | undefined, options) => fixCommand(root, options));
+
+cli
+  .command("doctor [root]", "Checks the environment and the project setup")
+  .action((root: string | undefined) => doctorCommand(root));
+
+cli
+  .command("info [root]", "Summarizes the project: layers, ViewModel APIs and which Views bind them")
+  .option("--json", "Print the summary as JSON")
+  .action((root: string | undefined, options) => infoCommand(root, options));
 
 cli.help((sections) => {
   // cac's first section is "triad/<version>": the bull replaces it.
