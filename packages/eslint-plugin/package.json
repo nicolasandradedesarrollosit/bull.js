@@ -1,6 +1,6 @@
 {
   "name": "@bull/eslint-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bull's MVVM architecture rules, in your editor.",
   "type": "module",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "eslint": ">=9"
   },
   "dependencies": {
-    "@bull/core": "^0.1.0",
+    "@bull/core": "^0.2.0",
     "@typescript-eslint/parser": "^8.71.1"
   }
 }

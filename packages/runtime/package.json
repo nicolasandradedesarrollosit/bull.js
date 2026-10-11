@@ -1,6 +1,6 @@
 {
   "name": "@bull/runtime",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bull's MVVM runtime: observable state, ViewModels, commands and React bindings.",
   "type": "module",
   "license": "MIT",

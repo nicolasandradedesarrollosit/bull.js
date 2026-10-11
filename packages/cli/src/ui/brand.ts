@@ -1,6 +1,6 @@
 import pc from "picocolors";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 export const TAGLINE = "Stubborn about architecture.";
 
 /** Taurus sign with the text variation selector, so terminals draw it single-width. */

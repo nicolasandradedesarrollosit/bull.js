@@ -83,7 +83,7 @@ const fileRules = RULE_LIST.filter((meta) => meta.scope === "file" && meta.categ
 const rules: Record<string, Rule.RuleModule> = Object.fromEntries(fileRules.map((meta) => [meta.slug, createRule(meta)]));
 
 const plugin = {
-  meta: { name: "@bull/eslint-plugin", version: "0.1.0" },
+  meta: { name: "@bull/eslint-plugin", version: "0.2.0" },
   rules,
   configs: {} as Record<string, Linter.Config[]>,
 } satisfies ESLint.Plugin;
