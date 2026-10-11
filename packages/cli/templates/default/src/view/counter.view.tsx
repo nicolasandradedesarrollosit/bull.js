@@ -1,6 +1,7 @@
 // View: only binds and draws. Reads with useBinding, acts with commands.
 import { useBinding, useViewModel } from "@bull/runtime/react";
 import { CounterViewModel } from "../viewmodel/counter.viewmodel";
+import { BullLogoView } from "./bull-logo.view";
 
 export function CounterView() {
   const vm = useViewModel(CounterViewModel);
@@ -9,6 +10,7 @@ export function CounterView() {
 
   return (
     <main className="counter">
+      <BullLogoView size={56} />
       <p className="layers">View → ViewModel → Model</p>
       <h1>{count}</h1>
       <div className="actions">
