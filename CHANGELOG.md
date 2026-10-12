@@ -4,6 +4,9 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+From 0.3.0 on, releases are managed with [Changesets](https://github.com/changesets/changesets) and
+each package keeps its own `CHANGELOG.md` (for example [packages/cli/CHANGELOG.md](packages/cli/CHANGELOG.md)).
+
 ## [0.2.0] - 2026-10-11
 
 ### Added
