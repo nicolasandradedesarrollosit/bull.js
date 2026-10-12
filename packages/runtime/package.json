@@ -4,6 +4,31 @@
   "description": "Bull's MVVM runtime: observable state, ViewModels, commands and React bindings.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "directory": "packages/runtime"
+  },
+  "bugs": {
+    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+  },
+  "keywords": [
+    "react",
+    "mvvm",
+    "viewmodel",
+    "signals",
+    "reactive",
+    "state-management",
+    "dependency-injection"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],

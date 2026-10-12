@@ -4,6 +4,30 @@
   "description": "Bull: the opinionated React framework that refuses to build unless you respect MVVM.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+  },
+  "keywords": [
+    "react",
+    "mvvm",
+    "vite",
+    "framework",
+    "cli",
+    "architecture",
+    "linter"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "bull": "./dist/bin.js"
   },
