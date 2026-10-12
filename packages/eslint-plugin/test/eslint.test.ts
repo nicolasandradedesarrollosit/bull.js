@@ -40,6 +40,24 @@ export class TodoViewModel extends ViewModel { readonly #n = this.state(0); read
     ).toEqual([]);
   });
 
+  it("follows members destructured from the ViewModel", () => {
+    const messages = lint(
+      "src/view/todo.view.tsx",
+      `import { useBinding, useViewModel } from "@bull/runtime/react";
+import { TodoViewModel } from "../viewmodel/todo.viewmodel";
+export function TodoView() {
+  const { count, add } = useViewModel(TodoViewModel);
+  count.set(1);
+  const busy = add.isRunning.value;
+  return <button onClick={add.execute}>{useBinding(count)}</button>;
+}`,
+    );
+    expect(messages.map((m) => [m.ruleId, m.line])).toEqual([
+      ["bull/view-mutates-viewmodel", 5],
+      ["bull/view-reads-value", 6],
+    ]);
+  });
+
   it("files outside src/ are ignored", () => {
     // The recommended config only applies to src/: ESLint does not even run Bull's rules.
     expect(lint("vite.config.ts", `import React from "react";`).filter((m) => m.ruleId?.startsWith("bull/"))).toEqual(

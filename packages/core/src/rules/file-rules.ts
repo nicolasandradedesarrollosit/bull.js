@@ -109,6 +109,7 @@ function emptyFacts(): ModuleFacts {
     assignments: [],
     news: [],
     declarators: [],
+    destructurings: [],
     params: [],
     classes: [],
   };
@@ -268,23 +269,30 @@ function checkView(ctx: Ctx): void {
     ctx.report("MVVM201", hook.range, `The View uses \`${hook.name}\`.`, { hook: hook.name, viewModel });
   }
 
-  const vmLocals = new Set([
-    ...facts.declarators
-      .filter((d) => d.callee === "useViewModel" || d.callee === "useChildViewModel")
-      .map((d) => d.name),
-    ...facts.params.filter((p) => VM_PARAM.test(p)),
+  const vmLocals = viewModelLocals(facts);
+  /** How deep inside the ViewModel a chain reaches: `vm.count.set` and a destructured `count.set` are both 2. */
+  const vmDepth = (chain: { root: string | null; path: string[] }): number | null => {
+    const prefix = chain.root ? vmLocals.get(chain.root) : undefined;
+    return prefix ? prefix.length + chain.path.length - 1 : null;
+  };
+  const bindingLocals = new Set([
+    ...facts.declarators.filter((d) => d.callee === "useBinding").map((d) => d.name),
+    ...facts.destructurings
+      .filter((d) => "callee" in d.init && d.init.callee === "useBinding")
+      .flatMap((d) => d.bindings.map((b) => b.local)),
   ]);
-  const bindingLocals = new Set(facts.declarators.filter((d) => d.callee === "useBinding").map((d) => d.name));
 
   const assignedAt = new Set<string>();
   for (const a of facts.assignments) {
-    if (!a.root || !vmLocals.has(a.root)) continue;
+    // A member of the ViewModel: `vm.count.value = 3`, or `count.value = 3` after destructuring it.
+    if (vmDepth(a) === null || a.path.length < 2) continue;
     assignedAt.add(`${a.range.start.line}:${a.range.start.column}`);
     ctx.report("MVVM202", a.range, `The View assigns \`${a.path.join(".")}\`.`, { target: `${a.path.join(".")} = …` });
   }
   for (const c of facts.calls) {
     const last = c.path.at(-1);
-    if (c.root && vmLocals.has(c.root) && (last === "set" || last === "update") && c.path.length > 2) {
+    const depth = vmDepth(c);
+    if (depth !== null && depth >= 2 && (last === "set" || last === "update")) {
       ctx.report("MVVM202", c.range, `The View calls \`${c.path.join(".")}()\`.`, { target: `${c.path.join(".")}(…)` });
     }
     if (c.root && bindingLocals.has(c.root) && c.path.length === 2 && last && ARRAY_LOGIC.has(last)) {
@@ -296,9 +304,12 @@ function checkView(ctx: Ctx): void {
   }
 
   for (const m of facts.members) {
-    if (!m.root || !vmLocals.has(m.root)) continue;
+    const prefix = m.root ? vmLocals.get(m.root) : undefined;
+    if (!prefix) continue;
+    // `.value` of something inside the ViewModel: `vm.count.value`, `count.value`, `all.count.value`.
     const valueAt = m.path.indexOf("value");
-    if (valueAt < 2 || assignedAt.has(`${m.range.start.line}:${m.range.start.column}`)) continue;
+    if (valueAt < 1 || prefix.length + valueAt < 2) continue;
+    if (assignedAt.has(`${m.range.start.line}:${m.range.start.column}`)) continue;
     const binding = m.path.slice(0, valueAt).join(".");
     ctx.report("MVVM206", m.range, `The View reads \`${binding}.value\` without subscribing.`, {
       target: `${binding}.value`,
@@ -312,6 +323,39 @@ function checkView(ctx: Ctx): void {
       ctx.report("MVVM204", n.range, `The View creates \`new ${n.name}(…)\`.`, { name: n.name });
     }
   }
+}
+
+/**
+ * Every local that holds the ViewModel or a part of it, with its path inside the ViewModel:
+ * `const vm = useViewModel(X)` → `[]`, `const { pay } = useViewModel(X)` → `["pay"]`, and then
+ * `const { isRunning } = pay` → `["pay", "isRunning"]`. Parameters named like a ViewModel count too.
+ */
+function viewModelLocals(facts: ModuleFacts): Map<string, string[]> {
+  const locals = new Map<string, string[]>();
+  const fromViewModel = (callee: string) => callee === "useViewModel" || callee === "useChildViewModel";
+  for (const d of facts.declarators) if (fromViewModel(d.callee)) locals.set(d.name, []);
+  for (const p of facts.params) if (VM_PARAM.test(p)) locals.set(p, []);
+  for (const d of facts.destructurings) {
+    if (!("callee" in d.init) || !fromViewModel(d.init.callee)) continue;
+    for (const b of d.bindings) locals.set(b.local, b.path);
+  }
+  // Destructuring a local that already comes from the ViewModel, possibly in several steps.
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const d of facts.destructurings) {
+      if (!("chain" in d.init)) continue;
+      const [root, ...rest] = d.init.chain;
+      const prefix = root ? locals.get(root) : undefined;
+      if (!prefix) continue;
+      for (const b of d.bindings) {
+        if (locals.has(b.local)) continue;
+        locals.set(b.local, [...prefix, ...rest, ...b.path]);
+        changed = true;
+      }
+    }
+  }
+  return locals;
 }
 
 /** Local names imported as values from files of the given layer. */

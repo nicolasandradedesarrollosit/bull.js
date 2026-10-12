@@ -27,6 +27,16 @@ export interface ModuleFacts {
     arg: string | null;
     range: Range;
   }>;
+  /**
+   * `const { a, b: { c }, ...rest } = init`: each local name with the property path it was taken from
+   * (`a` → `["a"]`, `c` → `["b", "c"]`, `rest` → `[]`). Lets the rules follow members pulled out of a
+   * ViewModel the same way they follow `vm.a.b`.
+   */
+  destructurings: Array<{
+    init: { callee: string; arg: string | null } | { chain: string[] };
+    bindings: Array<{ local: string; path: string[] }>;
+    range: Range;
+  }>;
   /** Function parameter names (including destructuring). */
   params: string[];
   classes: ClassFact[];
@@ -189,6 +199,33 @@ function patternNames(node: AnyNode | null | undefined, out: string[] = []): str
     case "TSParameterProperty":
       patternNames(node.parameter, out);
       break;
+  }
+  return out;
+}
+
+/**
+ * The locals an object pattern declares, each with the property path it reads: `{ a: { b: c } }`
+ * gives `c` → `["a", "b"]`, and `{ ...rest }` gives `rest` → `[]` (the same object). Computed keys and
+ * array patterns are skipped: their path is not known statically.
+ */
+function patternBindings(
+  node: TSESTree.ObjectPattern,
+  prefix: string[] = [],
+  out: Array<{ local: string; path: string[] }> = [],
+): Array<{ local: string; path: string[] }> {
+  for (const prop of node.properties) {
+    if (prop.type === "RestElement") {
+      if (prop.argument.type === "Identifier") out.push({ local: prop.argument.name, path: prefix });
+      continue;
+    }
+    if (prop.computed) continue;
+    const key =
+      prop.key.type === "Identifier" ? prop.key.name : prop.key.type === "Literal" ? String(prop.key.value) : null;
+    if (key === null) continue;
+    const path = [...prefix, key];
+    const value = prop.value.type === "AssignmentPattern" ? prop.value.left : prop.value;
+    if (value.type === "Identifier") out.push({ local: value.name, path });
+    else if (value.type === "ObjectPattern") patternBindings(value, path, out);
   }
   return out;
 }
@@ -364,6 +401,7 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
     assignments: [],
     news: [],
     declarators: [],
+    destructurings: [],
     params: [],
     classes: [],
   };
@@ -501,6 +539,20 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
           const first = node.init.arguments[0];
           const arg = first && first.type !== "SpreadElement" ? chainOf(first).path.join(".") || null : null;
           if (callee) facts.declarators.push({ name: node.id.name, callee, arg, range: toRange(node) });
+        } else if (node.id.type === "ObjectPattern" && node.init) {
+          const bindings = patternBindings(node.id);
+          if (bindings.length === 0) break;
+          if (node.init.type === "CallExpression") {
+            const callee = chainOf(node.init.callee).path.join(".");
+            const first = node.init.arguments[0];
+            const arg = first && first.type !== "SpreadElement" ? chainOf(first).path.join(".") || null : null;
+            if (callee) facts.destructurings.push({ init: { callee, arg }, bindings, range: toRange(node) });
+          } else {
+            const chain = chainOf(node.init);
+            if (chain.root && chain.root !== "this") {
+              facts.destructurings.push({ init: { chain: chain.path }, bindings, range: toRange(node) });
+            }
+          }
         }
         break;
       case "Identifier":
