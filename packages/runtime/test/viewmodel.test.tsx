@@ -88,6 +88,52 @@ describe("Command", () => {
     await vm.run.execute();
     expect((vm.run.error.value as Error).message).toBe("boom");
   });
+
+  it("clears the error on the next execution and catches synchronous errors too", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    class Flaky extends ViewModel {
+      fail = true;
+      readonly run = this.command(() => {
+        if (this.fail) throw new Error("sync boom");
+        return "ok";
+      });
+    }
+    const vm = new Flaky();
+    expect(vm.run.execute()).toBeUndefined();
+    expect((vm.run.error.value as Error).message).toBe("sync boom");
+    vm.fail = false;
+    expect(vm.run.execute()).toBe("ok");
+    expect(vm.run.error.value).toBeUndefined();
+  });
+
+  it("canExecute follows its condition reactively and blocks execute", () => {
+    class Form extends ViewModel {
+      readonly #name = this.state("");
+      readonly sent: string[] = [];
+      readonly edit = this.command((name: string) => this.#name.set(name));
+      readonly send = this.command(() => this.sent.push(this.#name.value), {
+        canExecute: () => this.#name.value.trim().length > 0,
+      });
+    }
+    const vm = new Form();
+    const changes = vi.fn();
+    vm.send.canExecute.subscribe(changes);
+    expect(vm.send.canExecute.value).toBe(false);
+    expect(vm.send.execute()).toBeUndefined();
+    vm.edit.execute("Ada");
+    expect(vm.send.canExecute.value).toBe(true);
+    expect(changes).toHaveBeenCalled();
+    vm.send.execute();
+    expect(vm.sent).toEqual(["Ada"]);
+  });
+
+  it("works when destructured: execute is bound to its command", () => {
+    const vm = new CounterViewModel(new Counter());
+    const { increment, count } = vm;
+    const { execute } = increment;
+    execute();
+    expect(count.value).toBe(1);
+  });
 });
 
 describe("React binding", () => {
@@ -118,6 +164,79 @@ describe("React binding", () => {
     act(() => screen.getByRole("button").click());
     expect(screen.getByRole("button").textContent).toBe("1/2");
     expect(vmRef?.activations).toBe(1);
+  });
+
+  it("re-renders only the Views that read what changed", () => {
+    class PairViewModel extends ViewModel {
+      readonly #left = this.state(0);
+      readonly #right = this.state(0);
+      readonly left = this.#left.readonly;
+      readonly right = this.#right.readonly;
+      readonly bumpLeft = this.command(() => this.#left.update((n) => n + 1));
+    }
+    const vm = new PairViewModel();
+    const renders = { left: 0, right: 0 };
+    function LeftView() {
+      renders.left++;
+      return <span>{useBinding(vm.left)}</span>;
+    }
+    function RightView() {
+      renders.right++;
+      return <span>{useBinding(vm.right)}</span>;
+    }
+    render(
+      <>
+        <LeftView />
+        <RightView />
+      </>,
+    );
+    const before = { ...renders };
+    act(() => {
+      vm.bumpLeft.execute();
+    });
+    expect(renders.left).toBe(before.left + 1);
+    expect(renders.right).toBe(before.right);
+  });
+
+  it("does not re-render when a computed recomputes to the same value", () => {
+    class ParityViewModel extends ViewModel {
+      readonly #n = this.state(0);
+      readonly even = this.computed(() => this.#n.value % 2 === 0);
+      readonly addTwo = this.command(() => this.#n.update((n) => n + 2));
+    }
+    const vm = new ParityViewModel();
+    let renders = 0;
+    function ParityView() {
+      renders++;
+      return <span>{String(useBinding(vm.even))}</span>;
+    }
+    render(<ParityView />);
+    const before = renders;
+    act(() => {
+      vm.addTwo.execute(); // still even
+    });
+    expect(renders).toBe(before);
+  });
+
+  it("works with a destructured ViewModel", () => {
+    const container = new Container()
+      .model(Counter, () => new Counter())
+      .viewModel(CounterViewModel, (c) => new CounterViewModel(c.get(Counter)));
+    function CounterView() {
+      const { count, increment } = useViewModel(CounterViewModel);
+      return (
+        <button type="button" onClick={increment.execute}>
+          {useBinding(count)}
+        </button>
+      );
+    }
+    render(
+      <BullProvider container={container}>
+        <CounterView />
+      </BullProvider>,
+    );
+    act(() => screen.getByRole("button").click());
+    expect(screen.getByRole("button").textContent).toBe("1");
   });
 
   it("explains how to register a ViewModel with dependencies", () => {
