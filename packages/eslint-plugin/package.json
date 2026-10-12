@@ -4,6 +4,29 @@
   "description": "Bull's MVVM architecture rules, in your editor.",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "directory": "packages/eslint-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "mvvm",
+    "architecture",
+    "react"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],

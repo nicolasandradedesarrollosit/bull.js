@@ -2,6 +2,10 @@
   "name": "bull-monorepo",
   "private": true,
   "type": "module",
+  "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": ">=20"
+  },
   "workspaces": [
     "packages/runtime",
     "packages/core",

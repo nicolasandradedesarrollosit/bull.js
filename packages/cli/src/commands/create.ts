@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pc from "picocolors";
-import { bullArt } from "../ui/brand";
+import { bullArt, VERSION } from "../ui/brand";
 import { fail } from "./shared";
 
 /** `templates/` sits next to `dist/` (published) or `src/` (development). */
@@ -48,7 +48,7 @@ export function createCommand(name: string, options: { template?: string }): voi
   }
 
   const pkgName = path.basename(target).toLowerCase().replace(/[^a-z0-9-_.]/g, "-");
-  const files = copyTemplate(template, target, { name: pkgName });
+  const files = copyTemplate(template, target, { name: pkgName, bullVersion: VERSION });
   const rel = (p: string) => path.relative(target, p).replace(/\\/g, "/");
 
   console.log(`  ${pc.green("✓")} Project created in ${pc.bold(path.relative(process.cwd(), target) || ".")}\n`);
