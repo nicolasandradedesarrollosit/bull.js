@@ -1,10 +1,10 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { buildImportGraph, LAYER_LABEL, ProjectAnalyzer, type FileKind, type ImportGraph } from "@bull/core";
+import { buildImportGraph, type FileKind, type ImportGraph, LAYER_LABEL, ProjectAnalyzer } from "@bull/core";
 import pc from "picocolors";
-import { loadBullConfig } from "../config";
 import { banner, fail } from "../commands/shared";
+import { loadBullConfig } from "../config";
 
 /** Column order: the composition root on the left, the Model on the right. */
 const COLUMNS: FileKind[] = ["root", "view", "viewmodel", "model", "allowed", "outside"];
@@ -18,7 +18,9 @@ const COLUMN_LABEL: Partial<Record<FileKind, string>> = {
 };
 
 function sortedNodes(graph: ImportGraph) {
-  return [...graph.nodes].sort((a, b) => COLUMNS.indexOf(a.kind) - COLUMNS.indexOf(b.kind) || a.rel.localeCompare(b.rel));
+  return [...graph.nodes].sort(
+    (a, b) => COLUMNS.indexOf(a.kind) - COLUMNS.indexOf(b.kind) || a.rel.localeCompare(b.rel),
+  );
 }
 
 function layerEdgeCounts(graph: ImportGraph) {
@@ -32,7 +34,9 @@ function layerEdgeCounts(graph: ImportGraph) {
     entry.count++;
     counts.set(key, entry);
   }
-  return [...counts.values()].sort((a, b) => COLUMNS.indexOf(a.from) - COLUMNS.indexOf(b.from) || COLUMNS.indexOf(a.to) - COLUMNS.indexOf(b.to));
+  return [...counts.values()].sort(
+    (a, b) => COLUMNS.indexOf(a.from) - COLUMNS.indexOf(b.from) || COLUMNS.indexOf(a.to) - COLUMNS.indexOf(b.to),
+  );
 }
 
 // ─── tree (terminal) ──────────────────────────────────────────────────────────
@@ -70,7 +74,7 @@ export function renderTree(graph: ImportGraph, colors = pc.isColorSupported): st
       ? `  ${c.red("✗")} ${violations} edge(s) break the dependency direction, ${graph.cycles.length} cycle(s)`
       : `  ${c.green("✓")} Every edge follows View ──▶ ViewModel ──▶ Model`,
   );
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }
 
 // ─── mermaid ──────────────────────────────────────────────────────────────────
@@ -88,11 +92,13 @@ export function renderMermaid(graph: ImportGraph): string {
   }
   const styles: string[] = [];
   graph.edges.forEach((e, i) => {
-    out.push(`  ${id.get(e.from)} ${e.typeOnly ? "-.->" : "-->"}${e.violation ? `|${e.violation}|` : ""} ${id.get(e.to)}`);
+    out.push(
+      `  ${id.get(e.from)} ${e.typeOnly ? "-.->" : "-->"}${e.violation ? `|${e.violation}|` : ""} ${id.get(e.to)}`,
+    );
     if (e.violation) styles.push(`  linkStyle ${i} stroke:#e2456f,stroke-width:2.5px`);
     else if (e.inCycle) styles.push(`  linkStyle ${i} stroke:#f5a524,stroke-width:2px`);
   });
-  return [...out, ...styles].join("\n") + "\n";
+  return `${[...out, ...styles].join("\n")}\n`;
 }
 
 // ─── graphviz dot ─────────────────────────────────────────────────────────────
@@ -109,15 +115,18 @@ const FILL: Partial<Record<FileKind, string>> = {
 export function renderDot(graph: ImportGraph): string {
   const out = [
     "digraph bull {",
-    '  rankdir=LR; nodesep=0.3; ranksep=1.2;',
+    "  rankdir=LR; nodesep=0.3; ranksep=1.2;",
     '  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#c9c4d8"];',
     '  edge [color="#8d8aa0", arrowsize=0.7];',
   ];
   for (const kind of COLUMNS) {
     const members = graph.nodes.filter((n) => n.kind === kind);
     if (!members.length) continue;
-    out.push(`  subgraph cluster_${kind} { label="${COLUMN_LABEL[kind]}"; style=rounded; color="#d9d4e8"; fontname="Helvetica";`);
-    for (const n of members) out.push(`    "${n.rel}" [label="${path.posix.basename(n.rel)}", fillcolor="${FILL[kind]}"];`);
+    out.push(
+      `  subgraph cluster_${kind} { label="${COLUMN_LABEL[kind]}"; style=rounded; color="#d9d4e8"; fontname="Helvetica";`,
+    );
+    for (const n of members)
+      out.push(`    "${n.rel}" [label="${path.posix.basename(n.rel)}", fillcolor="${FILL[kind]}"];`);
     out.push("  }");
   }
   const relOf = new Map(graph.nodes.map((n) => [n.file, n.rel]));
@@ -129,7 +138,7 @@ export function renderDot(graph: ImportGraph): string {
     out.push(`  "${relOf.get(e.from)}" -> "${relOf.get(e.to)}"${attrs.length ? ` [${attrs.join(", ")}]` : ""};`);
   }
   out.push("}");
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }
 
 // ─── html (self-contained SVG) ────────────────────────────────────────────────
@@ -150,7 +159,9 @@ export function renderHtml(graph: ImportGraph, title: string): string {
   columns.forEach((kind, col) => {
     const members = graph.nodes.filter((n) => n.kind === kind).sort((a, b) => a.rel.localeCompare(b.rel));
     maxRows = Math.max(maxRows, members.length);
-    members.forEach((n, row) => position.set(n.file, { x: LEFT + col * COL_W, y: TOP + row * (NODE_H + GAP_Y) }));
+    for (const [row, n] of members.entries()) {
+      position.set(n.file, { x: LEFT + col * COL_W, y: TOP + row * (NODE_H + GAP_Y) });
+    }
   });
   const width = LEFT * 2 + (columns.length - 1) * COL_W + NODE_W + 60;
   const height = TOP + maxRows * (NODE_H + GAP_Y) + 40;
@@ -185,7 +196,9 @@ export function renderHtml(graph: ImportGraph, title: string): string {
         const tx = b.x + NODE_W + 4;
         d = `M${sx},${a.y + NODE_H / 2} C${sx - 90},${a.y - 30} ${tx + 90},${b.y + NODE_H + 30} ${tx},${b.y + NODE_H / 2}`;
       }
-      const cls = ["edge", e.violation ? "bad" : e.inCycle ? "cycle" : "", e.typeOnly ? "type" : ""].filter(Boolean).join(" ");
+      const cls = ["edge", e.violation ? "bad" : e.inCycle ? "cycle" : "", e.typeOnly ? "type" : ""]
+        .filter(Boolean)
+        .join(" ");
       const label = e.violation ? `<title>${esc(e.violation)}</title>` : "";
       return `<path id="e${i}" class="${cls}" data-from="${index.get(e.from)}" data-to="${index.get(e.to)}" d="${d}" marker-end="url(#${e.violation ? "arrow-bad" : "arrow"})">${label}</path>`;
     })
@@ -204,15 +217,16 @@ export function renderHtml(graph: ImportGraph, title: string): string {
         <title>${esc(n.rel)}</title>
         <rect width="${NODE_W}" height="${NODE_H}" rx="9"/>
         <circle cx="16" cy="${NODE_H / 2}" r="4"/>
-        <text x="28" y="${NODE_H / 2 + 4}">${esc(name.length > 27 ? name.slice(0, 26) + "…" : name)}</text>
+        <text x="28" y="${NODE_H / 2 + 4}">${esc(name.length > 27 ? `${name.slice(0, 26)}…` : name)}</text>
       </g>`;
     })
     .join("\n      ");
 
   const violations = graph.edges.filter((e) => e.violation).length;
-  const status = violations || graph.cycles.length
-    ? `<span class="pill bad">✗ ${violations} edge(s) break the direction · ${graph.cycles.length} cycle(s)</span>`
-    : `<span class="pill ok">✓ Every edge follows View → ViewModel → Model</span>`;
+  const status =
+    violations || graph.cycles.length
+      ? `<span class="pill bad">✗ ${violations} edge(s) break the direction · ${graph.cycles.length} cycle(s)</span>`
+      : `<span class="pill ok">✓ Every edge follows View → ViewModel → Model</span>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -341,7 +355,7 @@ export async function graphCommand(
       : format === "dot"
         ? renderDot(graph)
         : format === "json"
-          ? JSON.stringify(graph, null, 2) + "\n"
+          ? `${JSON.stringify(graph, null, 2)}\n`
           : format === "html"
             ? renderHtml(graph, title)
             : undefined;
@@ -363,6 +377,10 @@ export async function graphCommand(
 
 function openInBrowser(file: string): void {
   const command =
-    process.platform === "win32" ? `start "" "${file}"` : process.platform === "darwin" ? `open "${file}"` : `xdg-open "${file}"`;
+    process.platform === "win32"
+      ? `start "" "${file}"`
+      : process.platform === "darwin"
+        ? `open "${file}"`
+        : `xdg-open "${file}"`;
   exec(command);
 }

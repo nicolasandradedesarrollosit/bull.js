@@ -141,7 +141,12 @@ export function overlayMain(hot: HotLike | undefined): void {
       if (l.highlight) {
         const [from, to] = l.highlight;
         const raw = l.text;
-        text = esc(raw.slice(0, from - 1)) + "<mark>" + esc(raw.slice(from - 1, to - 1) || " ") + "</mark>" + esc(raw.slice(to - 1));
+        text =
+          esc(raw.slice(0, from - 1)) +
+          "<mark>" +
+          esc(raw.slice(from - 1, to - 1) || " ") +
+          "</mark>" +
+          esc(raw.slice(to - 1));
       }
       return `<span class="fl${l.highlight ? " hl" : ""}"><span class="ln">${l.line}</span>${text}</span>`;
     });
@@ -200,13 +205,21 @@ export function overlayMain(hot: HotLike | undefined): void {
 
     onClick(event: Event): void {
       const target = event.target as HTMLElement;
-      if (target.closest(".close")) return this.collapse(true);
-      if (target.closest(".pill")) return this.collapse(false);
+      if (target.closest(".close")) {
+        this.collapse(true);
+        return;
+      }
+      if (target.closest(".pill")) {
+        this.collapse(false);
+        return;
+      }
       const open = target.closest<HTMLElement>("[data-open]");
       if (open && this.payload) {
         const d = this.payload.diagnostics[Number(open.dataset.open)];
         if (d?.absoluteFile) {
-          void fetch(`/__open-in-editor?file=${encodeURIComponent(`${d.absoluteFile}:${d.line ?? 1}:${d.column ?? 1}`)}`);
+          void fetch(
+            `/__open-in-editor?file=${encodeURIComponent(`${d.absoluteFile}:${d.line ?? 1}:${d.column ?? 1}`)}`,
+          );
         }
       }
     }

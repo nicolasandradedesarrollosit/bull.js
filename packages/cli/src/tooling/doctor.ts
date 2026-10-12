@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ProjectAnalyzer } from "@bull/core";
 import pc from "picocolors";
-import { loadBullConfig, type BullConfig } from "../config";
+import { type BullConfig, loadBullConfig } from "../config";
 import { bullArt } from "../ui/brand";
 
 export type CheckStatus = "ok" | "warn" | "fail";
@@ -29,7 +29,9 @@ function packageDir(from: string, name: string): string | undefined {
 
 function versionOf(root: string, pkg: string): string | undefined {
   const dir = packageDir(root, pkg);
-  return dir ? (JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")) as { version: string }).version : undefined;
+  return dir
+    ? (JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")) as { version: string }).version
+    : undefined;
 }
 
 /** Parses tsconfig-style JSON (comments and trailing commas allowed). */
@@ -63,7 +65,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
 
   // package.json
   if (!fs.existsSync(path.join(root, "package.json"))) {
-    add({ status: "fail", title: "package.json not found", hint: "Run `bull doctor` from your project root, or pass the path." });
+    add({
+      status: "fail",
+      title: "package.json not found",
+      hint: "Run `bull doctor` from your project root, or pass the path.",
+    });
     return checks;
   }
 
@@ -73,7 +79,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   if (!react || !reactDom) {
     add({ status: "fail", title: "React is not installed", hint: "npm install react react-dom" });
   } else if (minor(react) !== minor(reactDom)) {
-    add({ status: "fail", title: `react ${react} and react-dom ${reactDom} do not match`, hint: "Install the same version of both." });
+    add({
+      status: "fail",
+      title: `react ${react} and react-dom ${reactDom} do not match`,
+      hint: "Install the same version of both.",
+    });
   } else {
     add({ status: "ok", title: `React ${react}` });
   }
@@ -100,14 +110,21 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
 
   // The bundler Bull drives
   const vite = versionOf(path.dirname(fileURLToPath(import.meta.url)), "vite");
-  add(vite ? { status: "ok", title: `Vite ${vite}` } : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @bull/cli." });
+  add(
+    vite
+      ? { status: "ok", title: `Vite ${vite}` }
+      : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @bull/cli." },
+  );
 
   // bull.config
   let config: BullConfig = {};
   try {
     const loaded = await loadBullConfig(root, "serve");
     config = loaded.config;
-    add({ status: "ok", title: loaded.file ? `${path.basename(loaded.file)} loads` : "No bull.config.ts (defaults are used)" });
+    add({
+      status: "ok",
+      title: loaded.file ? `${path.basename(loaded.file)} loads` : "No bull.config.ts (defaults are used)",
+    });
   } catch (error) {
     add({ status: "fail", title: "bull.config could not be loaded", detail: (error as Error).message.split("\n")[0] });
   }
@@ -119,11 +136,19 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
 
   // index.html
   const indexHtml = path.join(root, "index.html");
-  const entry = "/" + path.posix.relative(analyzer.config.root, analyzer.config.compositionRoot);
+  const entry = `/${path.posix.relative(analyzer.config.root, analyzer.config.compositionRoot)}`;
   if (!fs.existsSync(indexHtml)) {
-    add({ status: "fail", title: "index.html not found", hint: `Add one with <script type="module" src="${entry}"></script>.` });
+    add({
+      status: "fail",
+      title: "index.html not found",
+      hint: `Add one with <script type="module" src="${entry}"></script>.`,
+    });
   } else if (!fs.readFileSync(indexHtml, "utf8").includes(entry)) {
-    add({ status: "warn", title: `index.html does not load ${entry}`, hint: `Point its module script at the composition root (${entry}).` });
+    add({
+      status: "warn",
+      title: `index.html does not load ${entry}`,
+      hint: `Point its module script at the composition root (${entry}).`,
+    });
   } else {
     add({ status: "ok", title: `index.html loads ${entry}` });
   }
@@ -131,7 +156,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   // tsconfig
   const tsconfig = readJsonc(path.join(root, "tsconfig.json"));
   if (!tsconfig) {
-    add({ status: "warn", title: "tsconfig.json not found or unreadable", hint: 'Use "jsx": "react-jsx" and "strict": true.' });
+    add({
+      status: "warn",
+      title: "tsconfig.json not found or unreadable",
+      hint: 'Use "jsx": "react-jsx" and "strict": true.',
+    });
   } else {
     const options = (tsconfig.compilerOptions ?? {}) as Record<string, unknown>;
     const problems = [
@@ -149,11 +178,19 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   const missing = result.diagnostics.filter((d) => d.code === "MVVM001").map((d) => d.data.dir);
   add(
     missing.length
-      ? { status: "fail", title: `Missing layer folders: ${missing.join(", ")}`, hint: "Create them, or run `bull g feature <name>`." }
+      ? {
+          status: "fail",
+          title: `Missing layer folders: ${missing.join(", ")}`,
+          hint: "Create them, or run `bull g feature <name>`.",
+        }
       : { status: "ok", title: "src/model, src/viewmodel and src/view exist" },
   );
   if (result.diagnostics.some((d) => d.code === "MVVM005")) {
-    add({ status: "fail", title: "The composition root is missing", hint: `Create ${entry.slice(1)} with createBullApp().` });
+    add({
+      status: "fail",
+      title: "The composition root is missing",
+      hint: `Create ${entry.slice(1)} with createBullApp().`,
+    });
   }
 
   // ESLint
@@ -161,9 +198,17 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
     .map((f) => path.join(root, f))
     .find((f) => fs.existsSync(f));
   if (!eslintConfig) {
-    add({ status: "warn", title: "No ESLint flat config", hint: "Add @bull/eslint-plugin to see violations in your editor." });
+    add({
+      status: "warn",
+      title: "No ESLint flat config",
+      hint: "Add @bull/eslint-plugin to see violations in your editor.",
+    });
   } else if (!fs.readFileSync(eslintConfig, "utf8").includes("@bull/eslint-plugin")) {
-    add({ status: "warn", title: `${path.basename(eslintConfig)} does not use @bull/eslint-plugin`, hint: "Spread bull.configs.recommended into it." });
+    add({
+      status: "warn",
+      title: `${path.basename(eslintConfig)} does not use @bull/eslint-plugin`,
+      hint: "Spread bull.configs.recommended into it.",
+    });
   } else {
     add({ status: "ok", title: "ESLint uses @bull/eslint-plugin" });
   }
@@ -173,9 +218,17 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   const errors = architecture.filter((d) => d.severity === "error").length;
   add(
     errors
-      ? { status: "fail", title: `Architecture: ${errors} error(s)`, hint: "Run `bull check` for details, or `bull fix` for the automatic ones." }
+      ? {
+          status: "fail",
+          title: `Architecture: ${errors} error(s)`,
+          hint: "Run `bull check` for details, or `bull fix` for the automatic ones.",
+        }
       : architecture.length
-        ? { status: "warn", title: `Architecture: ${architecture.length} warning(s)`, hint: "Run `bull check` for details." }
+        ? {
+            status: "warn",
+            title: `Architecture: ${architecture.length} warning(s)`,
+            hint: "Run `bull check` for details.",
+          }
         : { status: "ok", title: "Architecture respects MVVM" },
   );
   return checks;

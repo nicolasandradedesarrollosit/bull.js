@@ -1,19 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  type AnalysisResult,
+  type Diagnostic,
   fileEdges,
   formatSummary,
   isAutoFixable,
+  type Position,
   ProjectAnalyzer,
   stripExtension,
   toKebab,
-  type AnalysisResult,
-  type Diagnostic,
-  type Position,
 } from "@bull/core";
 import pc from "picocolors";
-import { loadBullConfig } from "../config";
 import { banner } from "../commands/shared";
+import { loadBullConfig } from "../config";
 
 interface TextEdit {
   start: number;
@@ -128,7 +128,11 @@ export function planFixes(result: AnalysisResult): FixPlan {
 
     if (d.code === "MVVM100" && d.range) {
       const vmName = d.data.viewModel!;
-      const vmFile = path.posix.join(config.srcDir, "viewmodel", `${toKebab(vmName.replace(/ViewModel$/, ""))}.viewmodel.ts`);
+      const vmFile = path.posix.join(
+        config.srcDir,
+        "viewmodel",
+        `${toKebab(vmName.replace(/ViewModel$/, ""))}.viewmodel.ts`,
+      );
       if (!fs.existsSync(vmFile)) {
         done(d, `skipped: there is no ${rel(vmFile)} to re-export the type from`, false);
         continue;
@@ -252,8 +256,10 @@ export async function fixCommand(rootArg: string | undefined, options: { dryRun?
     console.log();
     for (const [file, content] of plan.contents) {
       const original = before.readSource(file) ?? fs.readFileSync(file, "utf8");
-      console.log(`    ${pc.bold(rel(file))}${plan.renames.has(file) ? pc.dim(` → ${rel(plan.renames.get(file)!)}`) : ""}`);
-      console.log(miniDiff(original, content) + "\n");
+      console.log(
+        `    ${pc.bold(rel(file))}${plan.renames.has(file) ? pc.dim(` → ${rel(plan.renames.get(file)!)}`) : ""}`,
+      );
+      console.log(`${miniDiff(original, content)}\n`);
     }
     for (const [from, to] of plan.renames) {
       if (!plan.contents.has(from)) console.log(`    ${pc.bold(rel(from))} ${pc.dim("→")} ${rel(to)}\n`);
@@ -266,6 +272,7 @@ export async function fixCommand(rootArg: string | undefined, options: { dryRun?
   analyzer.invalidate();
   const after = analyzer.analyze();
   console.log(`\n${formatSummary(after)}`);
-  if (after.diagnostics.length) console.log(`\n  ${pc.dim("Run")} ${pc.cyan("bull check")} ${pc.dim("for the details of what is left.")}`);
+  if (after.diagnostics.length)
+    console.log(`\n  ${pc.dim("Run")} ${pc.cyan("bull check")} ${pc.dim("for the details of what is left.")}`);
   if (after.errorCount > 0) process.exitCode = 1;
 }

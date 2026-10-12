@@ -21,7 +21,12 @@ export interface ModuleFacts {
   assignments: ChainRef[];
   news: NamedRef[];
   /** `const x = something(...)`: tells which variables come from `useViewModel` or `useBinding`. */
-  declarators: Array<{ name: string; callee: string; /** First argument as a chain (`TodoListViewModel`, `vm.todos`). */ arg: string | null; range: Range }>;
+  declarators: Array<{
+    name: string;
+    callee: string /** First argument as a chain (`TodoListViewModel`, `vm.todos`). */;
+    arg: string | null;
+    range: Range;
+  }>;
   /** Function parameter names (including destructuring). */
   params: string[];
   classes: ClassFact[];
@@ -275,7 +280,8 @@ function memberInit(value: AnyNode | null): MemberInit {
 }
 
 function typeName(node: AnyNode): string | undefined {
-  const annotation = "typeAnnotation" in node ? (node.typeAnnotation as TSESTree.TSTypeAnnotation | undefined) : undefined;
+  const annotation =
+    "typeAnnotation" in node ? (node.typeAnnotation as TSESTree.TSTypeAnnotation | undefined) : undefined;
   const type = annotation?.typeAnnotation;
   if (type?.type === "TSTypeReference" && type.typeName.type === "Identifier") return type.typeName.name;
   return undefined;
@@ -313,7 +319,15 @@ function classFact(node: TSESTree.ClassDeclaration | TSESTree.ClassExpression, e
               : element.kind === "set"
                 ? "setter"
                 : "method";
-        members.push({ name, kind, access, readonly: false, static: element.static, init: "none", range: toRange(element) });
+        members.push({
+          name,
+          kind,
+          access,
+          readonly: false,
+          static: element.static,
+          init: "none",
+          range: toRange(element),
+        });
         if (element.kind === "constructor") {
           for (const param of element.value.params) {
             if (param.type !== "TSParameterProperty") continue;
@@ -365,7 +379,7 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
         declared.add(node.local.name);
         break;
       case "VariableDeclarator":
-        patternNames(node.id).forEach((n) => declared.add(n));
+        for (const n of patternNames(node.id)) declared.add(n);
         break;
       case "FunctionDeclaration":
       case "FunctionExpression":
@@ -373,7 +387,7 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
         if (node.type === "FunctionDeclaration" && node.id) declared.add(node.id.name);
         for (const param of node.params) {
           const names = patternNames(param);
-          names.forEach((n) => declared.add(n));
+          for (const n of names) declared.add(n);
           facts.params.push(...names);
         }
         break;
@@ -381,7 +395,7 @@ export function extractFacts(program: TSESTree.Program): ModuleFacts {
         if (node.id) declared.add(node.id.name);
         break;
       case "CatchClause":
-        patternNames(node.param).forEach((n) => declared.add(n));
+        for (const n of patternNames(node.param)) declared.add(n);
         break;
       case "TSInterfaceDeclaration":
       case "TSTypeAliasDeclaration":

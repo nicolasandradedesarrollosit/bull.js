@@ -28,13 +28,19 @@ describe("bull doctor", () => {
       "src/view/bull-logo.view.tsx": `import { useState } from "react";\nexport function BullLogoView() { const [a] = useState(0); return <i>{a}</i>; }`,
     });
     const checks = await runDoctor(root);
-    expect(checks.find((c) => c.title.startsWith("Architecture"))).toMatchObject({ status: "fail", title: "Architecture: 1 error(s)" });
+    expect(checks.find((c) => c.title.startsWith("Architecture"))).toMatchObject({
+      status: "fail",
+      title: "Architecture: 1 error(s)",
+    });
   });
 });
 
 describe("bull info", () => {
   it("lists the public API of each ViewModel and the Views that bind it", () => {
-    const info = collectInfo(analyzeProject(example, { rules: { MVVM203: "error" } }), path.join(example, "bull.config.ts"));
+    const info = collectInfo(
+      analyzeProject(example, { rules: { MVVM203: "error" } }),
+      path.join(example, "bull.config.ts"),
+    );
     expect(info.counts).toEqual({ model: 2, viewmodel: 1, view: 4 });
     const vm = info.viewModels[0]!;
     expect(vm).toMatchObject({

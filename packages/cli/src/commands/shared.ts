@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { formatReport, ProjectAnalyzer, type AnalysisResult } from "@bull/core";
+import { type AnalysisResult, formatReport, ProjectAnalyzer } from "@bull/core";
 import react from "@vitejs/plugin-react";
 import pc from "picocolors";
-import { mergeConfig, type InlineConfig } from "vite";
-import { loadBullConfig, type BullConfig } from "../config";
+import { type InlineConfig, mergeConfig } from "vite";
+import { type BullConfig, loadBullConfig } from "../config";
 import { bullPlugin } from "../vite/plugin";
 
 export { banner, VERSION } from "../ui/brand";

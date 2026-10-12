@@ -1,6 +1,6 @@
 // The ViewModel is tested as a plain class: no React, no DOM, with an in-memory repository.
 import { describe, expect, it } from "vitest";
-import { TodoRepository, type KeyValueStorage } from "../model/todo.repository";
+import { type KeyValueStorage, TodoRepository } from "../model/todo.repository";
 import { TodoListViewModel } from "./todo-list.viewmodel";
 
 function memoryStorage(): KeyValueStorage {

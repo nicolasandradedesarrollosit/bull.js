@@ -1,14 +1,14 @@
-export { ViewModel } from "./ViewModel";
 export { Command, type CommandOptions, type CommandResult } from "./command";
 export { Container, type Token } from "./container";
 export {
-  State,
-  Computed,
   batch,
-  untracked,
-  effect,
-  state,
+  Computed,
   computed,
+  effect,
   type Readable,
   type ReadonlyState,
+  State,
+  state,
+  untracked,
 } from "./reactive";
+export { ViewModel } from "./ViewModel";

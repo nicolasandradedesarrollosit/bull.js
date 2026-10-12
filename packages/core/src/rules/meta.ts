@@ -83,7 +83,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
       "and the ViewModel are plain TypeScript (.ts): if a file needs .tsx it is because it has JSX, and " +
       "JSX can only live in the View.",
     fix: (d) => [
-      `Rename the file to \`${d.suggested ?? "<name>" + (d.expected ?? "")}\`.`,
+      `Rename the file to \`${d.suggested ?? `<name>${d.expected ?? ""}`}\`.`,
       `Valid suffixes in this layer: ${d.expected ?? "see the table below"}.`,
     ],
     example: {
@@ -225,7 +225,9 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     scope: "file",
     summary: "The Model cannot depend on React.",
     why: "The Model does not know there is a user interface. Depending on React ties it to a UI technology.",
-    fix: (d) => [`Remove the import of \`${d.source ?? "react"}\`. If you need observable state, it belongs in the ViewModel.`],
+    fix: (d) => [
+      `Remove the import of \`${d.source ?? "react"}\`. If you need observable state, it belongs in the ViewModel.`,
+    ],
   }),
   MVVM105: rule({
     code: "MVVM105",
@@ -256,7 +258,9 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     why:
       "The composition root sits on top of everything: it knows all layers in order to wire them. If a " +
       "layer imports it, that layer indirectly knows about all the others.",
-    fix: () => ["Remove the import. If you needed an instance, take it through the constructor and register it in the composition root."],
+    fix: () => [
+      "Remove the import. If you needed an instance, take it through the constructor and register it in the composition root.",
+    ],
   }),
 
   // ─── View ───────────────────────────────────────────────────────────────────
@@ -394,7 +398,9 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     why:
       "`.value` returns the value at that moment, but the View is not notified when it changes. " +
       "`useBinding` subscribes the component and re-renders it on every change.",
-    fix: (d) => [`Replace \`${d.target ?? "vm.x.value"}\` with \`useBinding(${d.binding ?? "vm.x"})\` at the top of the component.`],
+    fix: (d) => [
+      `Replace \`${d.target ?? "vm.x.value"}\` with \`useBinding(${d.binding ?? "vm.x"})\` at the top of the component.`,
+    ],
   }),
 
   // ─── ViewModel ──────────────────────────────────────────────────────────────
@@ -543,7 +549,9 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     scope: "file",
     summary: "The Model does not know about the DOM.",
     why: "The Model does not know there is a screen. It may do I/O (fetch, storage), but never manipulate the UI.",
-    fix: (d) => [`Remove the use of \`${d.api ?? "the DOM API"}\`. If needed, expose the data and let the View draw it.`],
+    fix: (d) => [
+      `Remove the use of \`${d.api ?? "the DOM API"}\`. If needed, expose the data and let the View draw it.`,
+    ],
   }),
 
   // ─── Config / analysis ──────────────────────────────────────────────────────

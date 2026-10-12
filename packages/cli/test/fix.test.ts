@@ -9,7 +9,9 @@ import { read, templateProject } from "./helpers";
 
 const fixture = fileURLToPath(new URL("../../../fixtures/fixable", import.meta.url));
 const temps: string[] = [];
-afterAll(() => temps.forEach((d) => fs.rmSync(d, { recursive: true, force: true })));
+afterAll(() => {
+  for (const d of temps) fs.rmSync(d, { recursive: true, force: true });
+});
 
 function fixableCopy(): string {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "bull-fix-"));
@@ -38,7 +40,9 @@ describe("bull fix", () => {
     expect(vm).toContain('import type { CounterApi } from "../model/counter-api.model";');
     expect(vm).toContain('export type { Count } from "../model/counter.model";');
 
-    expect(read(root, "src/view/counter.view.tsx")).toContain('import type { Count } from "../viewmodel/counter.viewmodel";');
+    expect(read(root, "src/view/counter.view.tsx")).toContain(
+      'import type { Count } from "../viewmodel/counter.viewmodel";',
+    );
     expect(read(root, "src/main.tsx")).toContain('import { CounterApi } from "./model/counter-api.model";');
     expect(fs.existsSync(path.join(root, "src/model/CounterApi.ts"))).toBe(false);
   });

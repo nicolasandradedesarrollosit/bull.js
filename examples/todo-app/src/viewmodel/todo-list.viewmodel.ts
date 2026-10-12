@@ -1,5 +1,5 @@
 import { ViewModel } from "@bull/runtime";
-import { createTodo, matchesFilter, validateTitle, type Todo, type TodoFilter } from "../model/todo.entity";
+import { createTodo, matchesFilter, type Todo, type TodoFilter, validateTitle } from "../model/todo.entity";
 import type { TodoRepository } from "../model/todo.repository";
 
 // The View uses these types but cannot import them from the Model: the ViewModel re-exports them.

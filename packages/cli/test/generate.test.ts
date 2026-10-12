@@ -2,14 +2,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { analyzeProject } from "@bull/core";
 import { describe, expect, it } from "vitest";
-import { normalizeName, planGenerate, type GenerateOptions } from "../src/tooling/generate";
+import { type GenerateOptions, normalizeName, planGenerate } from "../src/tooling/generate";
 import { read, templateProject } from "./helpers";
 
 function options(root: string, extra: Partial<GenerateOptions> = {}): GenerateOptions {
-  return { root, srcDir: path.join(root, "src"), compositionRoot: path.join(root, "src/main.tsx"), test: true, ...extra };
+  return {
+    root,
+    srcDir: path.join(root, "src"),
+    compositionRoot: path.join(root, "src/main.tsx"),
+    test: true,
+    ...extra,
+  };
 }
 
-function apply(root: string, plan: ReturnType<typeof planGenerate>): void {
+function apply(_root: string, plan: ReturnType<typeof planGenerate>): void {
   for (const f of plan.files) if (f.action !== "skip") fs.writeFileSync(f.path, f.content);
 }
 
@@ -69,11 +75,15 @@ describe("planGenerate", () => {
 
   it("view: bound to an existing ViewModel, presentational otherwise", () => {
     const root = templateProject();
-    expect(planGenerate("view", "counter-panel", options(root)).files[0]!.content).toContain("props: { title: string }");
+    expect(planGenerate("view", "counter-panel", options(root)).files[0]!.content).toContain(
+      "props: { title: string }",
+    );
     const bound = planGenerate("view", "counter", options(root, {})).files[0]!;
     expect(bound.action).toBe("skip");
     fs.rmSync(path.join(root, "src/view/counter.view.tsx"));
-    expect(planGenerate("view", "counter", options(root)).files[0]!.content).toContain("useViewModel(CounterViewModel)");
+    expect(planGenerate("view", "counter", options(root)).files[0]!.content).toContain(
+      "useViewModel(CounterViewModel)",
+    );
   });
 
   it("skips the test when asked to", () => {

@@ -27,7 +27,7 @@ function layerTree(config: ResolvedConfig, present: Set<string>): string[] {
   LAYERS.forEach((layer, i) => {
     const branch = i === LAYERS.length - 1 ? "└──" : "├──";
     const mark = present.has(layer) ? "✓" : "✗ missing";
-    lines.push(`${branch} ${(layer + "/").padEnd(12)} ${mark}`);
+    lines.push(`${branch} ${(`${layer}/`).padEnd(12)} ${mark}`);
   });
   return lines;
 }
@@ -70,7 +70,13 @@ export function runCycleRule(config: ResolvedConfig, files: ProjectFile[]): Diag
     const [start, next] = cycle as [string, string];
     const edge = edges.find((e) => e.from === start && e.to === next && !e.typeOnly);
     const pretty = cycle.map((p) => path.posix.relative(config.root, p)).join(" → ");
-    const d = make(config, "MVVM105", `Cycle of ${cycle.length - 1} module(s).`, { cycle: pretty }, { file: start, range: edge?.range });
+    const d = make(
+      config,
+      "MVVM105",
+      `Cycle of ${cycle.length - 1} module(s).`,
+      { cycle: pretty },
+      { file: start, range: edge?.range },
+    );
     if (d) out.push(d);
   }
   return out;

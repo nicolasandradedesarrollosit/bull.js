@@ -14,8 +14,10 @@ export function CounterView() {
       <p className="layers">View → ViewModel → Model</p>
       <h1>{count}</h1>
       <div className="actions">
-        <button onClick={vm.increment.execute}>+1</button>
-        <button onClick={vm.reset.execute} disabled={!canReset}>
+        <button type="button" onClick={vm.increment.execute}>
+          +1
+        </button>
+        <button type="button" onClick={vm.reset.execute} disabled={!canReset}>
           Reset
         </button>
       </div>

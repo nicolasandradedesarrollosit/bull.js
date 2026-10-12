@@ -1,26 +1,11 @@
-export { analyzeProject, ProjectAnalyzer, type AnalysisResult } from "./analyze";
+export { type AnalysisResult, analyzeProject, ProjectAnalyzer } from "./analyze";
 export {
-  defineConfig,
-  resolveConfig,
-  type ResolvedConfig,
   type BullArchitectureConfig,
+  defineConfig,
+  type ResolvedConfig,
+  resolveConfig,
 } from "./config";
-export { extractFacts, parseModule, type ClassFact, type ImportFact, type MemberFact, type ModuleFacts } from "./facts";
-export {
-  buildImportGraph,
-  edgeViolation,
-  fileEdges,
-  findCycles,
-  type FileEdge,
-  type GraphEdge,
-  type GraphNode,
-  type ImportGraph,
-} from "./graph";
-export { classifyFile, resolveImport, LAYERS, LAYER_LABEL, NAMING, type ImportTarget } from "./layers";
-export { normalizePath, toPascalCase, stripExtension, isCodeFile } from "./paths";
-export { runFileRules, FORBIDDEN_VIEW_HOOKS, expectedViewModelName, toKebab } from "./rules/file-rules";
-export { RULES, RULE_LIST, ruleBySlug, isAutoFixable, type RuleMeta, type RuleCategory } from "./rules/meta";
-export type { ProjectFile } from "./graph";
+export { type ClassFact, extractFacts, type ImportFact, type MemberFact, type ModuleFacts, parseModule } from "./facts";
 export { buildFrame, type FrameLine } from "./format/frame";
 export {
   formatDiagnostic,
@@ -28,13 +13,28 @@ export {
   formatReport,
   formatRuleList,
   formatSummary,
-  ruleToMarkdown,
   type PrettyOptions,
+  ruleToMarkdown,
 } from "./format/pretty";
 export {
-  serializeDiagnostic,
-  serializeResult,
   type SerializedDiagnostic,
   type SerializedResult,
+  serializeDiagnostic,
+  serializeResult,
 } from "./format/serialize";
+export type { ProjectFile } from "./graph";
+export {
+  buildImportGraph,
+  edgeViolation,
+  type FileEdge,
+  fileEdges,
+  findCycles,
+  type GraphEdge,
+  type GraphNode,
+  type ImportGraph,
+} from "./graph";
+export { classifyFile, type ImportTarget, LAYER_LABEL, LAYERS, NAMING, resolveImport } from "./layers";
+export { isCodeFile, normalizePath, stripExtension, toPascalCase } from "./paths";
+export { expectedViewModelName, FORBIDDEN_VIEW_HOOKS, runFileRules, toKebab } from "./rules/file-rules";
+export { isAutoFixable, RULE_LIST, RULES, type RuleCategory, type RuleMeta, ruleBySlug } from "./rules/meta";
 export type { Diagnostic, FileKind, Layer, Position, Range, RuleCode, Severity } from "./types";

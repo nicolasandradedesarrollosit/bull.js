@@ -1,6 +1,6 @@
 import { Command, type CommandOptions } from "./command";
 import { ACTIVATE, DEACTIVATE } from "./lifecycle";
-import { Computed, State, effect } from "./reactive";
+import { Computed, effect, State } from "./reactive";
 
 type EffectFn = () => void | (() => void);
 

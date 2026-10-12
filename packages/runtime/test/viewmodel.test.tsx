@@ -103,7 +103,7 @@ describe("React binding", () => {
       const count = useBinding(vm.count);
       const double = useBinding(vm.double);
       return (
-        <button onClick={() => vm.increment.execute()}>
+        <button type="button" onClick={() => vm.increment.execute()}>
           {count}/{double}
         </button>
       );

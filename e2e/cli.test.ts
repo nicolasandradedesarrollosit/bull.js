@@ -87,7 +87,9 @@ describe("bull create", () => {
     for (const f of ["src/model", "src/viewmodel", "src/view", "src/main.tsx", "index.html", ".gitignore"]) {
       expect(fs.existsSync(path.join(dir, f))).toBe(true);
     }
-    expect(JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")).name).toBe(path.basename(dir).toLowerCase());
+    expect(JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8")).name).toBe(
+      path.basename(dir).toLowerCase(),
+    );
     const check = bull(["check", dir]);
     expect(check.out).toContain("MVVM architecture ok");
     expect(check.code).toBe(0);

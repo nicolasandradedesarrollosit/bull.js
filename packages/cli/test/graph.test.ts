@@ -42,7 +42,7 @@ describe("graph renderers", () => {
 
   it("html is a self-contained page with an SVG graph", () => {
     const html = renderHtml(broken(), "demo");
-    expect(html).toContain("<svg id=\"graph\"");
+    expect(html).toContain('<svg id="graph"');
     expect(html).toContain('class="edge bad"');
     expect(html).not.toMatch(/<script src=|<link /);
   });

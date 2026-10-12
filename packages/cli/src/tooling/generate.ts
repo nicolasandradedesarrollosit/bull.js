@@ -3,8 +3,8 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { formatReport, ProjectAnalyzer, toKebab, toPascalCase } from "@bull/core";
 import pc from "picocolors";
-import { loadBullConfig } from "../config";
 import { banner, fail } from "../commands/shared";
+import { loadBullConfig } from "../config";
 
 export type GenerateType = "model" | "viewmodel" | "view" | "feature";
 export type ModelKind = "model" | "entity" | "repository" | "service";
@@ -39,7 +39,10 @@ export function normalizeName(raw: string): { kebab: string; pascal: string } {
     .replace(/\.(tsx?|jsx?)$/, "")
     .replace(/[.\-_\s](viewmodel|view|model|repository|service|entity)$/i, "")
     .replace(/(?<=[a-z0-9])(ViewModel|View|Model|Repository|Service|Entity)$/, "");
-  const kebab = toKebab(stem.replace(/\s+/g, "-")).replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  const kebab = toKebab(stem.replace(/\s+/g, "-"))
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
   if (!kebab) throw new Error(`"${raw}" is not a valid name. Use something like "todo-list" or "TodoList".`);
   return { kebab, pascal: toPascalCase(kebab) };
 }
@@ -65,7 +68,9 @@ export function create${n.pascal}(id: string, now = Date.now()): ${n.pascal} {
   return { id, createdAt: now };
 }
 `,
-  repository: (n: Names) => `// Model: the only layer that does I/O. Swap the in-memory list for fetch, storage or an API.
+  repository: (
+    n: Names,
+  ) => `// Model: the only layer that does I/O. Swap the in-memory list for fetch, storage or an API.
 export class ${n.pascal}Repository {
   #items: string[] = [];
 
@@ -120,7 +125,10 @@ export class ${n.pascal}ViewModel extends ViewModel {
   }
 }
 `,
-  viewmodelTest: (n: Names, withRepository: boolean) => `// ViewModels are plain classes: test them without React or a DOM.
+  viewmodelTest: (
+    n: Names,
+    withRepository: boolean,
+  ) => `// ViewModels are plain classes: test them without React or a DOM.
 import { describe, expect, it } from "vitest";
 ${withRepository ? `import { ${n.pascal}Repository } from "../model/${n.kebab}.repository";\n` : ""}import { ${n.pascal}ViewModel } from "./${n.kebab}.viewmodel";
 
@@ -167,7 +175,9 @@ export function ${n.pascal}View() {
   return <section data-viewmodel={vm.constructor.name}>${n.pascal}</section>;
 }
 `,
-  presentationalView: (n: Names) => `/** Presentational View: receives data and callbacks through props, owns no state. */
+  presentationalView: (
+    n: Names,
+  ) => `/** Presentational View: receives data and callbacks through props, owns no state. */
 export function ${n.pascal}View(props: { title: string }) {
   return (
     <section>
@@ -198,11 +208,14 @@ export function planGenerate(type: GenerateType, rawName: string, options: Gener
 
   if (type === "model") {
     const kind = options.kind ?? "model";
-    if (!(kind in templates)) throw new Error(`Unknown model kind "${kind}". Use model, entity, repository or service.`);
+    if (!(kind in templates))
+      throw new Error(`Unknown model kind "${kind}". Use model, entity, repository or service.`);
     files.push(file(path.join(dir("model"), `${n.kebab}.${kind}.ts`), templates[kind](n)));
     if (kind === "repository" || kind === "service") {
       const cls = `${n.pascal}${kind === "repository" ? "Repository" : "Service"}`;
-      hints.push(`Inject \`${cls}\` into a ViewModel constructor and register it: \`c.model(${cls}, () => new ${cls}())\`.`);
+      hints.push(
+        `Inject \`${cls}\` into a ViewModel constructor and register it: \`c.model(${cls}, () => new ${cls}())\`.`,
+      );
     }
   }
 
@@ -216,7 +229,9 @@ export function planGenerate(type: GenerateType, rawName: string, options: Gener
       ),
     );
     if (wantTest) {
-      files.push(file(path.join(dir("viewmodel"), `${n.kebab}.viewmodel.test.ts`), templates.viewmodelTest(n, withRepository)));
+      files.push(
+        file(path.join(dir("viewmodel"), `${n.kebab}.viewmodel.test.ts`), templates.viewmodelTest(n, withRepository)),
+      );
     }
   }
 
@@ -270,7 +285,10 @@ function registerInCompositionRoot(options: GenerateOptions, n: Names): Generate
   const indent = /^([ \t]*)\S/.exec(after)?.[1] || "    ";
 
   const rel = (layer: string, fileName: string) =>
-    "./" + path.posix.relative(path.posix.dirname(toPosix(rootFile)), toPosix(path.join(options.srcDir, layer, fileName))).replace(/\.tsx?$/, "");
+    "./" +
+    path.posix
+      .relative(path.posix.dirname(toPosix(rootFile)), toPosix(path.join(options.srcDir, layer, fileName)))
+      .replace(/\.tsx?$/, "");
   const imports =
     `import { ${n.pascal}Repository } from "${rel("model", `${n.kebab}.repository.ts`)}";\n` +
     `import { ${n.pascal}ViewModel } from "${rel("viewmodel", `${n.kebab}.viewmodel.ts`)}";\n`;
@@ -359,13 +377,20 @@ export async function generateCommand(
       fs.writeFileSync(f.path, f.content);
     }
     const mark = f.action === "create" ? pc.green("+") : pc.cyan("~");
-    const verb = options.dryRun ? (f.action === "create" ? "would create" : "would update") : f.action === "create" ? "" : f.note ?? "updated";
+    const verb = options.dryRun
+      ? f.action === "create"
+        ? "would create"
+        : "would update"
+      : f.action === "create"
+        ? ""
+        : (f.note ?? "updated");
     console.log(`  ${mark} ${rel}${verb ? pc.dim(`  ${verb}`) : ""}`);
   }
-  for (const hint of plan.hints) console.log(`\n  ${pc.cyan("→")} ${hint.replace(/`([^`]+)`/g, (_, c: string) => pc.cyan(c))}`);
+  for (const hint of plan.hints)
+    console.log(`\n  ${pc.cyan("→")} ${hint.replace(/`([^`]+)`/g, (_, c: string) => pc.cyan(c))}`);
 
   if (options.dryRun) return;
   const result = analyzer.analyze();
-  console.log("\n" + formatReport(result, { width: Math.min(process.stdout.columns || 88, 100) }));
+  console.log(`\n${formatReport(result, { width: Math.min(process.stdout.columns || 88, 100) })}`);
   if (result.errorCount > 0) process.exitCode = 1;
 }

@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { resolveConfig, type ResolvedConfig, type BullArchitectureConfig } from "./config";
-import { extractFacts, parseModule, type ModuleFacts } from "./facts";
+import { type BullArchitectureConfig, type ResolvedConfig, resolveConfig } from "./config";
+import { extractFacts, type ModuleFacts, parseModule } from "./facts";
 import { classifyFile } from "./layers";
 import { isCodeFile, normalizePath } from "./paths";
 import { runFileRules } from "./rules/file-rules";
-import { runCycleRule, runStructureRules, type ProjectFile } from "./rules/project-rules";
+import { type ProjectFile, runCycleRule, runStructureRules } from "./rules/project-rules";
 import type { Diagnostic, FileKind } from "./types";
 
 export interface AnalysisResult {
@@ -54,14 +54,23 @@ export class ProjectAnalyzer {
     const started = performance.now();
     const { config } = this;
     const paths = scan(config.srcDir);
-    if (fs.existsSync(config.compositionRoot) && !paths.includes(config.compositionRoot)) paths.push(config.compositionRoot);
+    if (fs.existsSync(config.compositionRoot) && !paths.includes(config.compositionRoot))
+      paths.push(config.compositionRoot);
 
     const seen = new Set(paths);
     for (const cached of this.#cache.keys()) if (!seen.has(cached)) this.#cache.delete(cached);
 
     const files: ProjectFile[] = [];
     const diagnostics: Diagnostic[] = [...this.#configDiagnostics];
-    const stats: Record<FileKind, number> = { model: 0, viewmodel: 0, view: 0, root: 0, allowed: 0, outside: 0, ignored: 0 };
+    const stats: Record<FileKind, number> = {
+      model: 0,
+      viewmodel: 0,
+      view: 0,
+      root: 0,
+      allowed: 0,
+      outside: 0,
+      ignored: 0,
+    };
 
     for (const file of paths) {
       const kind = classifyFile(file, config);

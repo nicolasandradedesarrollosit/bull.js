@@ -1,5 +1,5 @@
-import { build as viteBuild } from "vite";
 import pc from "picocolors";
+import { build as viteBuild } from "vite";
 import { banner, ensureIndexHtml, fail, loadProject, runAnalysis, viteConfig } from "./shared";
 
 export async function buildCommand(rootArg: string | undefined, options: { outDir?: string }): Promise<void> {

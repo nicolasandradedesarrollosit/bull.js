@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { LAYER_LABEL, ProjectAnalyzer, type AnalysisResult, type MemberFact } from "@bull/core";
+import { type AnalysisResult, LAYER_LABEL, type MemberFact, ProjectAnalyzer } from "@bull/core";
 import pc from "picocolors";
-import { loadBullConfig } from "../config";
 import { banner } from "../commands/shared";
+import { loadBullConfig } from "../config";
 
 export interface ViewModelInfo {
   name: string;
@@ -66,7 +66,8 @@ export function collectInfo(result: AnalysisResult, configFile?: string): Projec
 
   let name = path.basename(config.root);
   try {
-    name = (JSON.parse(fs.readFileSync(path.join(config.root, "package.json"), "utf8")) as { name?: string }).name ?? name;
+    name =
+      (JSON.parse(fs.readFileSync(path.join(config.root, "package.json"), "utf8")) as { name?: string }).name ?? name;
   } catch {
     /* no package.json */
   }
@@ -137,7 +138,7 @@ export function formatInfo(info: ProjectInfo, colors = pc.isColorSupported): str
       ? `  ${c.red("✗")} ${info.errors} error(s), ${info.warnings} warning(s) — run ${c.cyan("bull check")}`
       : `  ${c.green("✓")} MVVM architecture ok`,
   );
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }
 
 export async function infoCommand(rootArg: string | undefined, options: { json?: boolean }): Promise<void> {
@@ -145,7 +146,7 @@ export async function infoCommand(rootArg: string | undefined, options: { json?:
   const { config, file } = await loadBullConfig(root, "serve");
   const info = collectInfo(new ProjectAnalyzer(root, config).analyze(), file);
   if (options.json) {
-    process.stdout.write(JSON.stringify(info, null, 2) + "\n");
+    process.stdout.write(`${JSON.stringify(info, null, 2)}\n`);
     return;
   }
   banner("info");

@@ -1,8 +1,8 @@
 import pc from "picocolors";
 import type { AnalysisResult } from "../analyze";
-import { RULES, RULE_LIST, type RuleMeta } from "../rules/meta";
+import { RULE_LIST, RULES, type RuleMeta } from "../rules/meta";
 import type { RuleCode } from "../types";
-import { serializeDiagnostic, type SerializedDiagnostic } from "./serialize";
+import { type SerializedDiagnostic, serializeDiagnostic } from "./serialize";
 
 export interface PrettyOptions {
   colors?: boolean;
@@ -60,7 +60,9 @@ export function formatDiagnostic(d: SerializedDiagnostic, options: PrettyOptions
       if (line.highlight) {
         out.push(`  ${tone(c.bold(num))} ${c.dim("│")} ${line.text}`);
         const [from, to] = line.highlight;
-        out.push(`  ${" ".repeat(gutter)} ${c.dim("│")} ${" ".repeat(from - 1)}${tone("^".repeat(Math.max(1, to - from)))}`);
+        out.push(
+          `  ${" ".repeat(gutter)} ${c.dim("│")} ${" ".repeat(from - 1)}${tone("^".repeat(Math.max(1, to - from)))}`,
+        );
       } else {
         out.push(`  ${c.dim(num)} ${c.dim("│")} ${c.dim(line.text)}`);
       }
@@ -68,7 +70,8 @@ export function formatDiagnostic(d: SerializedDiagnostic, options: PrettyOptions
     out.push("");
   }
 
-  for (const line of d.notes ?? []) out.push(`    ${line.includes("✗") ? line.replace(/✗.*$/, (m) => c.red(m)) : line.replace(/✓/, c.green("✓"))}`);
+  for (const line of d.notes ?? [])
+    out.push(`    ${line.includes("✗") ? line.replace(/✗.*$/, (m) => c.red(m)) : line.replace(/✓/, c.green("✓"))}`);
   if (d.notes?.length) out.push("");
 
   for (const line of wrap(d.why, width - 4)) out.push(`  ${code(line, c)}`);
@@ -137,7 +140,9 @@ export function formatSummary(result: AnalysisResult, options: PrettyOptions = {
   if (result.errorCount) parts.push(c.red(plural(result.errorCount, "error", "errors")));
   if (result.warningCount) parts.push(c.yellow(plural(result.warningCount, "warning", "warnings")));
   const icon = result.errorCount ? c.red("✗") : c.yellow("!");
-  out.push(`  ${icon} ${c.bold("MVVM architecture:")} ${parts.join(", ")} in ${plural(files, "file", "files")} ${c.dim(`· ${ms}`)}`);
+  out.push(
+    `  ${icon} ${c.bold("MVVM architecture:")} ${parts.join(", ")} in ${plural(files, "file", "files")} ${c.dim(`· ${ms}`)}`,
+  );
   out.push("");
   out.push(`  ${c.dim("Allowed direction:")}  ${c.green("View ──▶ ViewModel ──▶ Model")}`);
 
@@ -167,7 +172,7 @@ export function formatReport(result: AnalysisResult, options: PrettyOptions = {}
   const blocks = result.diagnostics.map((d) =>
     formatDiagnostic(serializeDiagnostic(d, result.config.root, result.readSource), options),
   );
-  return [...blocks, formatSummary(result, options)].join("\n\n") + "\n";
+  return `${[...blocks, formatSummary(result, options)].join("\n\n")}\n`;
 }
 
 // ─── bull explain ────────────────────────────────────────────────────────────
@@ -190,7 +195,9 @@ export function formatExplain(meta: RuleMeta, options: PrettyOptions = {}): stri
   out.push(
     c.dim(`${CATEGORY_LABEL[meta.category]} · `) +
       sev +
-      c.dim(` · ${meta.configurable ? "configurable" : "cannot be disabled"} · ${meta.scope === "file" ? "also in ESLint" : "build/check only"}${meta.fixable ? " · auto-fixable" : ""}`),
+      c.dim(
+        ` · ${meta.configurable ? "configurable" : "cannot be disabled"} · ${meta.scope === "file" ? "also in ESLint" : "build/check only"}${meta.fixable ? " · auto-fixable" : ""}`,
+      ),
   );
   out.push("");
   for (const line of wrap(meta.summary, width)) out.push(c.bold(line));
@@ -217,7 +224,7 @@ export function formatExplain(meta: RuleMeta, options: PrettyOptions = {}): stri
     out.push(c.green("✓ Do"));
     for (const line of meta.example.good.split("\n")) out.push(`  ${c.dim("│")} ${line}`);
   }
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }
 
 export function formatRuleList(options: PrettyOptions = {}): string {
@@ -235,7 +242,7 @@ export function formatRuleList(options: PrettyOptions = {}): string {
   }
   out.push("");
   out.push(c.dim("🔒 = part of the MVVM core, cannot be disabled.  Details: bull explain <code>"));
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }
 
 export function ruleToMarkdown(meta: RuleMeta): string {
@@ -273,5 +280,5 @@ export function ruleToMarkdown(meta: RuleMeta): string {
     out.push("");
     out.push("```tsx", meta.example.good, "```");
   }
-  return out.join("\n") + "\n";
+  return `${out.join("\n")}\n`;
 }

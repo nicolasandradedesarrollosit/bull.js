@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { analyze, codes, makeProject } from "./helpers";
 import { analyzeProject } from "../src/index";
+import { analyze, codes, makeProject } from "./helpers";
 
 const VM = "src/viewmodel/counter.viewmodel.ts";
 const VIEW = "src/view/counter.view.tsx";
@@ -29,7 +29,9 @@ describe("structure", () => {
   });
 
   it("MVVM001: without src/ all three are missing", () => {
-    expect(analyzeProject(makeProject({ "README.md": "" })).diagnostics.filter((d) => d.code === "MVVM001")).toHaveLength(3);
+    expect(
+      analyzeProject(makeProject({ "README.md": "" })).diagnostics.filter((d) => d.code === "MVVM001"),
+    ).toHaveLength(3);
   });
 
   it("MVVM002: code outside the layers", () => {
@@ -45,7 +47,11 @@ describe("structure", () => {
   });
 
   it("MVVM004: empty layer (warning)", () => {
-    const result = analyze({ "src/model/counter.model.ts": null, "src/model/counter.repository.ts": null, "src/model/": "" });
+    const result = analyze({
+      "src/model/counter.model.ts": null,
+      "src/model/counter.repository.ts": null,
+      "src/model/": "",
+    });
     expect(result.diagnostics.find((d) => d.code === "MVVM004")?.severity).toBe("warning");
   });
 
@@ -74,26 +80,35 @@ describe("dependency direction", () => {
   });
 
   it("MVVM101: the ViewModel imports the View", () => {
-    expect(codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nimport { LabelView } from "../view/label.view";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
-      "MVVM101",
-    ]);
+    expect(
+      codes({
+        [VM]: `import { ViewModel } from "@bull/runtime";\nimport { LabelView } from "../view/label.view";\nexport class CounterViewModel extends ViewModel {}`,
+      }),
+    ).toEqual(["MVVM101"]);
   });
 
   it("MVVM102: the Model imports an upper layer", () => {
-    expect(codes({ "src/model/counter.model.ts": `import { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport {}` })).toContain("MVVM102");
+    expect(
+      codes({
+        "src/model/counter.model.ts": `import { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport {}`,
+      }),
+    ).toContain("MVVM102");
   });
 
   it("MVVM103: the ViewModel uses React or JSX", () => {
-    expect(codes({ [VM]: `import { useState } from "react";\nimport { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
-      "MVVM103",
-    ]);
+    expect(
+      codes({
+        [VM]: `import { useState } from "react";\nimport { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}`,
+      }),
+    ).toEqual(["MVVM103"]);
   });
 
   it("MVVM104 / MVVM400: the Model uses React or the runtime", () => {
-    expect(codes({ "src/model/counter.model.ts": `import { useState } from "react";\nimport { state } from "@bull/runtime";\nexport {}` })).toEqual([
-      "MVVM104",
-      "MVVM400",
-    ]);
+    expect(
+      codes({
+        "src/model/counter.model.ts": `import { useState } from "react";\nimport { state } from "@bull/runtime";\nexport {}`,
+      }),
+    ).toEqual(["MVVM104", "MVVM400"]);
   });
 
   it("MVVM105: import cycle", () => {
@@ -116,7 +131,10 @@ describe("dependency direction", () => {
   });
 
   it("MVVM106: importing the composition root (which also forms a cycle)", () => {
-    expect(codes({ "src/view/label.view.tsx": `import "../main";\nexport const L = () => null;` })).toEqual(["MVVM105", "MVVM106"]);
+    expect(codes({ "src/view/label.view.tsx": `import "../main";\nexport const L = () => null;` })).toEqual([
+      "MVVM105",
+      "MVVM106",
+    ]);
   });
 });
 
@@ -139,15 +157,23 @@ export function CounterView() {
   });
 
   it("MVVM201: state and effect hooks", () => {
-    expect(codes(view(`const [a] = useState(0); useEffect(() => {}, []); const r = useRef(null);`, `import { useState, useEffect, useRef } from "react";`))).toEqual([
-      "MVVM201",
-      "MVVM201",
-    ]);
+    expect(
+      codes(
+        view(
+          `const [a] = useState(0); useEffect(() => {}, []); const r = useRef(null);`,
+          `import { useState, useEffect, useRef } from "react";`,
+        ),
+      ),
+    ).toEqual(["MVVM201", "MVVM201"]);
     expect(codes(view(`const [a] = React.useState(0);`, `import React from "react";`))).toEqual(["MVVM201"]);
   });
 
   it("MVVM201: a hook can be allowed through config", () => {
-    expect(codes(view(`const [open] = useState(false);`, `import { useState } from "react";`), { view: { allowHooks: ["useState"] } })).toEqual([]);
+    expect(
+      codes(view(`const [open] = useState(false);`, `import { useState } from "react";`), {
+        view: { allowHooks: ["useState"] },
+      }),
+    ).toEqual([]);
   });
 
   it("MVVM202: the View mutates the ViewModel", () => {
@@ -195,7 +221,9 @@ export class CounterViewModel extends ViewModel {
   });
 
   it("MVVM302: public mutable state", () => {
-    const result = analyze(vm(`count = this.state(0);\n  name = "x";\n  constructor(readonly repo: CounterRepository) { super(); }`));
+    const result = analyze(
+      vm(`count = this.state(0);\n  name = "x";\n  constructor(readonly repo: CounterRepository) { super(); }`),
+    );
     expect(result.diagnostics.map((d) => [d.code, d.data.kind])).toEqual([
       ["MVVM302", "state"],
       ["MVVM302", "mutable"],
@@ -204,9 +232,13 @@ export class CounterViewModel extends ViewModel {
   });
 
   it("MVVM303: ViewModel name or count", () => {
-    expect(codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nexport class Counter extends ViewModel {}` })).toEqual(["MVVM303"]);
     expect(
-      codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}\nexport class OtherViewModel extends ViewModel {}` }),
+      codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nexport class Counter extends ViewModel {}` }),
+    ).toEqual(["MVVM303"]);
+    expect(
+      codes({
+        [VM]: `import { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}\nexport class OtherViewModel extends ViewModel {}`,
+      }),
     ).toEqual(["MVVM303"]);
   });
 
@@ -225,7 +257,11 @@ export class CounterViewModel extends ViewModel {
 
 describe("Model", () => {
   it("MVVM401: the Model touches the DOM (but may do I/O)", () => {
-    expect(codes({ [MODEL]: `export class CounterRepository { a() { return document.title; } b() { return fetch("/x"); } }` })).toEqual(["MVVM401"]);
+    expect(
+      codes({
+        [MODEL]: `export class CounterRepository { a() { return document.title; } b() { return fetch("/x"); } }`,
+      }),
+    ).toEqual(["MVVM401"]);
   });
 });
 
@@ -244,16 +280,23 @@ export function CounterView() { const vm = useViewModel(CounterViewModel); const
     };
     expect(codes(listFilter)).toEqual([]);
     const result = analyze(
-      { [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";\nimport { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport function CounterView() { const vm = useViewModel(CounterViewModel); const l = useBinding(vm.count); l.filter(); return null; }` },
+      {
+        [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";\nimport { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport function CounterView() { const vm = useViewModel(CounterViewModel); const l = useBinding(vm.count); l.filter(); return null; }`,
+      },
       { rules: { MVVM203: "error" } },
     );
     expect(result.diagnostics.map((d) => d.severity)).toEqual(["error"]);
   });
 
   it("import aliases", () => {
-    expect(codes({ "src/view/label.view.tsx": `import { CounterRepository } from "@/model/counter.repository";\nexport const L = () => null;` }, { alias: { "@/": "src/" } })).toEqual([
-      "MVVM100",
-    ]);
+    expect(
+      codes(
+        {
+          "src/view/label.view.tsx": `import { CounterRepository } from "@/model/counter.repository";\nexport const L = () => null;`,
+        },
+        { alias: { "@/": "src/" } },
+      ),
+    ).toEqual(["MVVM100"]);
   });
 
   it("MVVM901: syntax error", () => {
