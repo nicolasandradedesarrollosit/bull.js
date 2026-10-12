@@ -11,13 +11,14 @@
     "packages/core",
     "packages/eslint-plugin",
     "packages/cli",
+    "packages/create",
     "examples/*"
   ],
   "scripts": {
-    "build": "npm run build -w @bull/runtime -w @bull/core -w @bull/eslint-plugin -w @bull/cli",
+    "build": "npm run build -w @bull/runtime -w @bull/core -w @bull/eslint-plugin -w @bull/cli -w @bull/create",
     "test": "vitest run",
     "test:e2e": "npm run build && vitest run -c vitest.e2e.config.ts",
-    "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit",
+    "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit && tsc -p packages/create --noEmit",
     "docs": "node packages/cli/dist/bin.js explain --all --format md --out docs/rules",
     "lint": "biome ci .",
     "format": "biome check --write .",

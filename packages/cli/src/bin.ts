@@ -3,6 +3,7 @@ import { cac } from "cac";
 import pc from "picocolors";
 import { buildCommand } from "./commands/build";
 import { checkCommand } from "./commands/check";
+import { type CompletionCommand, completionCommand } from "./commands/completion";
 import { createCommand } from "./commands/create";
 import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
@@ -11,6 +12,7 @@ import { fixCommand } from "./tooling/fix";
 import { generateCommand } from "./tooling/generate";
 import { graphCommand } from "./tooling/graph";
 import { infoCommand } from "./tooling/info";
+import { initCommand } from "./tooling/init";
 import { bullArt, VERSION } from "./ui/brand";
 
 const cli = cac("bull");
@@ -21,16 +23,24 @@ cli
   .option("--port <port>", "Port")
   .option("--open", "Open the browser")
   .option("--host [host]", "Expose on the network")
+  .option("--mode <mode>", "Vite mode (defaults to development)")
+  .option("--config <file>", "Use this config file instead of bull.config.ts")
   .action((root: string | undefined, options) => devCommand(root, options));
 
 cli
   .command("build [root]", "Checks the architecture and, if it holds, builds for production")
   .option("--out-dir <dir>", "Output folder (defaults to dist)")
+  .option("--mode <mode>", "Vite mode (defaults to production)")
+  .option("--config <file>", "Use this config file instead of bull.config.ts")
   .action((root: string | undefined, options) => buildCommand(root, options));
 
 cli
   .command("preview [root]", "Serves the production build")
   .option("--port <port>", "Port")
+  .option("--open", "Open the browser")
+  .option("--host [host]", "Expose on the network")
+  .option("--out-dir <dir>", "Folder with the build (defaults to dist)")
+  .option("--config <file>", "Use this config file instead of bull.config.ts")
   .action((root: string | undefined, options) => previewCommand(root, options));
 
 cli
@@ -46,9 +56,19 @@ cli
   .action((code: string | undefined, options) => explainCommand(code, options));
 
 cli
-  .command("create <name>", "Creates a new project with the MVVM structure")
+  .command("create [name]", "Creates a new project with the MVVM structure (asks for the details without a name)")
   .option("--template <template>", "Template", { default: "default" })
-  .action((name: string, options) => createCommand(name, options));
+  .option("--pm <pm>", "Package manager: npm | pnpm | yarn | bun (defaults to the one running the command)")
+  .option("--no-install", "Do not install the dependencies")
+  .option("--no-git", "Do not initialize a git repository")
+  .example("  bull create my-app")
+  .example("  bull create my-app --pm pnpm --no-git")
+  .action((name: string | undefined, options) => createCommand(name, options));
+
+cli
+  .command("init [root]", "Adds Bull to an existing project: config, layer folders, scripts and dependencies")
+  .option("--dry-run", "Show what would change without changing it")
+  .action((root: string | undefined, options) => initCommand(root, options));
 
 cli
   .command("generate <type> [name]", "Scaffolds a feature, model, viewmodel or view with the right names")
@@ -86,10 +106,28 @@ cli
   .option("--json", "Print the summary as JSON")
   .action((root: string | undefined, options) => infoCommand(root, options));
 
+cli
+  .command("completion [shell]", "Prints shell completions: bash | zsh | fish | powershell")
+  .example('  eval "$(bull completion bash)"')
+  .example("  bull completion powershell | Out-String | Invoke-Expression")
+  .action((shell: string | undefined) => completionCommand(shell, completionCommands()));
+
+/** Every command with its aliases and long flags, for the completion scripts. */
+function completionCommands(): CompletionCommand[] {
+  return cli.commands
+    .filter((c) => c.name !== "completion")
+    .map((c) => ({
+      name: c.name === "" ? "dev" : c.name,
+      aliases: c.aliasNames.filter((a) => a !== "dev"),
+      description: c.description,
+      flags: c.options.flatMap((o) => o.rawName.match(/--[\w-]+/g) ?? []),
+    }));
+}
+
 const GROUPS: Array<[title: string, commands: string[]]> = [
-  ["Develop", ["", "build", "preview", "create"]],
+  ["Develop", ["", "build", "preview", "create", "init"]],
   ["Architecture", ["check", "explain", "graph", "fix"]],
-  ["Tooling", ["generate", "doctor", "info"]],
+  ["Tooling", ["generate", "doctor", "info", "completion"]],
 ];
 
 cli.help((sections) => {

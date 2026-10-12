@@ -2,9 +2,12 @@ import pc from "picocolors";
 import { build as viteBuild } from "vite";
 import { banner, ensureIndexHtml, fail, loadProject, runAnalysis, viteConfig } from "./shared";
 
-export async function buildCommand(rootArg: string | undefined, options: { outDir?: string }): Promise<void> {
+export async function buildCommand(
+  rootArg: string | undefined,
+  options: { outDir?: string; mode?: string; config?: string },
+): Promise<void> {
   banner("build");
-  const project = await loadProject(rootArg, "build");
+  const project = await loadProject(rootArg, "build", { mode: options.mode, configFile: options.config });
 
   // The architecture is checked BEFORE calling Vite: if it does not respect MVVM, it does not build.
   const result = runAnalysis(project);

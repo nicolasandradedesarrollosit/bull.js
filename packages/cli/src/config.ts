@@ -25,15 +25,29 @@ export function defineConfig(config: BullConfig): BullConfig {
 
 const CONFIG_FILES = ["bull.config.ts", "bull.config.mts", "bull.config.js", "bull.config.mjs"];
 
+export interface LoadConfigOptions {
+  /** An explicit config file (`--config`), relative to the current folder. */
+  configFile?: string;
+  /** Vite mode; defaults to `production` for build and `development` for serve. */
+  mode?: string;
+}
+
 export async function loadBullConfig(
   root: string,
   command: "serve" | "build",
+  options: LoadConfigOptions = {},
 ): Promise<{ config: BullConfig; file?: string }> {
-  const file = CONFIG_FILES.map((name) => path.join(root, name)).find((p) => fs.existsSync(p));
+  let file: string | undefined;
+  if (options.configFile) {
+    file = path.resolve(options.configFile);
+    if (!fs.existsSync(file)) throw new Error(`The config file ${options.configFile} does not exist.`);
+  } else {
+    file = CONFIG_FILES.map((name) => path.join(root, name)).find((p) => fs.existsSync(p));
+  }
   if (!file) return { config: {} };
   try {
     const loaded = await loadConfigFromFile(
-      { command, mode: command === "build" ? "production" : "development" },
+      { command, mode: options.mode ?? (command === "build" ? "production" : "development") },
       file,
       root,
       "silent",
