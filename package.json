@@ -20,7 +20,10 @@
     "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit",
     "docs": "node packages/cli/dist/bin.js explain --all --format md --out docs/rules",
     "lint": "biome ci .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "changeset": "changeset",
+    "version-packages": "changeset version && npm install --package-lock-only",
+    "release": "npm run build && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
