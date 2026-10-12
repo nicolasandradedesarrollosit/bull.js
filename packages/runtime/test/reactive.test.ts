@@ -208,3 +208,16 @@ describe("documented behavior", () => {
     expect(seen).toEqual(["Ada Lovelace (AL)", "Grace Hopper (GH)"]);
   });
 });
+
+describe("documented behavior inside a batch", () => {
+  it("reads inside a batch see the latest values, computeds included", () => {
+    const a = state(1);
+    const double = computed(() => a.value * 2);
+    double.subscribe(() => {});
+    batch(() => {
+      a.set(5);
+      expect(a.value).toBe(5);
+      expect(double.value).toBe(10);
+    });
+  });
+});
