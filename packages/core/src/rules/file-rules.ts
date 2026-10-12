@@ -1,7 +1,7 @@
 import path from "node:path";
 import type { ResolvedConfig } from "../config";
-import { IO_PACKAGES, isDomGlobal, isIoGlobal, type ImportFact, type ModuleFacts } from "../facts";
-import { LAYER_LABEL, NAMING, classifyFile, resolveImport, type ImportTarget } from "../layers";
+import { type ImportFact, IO_PACKAGES, isDomGlobal, isIoGlobal, type ModuleFacts } from "../facts";
+import { classifyFile, type ImportTarget, LAYER_LABEL, NAMING, resolveImport } from "../layers";
 import { isCodeFile, normalizePath, toPascalCase } from "../paths";
 import type { Diagnostic, FileKind, Range, RuleCode } from "../types";
 import { RULES } from "./meta";
@@ -19,7 +19,18 @@ export const FORBIDDEN_VIEW_HOOKS = new Set([
   "useOptimistic",
 ]);
 
-const ARRAY_LOGIC = new Set(["filter", "reduce", "reduceRight", "sort", "toSorted", "find", "findLast", "some", "every", "flatMap"]);
+const ARRAY_LOGIC = new Set([
+  "filter",
+  "reduce",
+  "reduceRight",
+  "sort",
+  "toSorted",
+  "find",
+  "findLast",
+  "some",
+  "every",
+  "flatMap",
+]);
 const VM_PARAM = /^(vm|viewModel)$|(Vm|ViewModel)$/;
 const REACT_PACKAGES = /^(react|react-dom|preact)(\/|$)/;
 
@@ -56,7 +67,10 @@ export function runFileRules(
     config,
     target(imp) {
       let t = targets.get(imp);
-      if (!t) targets.set(imp, (t = resolveImport(abs, imp.source, config, exists)));
+      if (!t) {
+        t = resolveImport(abs, imp.source, config, exists);
+        targets.set(imp, t);
+      }
       return t;
     },
     report(code, range, message, data = {}) {
@@ -68,7 +82,7 @@ export function runFileRules(
 
   if (kind === "ignored" || kind === "root") return diagnostics;
   if (kind === "outside" || kind === "allowed") {
-    if (kind === "outside" && abs.startsWith(config.srcDir + "/") && isCodeFile(abs)) {
+    if (kind === "outside" && abs.startsWith(`${config.srcDir}/`) && isCodeFile(abs)) {
       const rel = path.posix.relative(config.root, abs);
       ctx.report("MVVM002", FILE_START, `\`${rel}\` does not belong to any layer.`, { file: rel });
     }
@@ -120,7 +134,9 @@ function checkNaming(ctx: Ctx): void {
   if (hasSuffix && ext === extension) return;
 
   const cleanStem = toKebab(
-    stem.replace(/\.(model|repository|service|entity|types|viewmodel|view)$/i, "").replace(/(ViewModel|View|Model)$/, ""),
+    stem
+      .replace(/\.(model|repository|service|entity|types|viewmodel|view)$/i, "")
+      .replace(/(ViewModel|View|Model)$/, ""),
   );
   const suggested = `${cleanStem || "name"}${suffixes[0]}${extension}`;
   const expected = suffixes.map((s) => `*${s}${extension}`).join(", ");
@@ -141,7 +157,10 @@ function importedNames(imp: ImportFact): string {
 }
 
 export function expectedViewModelName(viewFile: string): string {
-  const stem = path.posix.basename(viewFile).replace(/\.view\.tsx$/, "").replace(/\.[^.]+$/, "");
+  const stem = path.posix
+    .basename(viewFile)
+    .replace(/\.view\.tsx$/, "")
+    .replace(/\.[^.]+$/, "");
   return `${toPascalCase(stem)}ViewModel`;
 }
 
@@ -153,7 +172,9 @@ function checkDependencies(ctx: Ctx): void {
       continue;
     }
     if (t.kind === "root") {
-      ctx.report("MVVM106", imp.range, `This file imports the composition root (\`${imp.source}\`).`, { source: imp.source });
+      ctx.report("MVVM106", imp.range, `This file imports the composition root (\`${imp.source}\`).`, {
+        source: imp.source,
+      });
       continue;
     }
     if (ctx.kind === "view" && t.kind === "model") {
@@ -173,12 +194,19 @@ function checkDependencies(ctx: Ctx): void {
         },
       );
     } else if (ctx.kind === "viewmodel" && t.kind === "view") {
-      ctx.report("MVVM101", imp.range, `The ViewModel imports \`${importedNames(imp)}\` from the View.`, { source: imp.source });
-    } else if (ctx.kind === "model" && (t.kind === "viewmodel" || t.kind === "view")) {
-      ctx.report("MVVM102", imp.range, `The Model imports \`${importedNames(imp)}\` from the ${LAYER_LABEL[t.kind]} layer.`, {
+      ctx.report("MVVM101", imp.range, `The ViewModel imports \`${importedNames(imp)}\` from the View.`, {
         source: imp.source,
-        targetLayer: t.kind,
       });
+    } else if (ctx.kind === "model" && (t.kind === "viewmodel" || t.kind === "view")) {
+      ctx.report(
+        "MVVM102",
+        imp.range,
+        `The Model imports \`${importedNames(imp)}\` from the ${LAYER_LABEL[t.kind]} layer.`,
+        {
+          source: imp.source,
+          targetLayer: t.kind,
+        },
+      );
     }
   }
 }
@@ -189,9 +217,14 @@ function checkPackageImport(ctx: Ctx, imp: ImportFact, pkg: string): void {
     if (imp.source === "@bull/runtime" && !imp.typeOnly) {
       const values = imp.specifiers.filter((s) => !s.typeOnly).map((s) => s.imported);
       if (values.length || imp.specifiers.length === 0) {
-        ctx.report("MVVM205", imp.range, `The View imports \`${values.join(", ") || "@bull/runtime"}\` from the reactive runtime.`, {
-          imported: values.join(", ") || "@bull/runtime",
-        });
+        ctx.report(
+          "MVVM205",
+          imp.range,
+          `The View imports \`${values.join(", ") || "@bull/runtime"}\` from the reactive runtime.`,
+          {
+            imported: values.join(", ") || "@bull/runtime",
+          },
+        );
       }
     }
     if (IO_PACKAGES.has(pkg)) {
@@ -199,7 +232,10 @@ function checkPackageImport(ctx: Ctx, imp: ImportFact, pkg: string): void {
     }
   } else if (ctx.kind === "viewmodel") {
     if (isReact) {
-      ctx.report("MVVM103", imp.range, `The ViewModel imports \`${imp.source}\`.`, { source: imp.source, what: "import" });
+      ctx.report("MVVM103", imp.range, `The ViewModel imports \`${imp.source}\`.`, {
+        source: imp.source,
+        what: "import",
+      });
     } else if (IO_PACKAGES.has(pkg)) {
       ctx.report("MVVM305", imp.range, `The ViewModel imports \`${pkg}\` to access data directly.`, { api: pkg });
     }
@@ -233,7 +269,9 @@ function checkView(ctx: Ctx): void {
   }
 
   const vmLocals = new Set([
-    ...facts.declarators.filter((d) => d.callee === "useViewModel" || d.callee === "useChildViewModel").map((d) => d.name),
+    ...facts.declarators
+      .filter((d) => d.callee === "useViewModel" || d.callee === "useChildViewModel")
+      .map((d) => d.name),
     ...facts.params.filter((p) => VM_PARAM.test(p)),
   ]);
   const bindingLocals = new Set(facts.declarators.filter((d) => d.callee === "useBinding").map((d) => d.name));
@@ -305,10 +343,14 @@ function checkViewModel(ctx: Ctx): void {
     }
   }
 
-  const stem = path.posix.basename(ctx.file).replace(/\.viewmodel\.ts$/, "").replace(/\.[^.]+$/, "");
+  const stem = path.posix
+    .basename(ctx.file)
+    .replace(/\.viewmodel\.ts$/, "")
+    .replace(/\.[^.]+$/, "");
   const expected = `${toPascalCase(stem)}ViewModel`;
   const exported = facts.classes.filter((c) => c.exported);
-  const isVm = (superClass: string | null) => !!superClass && (superClass === "ViewModel" || superClass.endsWith("ViewModel"));
+  const isVm = (superClass: string | null) =>
+    !!superClass && (superClass === "ViewModel" || superClass.endsWith("ViewModel"));
   const viewModels = exported.filter((c) => isVm(c.superClass));
 
   for (const cls of exported) {
@@ -327,10 +369,15 @@ function checkViewModel(ctx: Ctx): void {
     if (i > 0) {
       ctx.report("MVVM303", cls.range, `\`${cls.name}\` is ViewModel #${i + 1} in this file.`, {});
     } else if (cls.name !== expected) {
-      ctx.report("MVVM303", cls.range, `The file is \`${path.posix.basename(ctx.file)}\` but the class is \`${cls.name}\`.`, {
-        found: cls.name ?? "",
-        expected,
-      });
+      ctx.report(
+        "MVVM303",
+        cls.range,
+        `The file is \`${path.posix.basename(ctx.file)}\` but the class is \`${cls.name}\`.`,
+        {
+          found: cls.name ?? "",
+          expected,
+        },
+      );
     }
   });
 
@@ -361,8 +408,13 @@ function checkViewModel(ctx: Ctx): void {
   const dependencyImports = importedLocals(ctx, "model", (imp) => /\.(repository|service)(\.[jt]s)?$/.test(imp.source));
   const modelImports = importedLocals(ctx, "model");
   for (const n of facts.news) {
-    if (dependencyImports.has(n.name) || (modelImports.has(n.name) && /(Repository|Service|Api|Client|Gateway)$/.test(n.name))) {
-      ctx.report("MVVM304", n.range, `The ViewModel creates \`new ${n.name}(…)\` instead of receiving it.`, { name: n.name });
+    if (
+      dependencyImports.has(n.name) ||
+      (modelImports.has(n.name) && /(Repository|Service|Api|Client|Gateway)$/.test(n.name))
+    ) {
+      ctx.report("MVVM304", n.range, `The ViewModel creates \`new ${n.name}(…)\` instead of receiving it.`, {
+        name: n.name,
+      });
     }
   }
 }

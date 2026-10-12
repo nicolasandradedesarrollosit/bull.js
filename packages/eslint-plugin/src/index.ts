@@ -1,12 +1,12 @@
 import {
-  extractFacts,
-  resolveConfig,
-  RULE_LIST,
-  runFileRules,
-  type Diagnostic,
-  type ResolvedConfig,
-  type RuleMeta,
   type BullArchitectureConfig,
+  type Diagnostic,
+  extractFacts,
+  type ResolvedConfig,
+  RULE_LIST,
+  type RuleMeta,
+  resolveConfig,
+  runFileRules,
 } from "@bull/core";
 import tsParser from "@typescript-eslint/parser";
 import type { ESLint, Linter, Rule } from "eslint";
@@ -80,7 +80,9 @@ function createRule(meta: RuleMeta): Rule.RuleModule {
 
 const fileRules = RULE_LIST.filter((meta) => meta.scope === "file" && meta.category !== "config");
 
-const rules: Record<string, Rule.RuleModule> = Object.fromEntries(fileRules.map((meta) => [meta.slug, createRule(meta)]));
+const rules: Record<string, Rule.RuleModule> = Object.fromEntries(
+  fileRules.map((meta) => [meta.slug, createRule(meta)]),
+);
 
 const plugin = {
   meta: { name: "@bull/eslint-plugin", version: "0.2.0" },

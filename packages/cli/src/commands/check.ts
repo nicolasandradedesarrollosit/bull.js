@@ -8,7 +8,7 @@ export async function checkCommand(rootArg: string | undefined, options: { forma
 
   if (json) {
     const result = project.analyzer.analyze();
-    process.stdout.write(JSON.stringify(serializeResult(result, { frames: false }), null, 2) + "\n");
+    process.stdout.write(`${JSON.stringify(serializeResult(result, { frames: false }), null, 2)}\n`);
     if (result.errorCount > 0) process.exitCode = 1;
     return;
   }

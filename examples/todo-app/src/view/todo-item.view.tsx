@@ -14,7 +14,7 @@ export function TodoItemView({ todo, onToggle, onRemove }: TodoItemProps) {
         <input type="checkbox" checked={todo.done} onChange={onToggle} />
         <span>{todo.title}</span>
       </label>
-      <button className="remove" onClick={onRemove} aria-label={`Delete "${todo.title}"`}>
+      <button type="button" className="remove" onClick={onRemove} aria-label={`Delete "${todo.title}"`}>
         ×
       </button>
     </li>

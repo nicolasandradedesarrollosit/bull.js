@@ -1,5 +1,5 @@
 import { useBinding, useViewModel } from "@bull/runtime/react";
-import { TodoListViewModel, type TodoFilter } from "../viewmodel/todo-list.viewmodel";
+import { type TodoFilter, TodoListViewModel } from "../viewmodel/todo-list.viewmodel";
 import { TodoItemView } from "./todo-item.view";
 
 const FILTERS: Array<{ value: TodoFilter; label: string }> = [
@@ -33,6 +33,7 @@ export function TodoListView() {
           onChange={(event) => vm.editDraft.execute(event.target.value)}
           placeholder="What needs to be done?"
           aria-invalid={draftError !== null}
+          // biome-ignore lint/a11y/noAutofocus: the input is the only thing to do on this screen.
           autoFocus
         />
         <button type="submit">Add</button>
@@ -42,6 +43,7 @@ export function TodoListView() {
       <nav className="filters">
         {FILTERS.map((f) => (
           <button
+            type="button"
             key={f.value}
             className={f.value === filter ? "active" : undefined}
             onClick={() => vm.setFilter.execute(f.value)}
@@ -72,7 +74,7 @@ export function TodoListView() {
         <span>
           {remaining} {remaining === 1 ? "item left" : "items left"}
         </span>
-        <button className="link" disabled={!canClear} onClick={vm.clearCompleted.execute}>
+        <button type="button" className="link" disabled={!canClear} onClick={vm.clearCompleted.execute}>
           Clear completed
         </button>
       </footer>

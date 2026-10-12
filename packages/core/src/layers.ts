@@ -16,7 +16,7 @@ export const LAYER_LABEL: Record<FileKind, string> = {
 };
 
 function isInside(dir: string, file: string): boolean {
-  return file === dir || file.startsWith(dir + "/");
+  return file === dir || file.startsWith(`${dir}/`);
 }
 
 /** Classifies a file by where it lives. The file does not need to exist. */

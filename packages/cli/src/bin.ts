@@ -8,9 +8,9 @@ import { devCommand, previewCommand } from "./commands/dev";
 import { explainCommand } from "./commands/explain";
 import { doctorCommand } from "./tooling/doctor";
 import { fixCommand } from "./tooling/fix";
-import { infoCommand } from "./tooling/info";
 import { generateCommand } from "./tooling/generate";
 import { graphCommand } from "./tooling/graph";
+import { infoCommand } from "./tooling/info";
 import { bullArt, VERSION } from "./ui/brand";
 
 const cli = cac("bull");
@@ -107,18 +107,20 @@ cli.help((sections) => {
     const width = Math.max(...GROUPS.flatMap(([, names]) => names.map((n) => cmd(label(n)[0]).length))) + 2;
     const body = GROUPS.map(
       ([title, names]) =>
-        `${pc.bold(title)}\n` + names.map((n) => `  ${label(n)[0]}${" ".repeat(width - cmd(label(n)[0]).length)}${label(n)[1]}`).join("\n"),
+        `${pc.bold(title)}\n` +
+        names.map((n) => `  ${label(n)[0]}${" ".repeat(width - cmd(label(n)[0]).length)}${label(n)[1]}`).join("\n"),
     ).join("\n\n");
     sections.splice(commands, 1, { body });
     const more = sections.findIndex((s) => s.title?.startsWith("For more info"));
-    if (more >= 0) sections.splice(more, 1, { body: pc.dim("Run `bull <command> --help` for the options of each command.") });
+    if (more >= 0)
+      sections.splice(more, 1, { body: pc.dim("Run `bull <command> --help` for the options of each command.") });
   }
   return sections;
 });
 
 /** Visible length of a string with ANSI colors. */
 function cmd(text: string): string {
-  // eslint-disable-next-line no-control-regex
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: matching ANSI escape codes is the point.
   return text.replace(/\x1b\[[0-9;]*m/g, "");
 }
 cli.version(VERSION);

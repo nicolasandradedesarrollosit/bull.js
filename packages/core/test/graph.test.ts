@@ -16,7 +16,9 @@ describe("buildImportGraph", () => {
 
   it("marks edges that break the dependency direction", () => {
     const graph = buildImportGraph(
-      analyze({ "src/view/label.view.tsx": `import { CounterRepository } from "../model/counter.repository";\nexport const L = () => null;` }),
+      analyze({
+        "src/view/label.view.tsx": `import { CounterRepository } from "../model/counter.repository";\nexport const L = () => null;`,
+      }),
     );
     const bad = graph.edges.filter((e) => e.violation);
     expect(bad).toHaveLength(1);

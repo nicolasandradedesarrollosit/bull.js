@@ -20,7 +20,12 @@ export function validateTitle(title: string): string | null {
 export function createTodo(title: string, now = Date.now()): Todo {
   const error = validateTitle(title);
   if (error) throw new Error(error);
-  return { id: `${now.toString(36)}-${Math.random().toString(36).slice(2, 7)}`, title: title.trim(), done: false, createdAt: now };
+  return {
+    id: `${now.toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+    title: title.trim(),
+    done: false,
+    createdAt: now,
+  };
 }
 
 export function matchesFilter(todo: Todo, filter: TodoFilter): boolean {

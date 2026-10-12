@@ -1,4 +1,4 @@
-import { Computed, State, type ReadonlyState } from "./reactive";
+import { Computed, type ReadonlyState, State } from "./reactive";
 
 export interface CommandOptions {
   /** Extra condition to be able to execute (for example, a valid form). It is reactive. */

@@ -1,6 +1,6 @@
 import path from "node:path";
-import { RULES } from "./rules/meta";
 import { normalizePath } from "./paths";
+import { RULES } from "./rules/meta";
 import type { Diagnostic, RuleCode, Severity, SeveritySetting } from "./types";
 
 /** What the user writes in `bull.config.ts`. */
@@ -67,10 +67,10 @@ export function resolveConfig(
       continue;
     }
     if (!meta.configurable) {
-      configError(
-        `${code} (${meta.title.toLowerCase()}) is part of the MVVM core and cannot be configured.`,
-        { setting: "rules", rule: code },
-      );
+      configError(`${code} (${meta.title.toLowerCase()}) is part of the MVVM core and cannot be configured.`, {
+        setting: "rules",
+        rule: code,
+      });
       continue;
     }
     if (!["off", "warn", "warning", "error"].includes(setting)) {

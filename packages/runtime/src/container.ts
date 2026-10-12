@@ -1,6 +1,6 @@
 import type { ViewModel } from "./ViewModel";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: a constructor token accepts any parameter list.
 export type Token<T> = abstract new (...args: any[]) => T;
 type Factory<T> = (container: Container) => T;
 

@@ -1,14 +1,14 @@
 import {
+  type AnalysisResult,
+  type BullArchitectureConfig,
   formatReport,
   normalizePath,
   ProjectAnalyzer,
   serializeResult,
-  type AnalysisResult,
-  type BullArchitectureConfig,
 } from "@bull/core";
 import pc from "picocolors";
 import type { Plugin, ViteDevServer } from "vite";
-import { OVERLAY_PUBLIC_PATH, overlayModuleCode, type OverlayPayload } from "./overlay-client";
+import { OVERLAY_PUBLIC_PATH, type OverlayPayload, overlayModuleCode } from "./overlay-client";
 
 export interface BullPluginOptions {
   /** Project root. Defaults to Vite's `root`. */
@@ -41,7 +41,12 @@ export function bullPlugin(options: BullPluginOptions = {}): Plugin {
 
   const payload = (): OverlayPayload => {
     const s = serializeResult(last!);
-    return { errorCount: s.errorCount, warningCount: s.warningCount, diagnostics: s.diagnostics, mode: overlayMode || "dismissible" };
+    return {
+      errorCount: s.errorCount,
+      warningCount: s.warningCount,
+      diagnostics: s.diagnostics,
+      mode: overlayMode || "dismissible",
+    };
   };
 
   function runDev(server: ViteDevServer, initial = false): void {
@@ -52,7 +57,7 @@ export function bullPlugin(options: BullPluginOptions = {}): Plugin {
     lastKey = key;
 
     if (last.diagnostics.length > 0) {
-      console.log("\n" + formatReport(last, { width: Math.min(process.stdout.columns || 88, 100) }));
+      console.log(`\n${formatReport(last, { width: Math.min(process.stdout.columns || 88, 100) })}`);
     } else if (previous && previous.diagnostics.length > 0) {
       console.log(`\n  ${pc.green("✓")} ${pc.bold("MVVM architecture ok")} ${pc.dim("· every violation was fixed")}\n`);
     }
@@ -71,7 +76,7 @@ export function bullPlugin(options: BullPluginOptions = {}): Plugin {
     buildStart() {
       if (!isBuild || options.checkOnBuild === false) return;
       const result = analyzer!.analyze();
-      if (result.diagnostics.length) console.log("\n" + formatReport(result));
+      if (result.diagnostics.length) console.log(`\n${formatReport(result)}`);
       if (result.errorCount > 0) {
         this.error(`The MVVM architecture has ${result.errorCount} error(s). Fix them to be able to build.`);
       }
@@ -87,7 +92,7 @@ export function bullPlugin(options: BullPluginOptions = {}): Plugin {
 
       server.watcher.on("all", (event, file) => {
         const abs = normalizePath(file);
-        if (!abs.startsWith(srcDir + "/") && abs !== srcDir && abs !== compositionRoot) return;
+        if (!abs.startsWith(`${srcDir}/`) && abs !== srcDir && abs !== compositionRoot) return;
         if (event === "change" || event === "unlink") analyzer!.invalidate(abs);
         schedule();
       });

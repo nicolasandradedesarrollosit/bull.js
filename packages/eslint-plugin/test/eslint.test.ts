@@ -42,7 +42,9 @@ export class TodoViewModel extends ViewModel { readonly #n = this.state(0); read
 
   it("files outside src/ are ignored", () => {
     // The recommended config only applies to src/: ESLint does not even run Bull's rules.
-    expect(lint("vite.config.ts", `import React from "react";`).filter((m) => m.ruleId?.startsWith("bull/"))).toEqual([]);
+    expect(lint("vite.config.ts", `import React from "react";`).filter((m) => m.ruleId?.startsWith("bull/"))).toEqual(
+      [],
+    );
   });
 });
 

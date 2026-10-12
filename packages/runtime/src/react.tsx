@@ -1,12 +1,12 @@
 import {
-  StrictMode,
+  type ComponentType,
   createContext,
+  type ReactNode,
+  StrictMode,
   useContext,
   useEffect,
   useState,
   useSyncExternalStore,
-  type ComponentType,
-  type ReactNode,
 } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { Container, type Token } from "./container";

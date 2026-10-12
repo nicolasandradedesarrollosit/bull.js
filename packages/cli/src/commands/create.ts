@@ -47,15 +47,22 @@ export function createCommand(name: string, options: { template?: string }): voi
     return;
   }
 
-  const pkgName = path.basename(target).toLowerCase().replace(/[^a-z0-9-_.]/g, "-");
+  const pkgName = path
+    .basename(target)
+    .toLowerCase()
+    .replace(/[^a-z0-9-_.]/g, "-");
   const files = copyTemplate(template, target, { name: pkgName, bullVersion: VERSION });
   const rel = (p: string) => path.relative(target, p).replace(/\\/g, "/");
 
   console.log(`  ${pc.green("✓")} Project created in ${pc.bold(path.relative(process.cwd(), target) || ".")}\n`);
-  const tree = files.map(rel).filter((f) => f.startsWith("src/")).sort();
+  const tree = files
+    .map(rel)
+    .filter((f) => f.startsWith("src/"))
+    .sort();
   for (const f of tree) {
     const layer = f.split("/")[1];
-    const color = layer === "model" ? pc.blue : layer === "viewmodel" ? pc.magenta : layer === "view" ? pc.green : pc.dim;
+    const color =
+      layer === "model" ? pc.blue : layer === "viewmodel" ? pc.magenta : layer === "view" ? pc.green : pc.dim;
     console.log(`    ${color(f)}`);
   }
   console.log(`

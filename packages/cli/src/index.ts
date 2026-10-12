@@ -1,2 +1,2 @@
-export { defineConfig, type BullConfig } from "./config";
-export { bullPlugin, type BullPluginOptions } from "./vite/plugin";
+export { type BullConfig, defineConfig } from "./config";
+export { type BullPluginOptions, bullPlugin } from "./vite/plugin";
