@@ -1,7 +1,7 @@
 {
   "name": "@bull/cli",
   "version": "0.2.0",
-  "description": "Bull: the React bundler that refuses to build unless you respect MVVM.",
+  "description": "Bull: the opinionated React framework that refuses to build unless you respect MVVM.",
   "type": "module",
   "license": "MIT",
   "bin": {
