@@ -4,7 +4,7 @@ import { type AnalysisResult, formatReport, ProjectAnalyzer } from "@bull/core";
 import react from "@vitejs/plugin-react";
 import pc from "picocolors";
 import { type InlineConfig, mergeConfig } from "vite";
-import { type BullConfig, loadBullConfig } from "../config";
+import { type BullConfig, type LoadConfigOptions, loadBullConfig } from "../config";
 import { bullPlugin } from "../vite/plugin";
 
 export { banner, VERSION } from "../ui/brand";
@@ -19,13 +19,18 @@ export interface Project {
   root: string;
   config: BullConfig;
   configFile?: string;
+  mode?: string;
   analyzer: ProjectAnalyzer;
 }
 
-export async function loadProject(rootArg: string | undefined, command: "serve" | "build"): Promise<Project> {
+export async function loadProject(
+  rootArg: string | undefined,
+  command: "serve" | "build",
+  options: LoadConfigOptions = {},
+): Promise<Project> {
   const root = path.resolve(rootArg ?? ".");
-  const { config, file } = await loadBullConfig(root, command);
-  return { root, config, configFile: file, analyzer: new ProjectAnalyzer(root, config) };
+  const { config, file } = await loadBullConfig(root, command, options);
+  return { root, config, configFile: file, mode: options.mode, analyzer: new ProjectAnalyzer(root, config) };
 }
 
 /** Runs the analysis and prints it. Returns the result. */
@@ -47,6 +52,7 @@ export function ensureIndexHtml(root: string): boolean {
 export function viteConfig(project: Project, extra: InlineConfig = {}): InlineConfig {
   const base: InlineConfig = {
     root: project.root,
+    mode: project.mode,
     configFile: false,
     clearScreen: false,
     // @bull/runtime/react imports react-dom/client. If Vite discovers it late, it

@@ -1,0 +1,43 @@
+{
+  "name": "@bull/create",
+  "version": "0.2.0",
+  "description": "Creates a new Bull project: npm create @bull@latest my-app",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "directory": "packages/create"
+  },
+  "bugs": {
+    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+  },
+  "keywords": [
+    "bull",
+    "create",
+    "scaffold",
+    "react",
+    "mvvm",
+    "vite"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "create-bull": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean --external @bull/cli"
+  },
+  "dependencies": {
+    "@bull/cli": "^0.2.0",
+    "cac": "^6.7.14"
+  }
+}
