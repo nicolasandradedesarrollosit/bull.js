@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { batch, computed, effect, state } from "../src/reactive";
+import { batch, computed, effect, state, untracked } from "../src/reactive";
 
 describe("state", () => {
   it("reads and writes", () => {
@@ -101,5 +101,110 @@ describe("effect and batch", () => {
     });
     expect(runs).toHaveBeenCalledTimes(2);
     expect(runs).toHaveBeenLastCalledWith(3);
+  });
+});
+
+// The guarantees the reactivity docs describe, one test each.
+describe("documented behavior", () => {
+  it("dependencies are dynamic: a computed follows the branch it last took", () => {
+    const useA = state(true);
+    const a = state("a");
+    const b = state("b");
+    const runs = vi.fn();
+    const picked = computed(() => {
+      runs();
+      return useA.value ? a.value : b.value;
+    });
+    const seen: string[] = [];
+    picked.subscribe(() => seen.push(picked.peek()));
+    useA.set(false);
+    expect(seen).toEqual(["b"]);
+    const before = runs.mock.calls.length;
+    a.set("A"); // no longer a dependency
+    expect(runs.mock.calls.length).toBe(before);
+    b.set("B");
+    expect(seen).toEqual(["b", "B"]);
+  });
+
+  it("peek() and untracked() read without subscribing", () => {
+    const s = state(1);
+    const peeked = vi.fn();
+    const untrackedRuns = vi.fn();
+    effect(() => {
+      peeked(s.peek());
+    });
+    effect(() => {
+      untrackedRuns(untracked(() => s.value));
+    });
+    s.set(2);
+    expect(peeked).toHaveBeenCalledTimes(1);
+    expect(untrackedRuns).toHaveBeenCalledTimes(1);
+  });
+
+  it("mutating an array in place notifies nobody; replacing it does", () => {
+    const items = state<string[]>([]);
+    const listener = vi.fn();
+    items.subscribe(listener);
+    items.peek().push("lost"); // same array: Object.is says nothing changed
+    items.set(items.peek());
+    expect(listener).not.toHaveBeenCalled();
+    items.update((list) => [...list, "seen"]);
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it("nested batches notify once, when the outermost one ends, and return fn's value", () => {
+    const a = state(0);
+    const runs = vi.fn();
+    effect(() => {
+      runs(a.value);
+    });
+    const result = batch(() => {
+      a.set(1);
+      batch(() => a.set(2));
+      expect(runs).toHaveBeenCalledTimes(1); // still inside the outer batch
+      return "done";
+    });
+    expect(result).toBe("done");
+    expect(runs).toHaveBeenCalledTimes(2);
+    expect(runs).toHaveBeenLastCalledWith(2);
+  });
+
+  it("an effect runs right away and synchronously after each change", () => {
+    const s = state(0);
+    const runs: number[] = [];
+    effect(() => {
+      runs.push(s.value);
+    });
+    expect(runs).toEqual([0]);
+    s.set(1);
+    expect(runs).toEqual([0, 1]); // no microtask needed
+  });
+
+  it("a computed that throws rethrows on read and retries on the next read", () => {
+    const fail = state(true);
+    const c = computed(() => {
+      if (fail.value) throw new Error("boom");
+      return "ok";
+    });
+    expect(() => c.value).toThrow("boom");
+    expect(() => c.value).toThrow("boom");
+    fail.set(false);
+    expect(c.value).toBe("ok");
+  });
+
+  it("the diamond: a reaction sees first and last change together", () => {
+    const first = state("Ada");
+    const last = state("Lovelace");
+    const full = computed(() => `${first.value} ${last.value}`);
+    const initials = computed(() => `${first.value[0]}${last.value[0]}`);
+    const seen: string[] = [];
+    effect(() => {
+      seen.push(`${full.value} (${initials.value})`);
+    });
+    batch(() => {
+      first.set("Grace");
+      last.set("Hopper");
+    });
+    expect(seen).toEqual(["Ada Lovelace (AL)", "Grace Hopper (GH)"]);
   });
 });
