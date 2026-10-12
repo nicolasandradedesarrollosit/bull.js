@@ -1,4 +1,4 @@
-import { ViewModel } from "@triad/runtime";
+import { ViewModel } from "@bull/runtime";
 import { UserRepository, type User } from "../model/user.repository";
 
 export class UserListViewModel extends ViewModel {

@@ -1,4 +1,4 @@
-import { ViewModel } from "@triad/runtime";
+import { ViewModel } from "@bull/runtime";
 import { createTodo, matchesFilter, validateTitle, type Todo, type TodoFilter } from "../model/todo.entity";
 import type { TodoRepository } from "../model/todo.repository";
 

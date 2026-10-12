@@ -1,9 +1,9 @@
-import { createTriadApp } from "@triad/runtime/react";
+import { createBullApp } from "@bull/runtime/react";
 import { CounterApi } from "./model/CounterApi";
 import { CounterView } from "./view/counter.view";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";
 
-createTriadApp({
+createBullApp({
   root: CounterView,
   register: (c) => {
     c.model(CounterApi, () => new CounterApi());

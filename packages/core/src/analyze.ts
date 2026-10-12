@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { resolveConfig, type ResolvedConfig, type TriadArchitectureConfig } from "./config";
+import { resolveConfig, type ResolvedConfig, type BullArchitectureConfig } from "./config";
 import { extractFacts, parseModule, type ModuleFacts } from "./facts";
 import { classifyFile } from "./layers";
 import { isCodeFile, normalizePath } from "./paths";
@@ -38,7 +38,7 @@ export class ProjectAnalyzer {
   readonly #configDiagnostics: Diagnostic[];
   readonly #cache = new Map<string, CacheEntry>();
 
-  constructor(root: string, userConfig?: TriadArchitectureConfig) {
+  constructor(root: string, userConfig?: BullArchitectureConfig) {
     const { config, diagnostics } = resolveConfig(root, userConfig);
     this.config = config;
     this.#configDiagnostics = diagnostics;
@@ -131,7 +131,7 @@ export class ProjectAnalyzer {
   }
 }
 
-export function analyzeProject(root: string, userConfig?: TriadArchitectureConfig): AnalysisResult {
+export function analyzeProject(root: string, userConfig?: BullArchitectureConfig): AnalysisResult {
   return new ProjectAnalyzer(root, userConfig).analyze();
 }
 

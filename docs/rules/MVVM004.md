@@ -1,6 +1,6 @@
 # MVVM004 · Empty layer
 
-> **Structure** · warning · configurable · ESLint rule: `triad/empty-layer`
+> **Structure** · warning · configurable · ESLint rule: `bull/empty-layer`
 
 One of the layers has no files.
 

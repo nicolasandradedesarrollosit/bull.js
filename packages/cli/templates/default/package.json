@@ -4,22 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "triad",
-    "build": "triad build",
-    "preview": "triad preview",
-    "check": "triad check",
+    "dev": "bull",
+    "build": "bull build",
+    "preview": "bull preview",
+    "check": "bull check",
     "test": "vitest run",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@triad/runtime": "^0.2.0",
+    "@bull/runtime": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@triad/cli": "^0.2.0",
-    "@triad/eslint-plugin": "^0.2.0",
+    "@bull/cli": "^0.2.0",
+    "@bull/eslint-plugin": "^0.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^10.0.0",

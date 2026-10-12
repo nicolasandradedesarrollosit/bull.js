@@ -1,4 +1,4 @@
-import { createTriadApp } from "@triad/runtime/react";
+import { createBullApp } from "@bull/runtime/react";
 import { UserListView } from "./view/user-list.view";
 
-createTriadApp({ root: UserListView });
+createBullApp({ root: UserListView });

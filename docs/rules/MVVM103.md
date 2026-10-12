@@ -1,6 +1,6 @@
 # MVVM103 · ViewModel uses React
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/viewmodel-uses-react`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/viewmodel-uses-react`
 
 The ViewModel is plain TypeScript: no React, JSX or hooks.
 

@@ -1,7 +1,7 @@
 {
-  "name": "@triad/runtime",
+  "name": "@bull/runtime",
   "version": "0.2.0",
-  "description": "Triad's MVVM runtime: observable state, ViewModels, commands and React bindings.",
+  "description": "Bull's MVVM runtime: observable state, ViewModels, commands and React bindings.",
   "type": "module",
   "license": "MIT",
   "files": [

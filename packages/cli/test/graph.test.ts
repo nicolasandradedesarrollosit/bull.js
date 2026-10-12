@@ -1,4 +1,4 @@
-import { analyzeProject, buildImportGraph } from "@triad/core";
+import { analyzeProject, buildImportGraph } from "@bull/core";
 import { describe, expect, it } from "vitest";
 import { renderDot, renderHtml, renderMermaid, renderTree } from "../src/tooling/graph";
 import { templateProject } from "./helpers";

@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeProject } from "@triad/core";
+import { analyzeProject } from "@bull/core";
 import { describe, expect, it } from "vitest";
 import { runDoctor } from "../src/tooling/doctor";
 import { collectInfo, formatInfo } from "../src/tooling/info";
@@ -8,7 +8,7 @@ import { templateProject } from "./helpers";
 
 const example = fileURLToPath(new URL("../../../examples/todo-app", import.meta.url));
 
-describe("triad doctor", () => {
+describe("bull doctor", () => {
   it("reports a healthy example app", async () => {
     const checks = await runDoctor(example);
     expect(checks.filter((c) => c.status !== "ok")).toEqual([]);
@@ -32,9 +32,9 @@ describe("triad doctor", () => {
   });
 });
 
-describe("triad info", () => {
+describe("bull info", () => {
   it("lists the public API of each ViewModel and the Views that bind it", () => {
-    const info = collectInfo(analyzeProject(example, { rules: { MVVM203: "error" } }), path.join(example, "triad.config.ts"));
+    const info = collectInfo(analyzeProject(example, { rules: { MVVM203: "error" } }), path.join(example, "bull.config.ts"));
     expect(info.counts).toEqual({ model: 2, viewmodel: 1, view: 4 });
     const vm = info.viewModels[0]!;
     expect(vm).toMatchObject({

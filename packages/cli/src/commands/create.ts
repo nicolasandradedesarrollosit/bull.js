@@ -13,7 +13,7 @@ function templatesDir(): string {
     if (fs.existsSync(candidate)) return candidate;
     dir = path.dirname(dir);
   }
-  throw new Error("Triad templates were not found.");
+  throw new Error("Bull templates were not found.");
 }
 
 function copyTemplate(from: string, to: string, vars: Record<string, string>): string[] {
@@ -65,6 +65,6 @@ export function createCommand(name: string, options: { template?: string }): voi
     ${pc.cyan("npm run dev")}
 
   House rules: ${pc.dim("View ──▶ ViewModel ──▶ Model")}. Break them and it will not build.
-  See every rule with ${pc.cyan("npx triad explain")}.
+  See every rule with ${pc.cyan("npx bull explain")}.
 `);
 }

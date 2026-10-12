@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Container, ViewModel } from "../src/index";
 import { ACTIVATE, DEACTIVATE } from "../src/lifecycle";
-import { TriadProvider, useBinding, useViewModel } from "../src/react";
+import { BullProvider, useBinding, useViewModel } from "../src/react";
 
 class Counter {
   next(n: number) {
@@ -110,9 +110,9 @@ describe("React binding", () => {
     }
 
     render(
-      <TriadProvider container={container}>
+      <BullProvider container={container}>
         <CounterView />
-      </TriadProvider>,
+      </BullProvider>,
     );
     expect(screen.getByRole("button").textContent).toBe("0/0");
     act(() => screen.getByRole("button").click());

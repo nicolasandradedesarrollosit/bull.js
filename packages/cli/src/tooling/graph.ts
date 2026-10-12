@@ -1,9 +1,9 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { buildImportGraph, LAYER_LABEL, ProjectAnalyzer, type FileKind, type ImportGraph } from "@triad/core";
+import { buildImportGraph, LAYER_LABEL, ProjectAnalyzer, type FileKind, type ImportGraph } from "@bull/core";
 import pc from "picocolors";
-import { loadTriadConfig } from "../config";
+import { loadBullConfig } from "../config";
 import { banner, fail } from "../commands/shared";
 
 /** Column order: the composition root on the left, the Model on the right. */
@@ -108,7 +108,7 @@ const FILL: Partial<Record<FileKind, string>> = {
 
 export function renderDot(graph: ImportGraph): string {
   const out = [
-    "digraph triad {",
+    "digraph bull {",
     '  rankdir=LR; nodesep=0.3; ranksep=1.2;',
     '  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#c9c4d8"];',
     '  edge [color="#8d8aa0", arrowsize=0.7];',
@@ -219,7 +219,7 @@ export function renderHtml(graph: ImportGraph, title: string): string {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)} · Triad graph</title>
+<title>${esc(title)} · Bull graph</title>
 <style>
   :root { --bg:#f7f6f3; --panel:#ffffff; --ink:#1d1b22; --muted:#77737f; --line:#e4e0ea;
     --view:#1f9d5a; --viewmodel:#6b4dff; --model:#2f6fe4; --root:#9a7b2f; --other:#9a95a8; --bad:#e2456f; --cycle:#e8930c; --edge:#b3aec2; }
@@ -331,7 +331,7 @@ export async function graphCommand(
     return;
   }
   const root = path.resolve(rootArg ?? ".");
-  const { config } = await loadTriadConfig(root, "serve");
+  const { config } = await loadBullConfig(root, "serve");
   const graph = buildImportGraph(new ProjectAnalyzer(root, config).analyze());
   const title = path.basename(root);
 
@@ -350,7 +350,7 @@ export async function graphCommand(
     banner("graph");
     process.stdout.write(renderTree(graph));
   } else if (options.out || format === "html") {
-    const out = path.resolve(options.out ?? "triad-graph.html");
+    const out = path.resolve(options.out ?? "bull-graph.html");
     fs.writeFileSync(out, text);
     banner("graph");
     console.log(`  ${pc.green("✓")} Wrote ${pc.bold(path.relative(process.cwd(), out) || out)}`);

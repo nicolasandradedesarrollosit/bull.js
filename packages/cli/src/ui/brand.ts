@@ -20,7 +20,7 @@ export function bullArt(subtitle?: string): string {
   const side = [
     "",
     "",
-    `${pc.bold("triad")} ${pc.dim(`v${VERSION}`)}`,
+    `${pc.bold("bull")} ${pc.dim(`v${VERSION}`)}`,
     pc.dim(TAGLINE),
     subtitle ? pc.cyan(subtitle) : "",
     "",
@@ -32,5 +32,5 @@ export function bullArt(subtitle?: string): string {
 }
 
 export function banner(command: string): void {
-  console.log(`\n  ${pc.bold(pc.magenta(`${BULL} triad`))} ${pc.dim(`v${VERSION}`)}  ${pc.dim("·")} ${command}\n`);
+  console.log(`\n  ${pc.bold(pc.magenta(`${BULL} bull`))} ${pc.dim(`v${VERSION}`)}  ${pc.dim("·")} ${command}\n`);
 }

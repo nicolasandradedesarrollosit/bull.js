@@ -118,7 +118,7 @@ function shortestCycle(start: string, members: Set<string>, next: (n: string) =>
   return [start, start];
 }
 
-// ─── Import graph for tooling (`triad graph`) ─────────────────────────────────
+// ─── Import graph for tooling (`bull graph`) ─────────────────────────────────
 
 export interface GraphNode {
   file: string;

@@ -61,7 +61,7 @@ export class Command<A extends unknown[] = [], R = void> {
 
   #fail(error: unknown): void {
     this.#error.set(error);
-    console.error("[triad] A command failed:", error);
+    console.error("[bull] A command failed:", error);
   }
 }
 

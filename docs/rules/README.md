@@ -1,4 +1,4 @@
-# Triad architecture rules
+# Bull architecture rules
 
 | Code | Rule | Severity | Can be disabled |
 |---|---|---|---|
@@ -19,7 +19,7 @@
 | [MVVM202](./MVVM202.md) | The View never writes state: it asks the ViewModel to do it through commands. | error | no |
 | [MVVM203](./MVVM203.md) | Filtering, sorting or aggregating data is the job of a ViewModel computed. | warning | yes |
 | [MVVM204](./MVVM204.md) | ViewModels are obtained with useViewModel(), not with new. | error | no |
-| [MVVM205](./MVVM205.md) | The View can only import @triad/runtime/react, not the reactive primitives. | error | no |
+| [MVVM205](./MVVM205.md) | The View can only import @bull/runtime/react, not the reactive primitives. | error | no |
 | [MVVM206](./MVVM206.md) | Reading `vm.x.value` in the View is not reactive: use useBinding(). | warning | yes |
 | [MVVM300](./MVVM300.md) | Every file in viewmodel/ exports a class that extends ViewModel. | error | no |
 | [MVVM301](./MVVM301.md) | The ViewModel does not access document, window, elements or DOM events. | error | no |
@@ -27,7 +27,7 @@
 | [MVVM303](./MVVM303.md) | One ViewModel per file, and the class is named after the file. | error | no |
 | [MVVM304](./MVVM304.md) | Repositories and services are injected through the constructor, not created with new. | error | no |
 | [MVVM305](./MVVM305.md) | Network and storage access belong in the Model. | error | yes |
-| [MVVM400](./MVVM400.md) | The Model does not use @triad/runtime: observable state is the ViewModel's business. | error | no |
+| [MVVM400](./MVVM400.md) | The Model does not use @bull/runtime: observable state is the ViewModel's business. | error | no |
 | [MVVM401](./MVVM401.md) | The Model does not know about the DOM. | error | no |
-| [MVVM900](./MVVM900.md) | triad.config.ts has an invalid value. | error | no |
+| [MVVM900](./MVVM900.md) | bull.config.ts has an invalid value. | error | no |
 | [MVVM901](./MVVM901.md) | The file has a syntax error. | error | no |

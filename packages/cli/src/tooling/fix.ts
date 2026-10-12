@@ -10,9 +10,9 @@ import {
   type AnalysisResult,
   type Diagnostic,
   type Position,
-} from "@triad/core";
+} from "@bull/core";
 import pc from "picocolors";
-import { loadTriadConfig } from "../config";
+import { loadBullConfig } from "../config";
 import { banner } from "../commands/shared";
 
 interface TextEdit {
@@ -227,7 +227,7 @@ export function miniDiff(before: string, after: string, colors = pc.isColorSuppo
 export async function fixCommand(rootArg: string | undefined, options: { dryRun?: boolean }): Promise<void> {
   banner(options.dryRun ? "fix (dry run)" : "fix");
   const root = path.resolve(rootArg ?? ".");
-  const { config } = await loadTriadConfig(root, "serve");
+  const { config } = await loadBullConfig(root, "serve");
   const analyzer = new ProjectAnalyzer(root, config);
   const before = analyzer.analyze();
   const plan = planFixes(before);
@@ -237,7 +237,7 @@ export async function fixCommand(rootArg: string | undefined, options: { dryRun?
     const fixable = before.diagnostics.length;
     console.log(
       fixable
-        ? `  ${pc.dim("Nothing to fix automatically.")} ${fixable} diagnostic(s) need a human: run ${pc.cyan("triad check")}.`
+        ? `  ${pc.dim("Nothing to fix automatically.")} ${fixable} diagnostic(s) need a human: run ${pc.cyan("bull check")}.`
         : `  ${pc.green("✓")} Nothing to fix: the architecture is clean.`,
     );
     return;
@@ -258,7 +258,7 @@ export async function fixCommand(rootArg: string | undefined, options: { dryRun?
     for (const [from, to] of plan.renames) {
       if (!plan.contents.has(from)) console.log(`    ${pc.bold(rel(from))} ${pc.dim("→")} ${rel(to)}\n`);
     }
-    console.log(`  ${pc.dim("Dry run: nothing was written. Run")} ${pc.cyan("triad fix")} ${pc.dim("to apply.")}`);
+    console.log(`  ${pc.dim("Dry run: nothing was written. Run")} ${pc.cyan("bull fix")} ${pc.dim("to apply.")}`);
     return;
   }
 
@@ -266,6 +266,6 @@ export async function fixCommand(rootArg: string | undefined, options: { dryRun?
   analyzer.invalidate();
   const after = analyzer.analyze();
   console.log(`\n${formatSummary(after)}`);
-  if (after.diagnostics.length) console.log(`\n  ${pc.dim("Run")} ${pc.cyan("triad check")} ${pc.dim("for the details of what is left.")}`);
+  if (after.diagnostics.length) console.log(`\n  ${pc.dim("Run")} ${pc.cyan("bull check")} ${pc.dim("for the details of what is left.")}`);
   if (after.errorCount > 0) process.exitCode = 1;
 }

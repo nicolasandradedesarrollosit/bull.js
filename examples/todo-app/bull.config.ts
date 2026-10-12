@@ -1,4 +1,4 @@
-import { defineConfig } from "@triad/cli";
+import { defineConfig } from "@bull/cli";
 
 export default defineConfig({
   dev: {

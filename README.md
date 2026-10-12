@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="assets/brand/triad-bull.svg" width="120" alt="Triad bull logo">
+  <img src="assets/brand/bull-logo.svg" width="120" alt="Bull logo">
 </p>
 
-<h1 align="center">Triad</h1>
+<h1 align="center">Bull</h1>
 
 <p align="center"><strong>Stubborn about architecture.</strong><br>
-The React bundler that refuses to build unless you respect MVVM.</p>
+The opinionated React framework that refuses to build unless you respect MVVM.</p>
 
-Triad is a Vite/Next-style CLI (`triad dev`, `triad build`) with a twist: the
+Bull is a Vite/Next-style CLI (`bull dev`, `bull build`) with a twist: the
 **Model–View–ViewModel** architecture is not a suggestion, it is part of the compiler. If a layer is
 missing, if the View talks to the Model or if the ViewModel touches the DOM, the build stops. And it
 does not stop with a cryptic error: it tells you what happened, why it breaks MVVM and how to fix it.
 
-<p align="center"><img src="docs/overlay.png" width="760" alt="Triad dev overlay showing MVVM violations"></p>
+<p align="center"><img src="docs/overlay.png" width="760" alt="Bull dev overlay showing MVVM violations"></p>
 
 ```
 ── VIEW IMPORTS MODEL ───────────────────────────── src/view/label.view.tsx:2:1  MVVM100
@@ -33,7 +33,7 @@ does not stop with a cryptic error: it tells you what happened, why it breaks MV
     2. Expose the data as state/computed and the actions as command.
     3. In the View, use useViewModel(...) and useBinding(...).
 
-  More info: triad explain MVVM100
+  More info: bull explain MVVM100
 ```
 
 ## The enforced architecture
@@ -48,8 +48,8 @@ src/
 
 | Layer | May import | Never |
 |---|---|---|
-| **View** | ViewModels, other Views, `@triad/runtime/react` | the Model, `useState`/`useEffect`, `fetch`, writing state |
-| **ViewModel** | the Model, `@triad/runtime` | React, JSX, the DOM, direct I/O, exposing mutable state |
+| **View** | ViewModels, other Views, `@bull/runtime/react` | the Model, `useState`/`useEffect`, `fetch`, writing state |
+| **ViewModel** | the Model, `@bull/runtime` | React, JSX, the DOM, direct I/O, exposing mutable state |
 | **Model** | other Models, domain libraries | React, the reactive runtime, the DOM, upper layers |
 
 Communication is strict too: the View **reads** with `useBinding(vm.x)` and **acts** with
@@ -74,7 +74,7 @@ export function CounterView() {
 }
 
 // src/main.tsx
-createTriadApp({
+createBullApp({
   root: CounterView,
   register: (c) => {
     c.model(CounterRepository, () => new CounterRepository());
@@ -88,29 +88,29 @@ Because the ViewModel is a plain TypeScript class, it is tested without React or
 
 ## Where the architecture linter runs
 
-The rules exist once (`@triad/core`) and are enforced in four places, always with the same code and
+The rules exist once (`@bull/core`) and are enforced in four places, always with the same code and
 message:
 
 | | |
 |---|---|
-| `triad build` | Analyzes **before** calling Vite. On errors it exits with code 1 and produces no `dist/`. |
-| `triad dev` | Re-analyzes on every change, prints the report in the terminal and shows it in a browser **overlay**. |
-| `triad check [--format json]` | Analysis only, great for CI. |
-| `@triad/eslint-plugin` | File-level rules underlined in your editor as you type. |
+| `bull build` | Analyzes **before** calling Vite. On errors it exits with code 1 and produces no `dist/`. |
+| `bull dev` | Re-analyzes on every change, prints the report in the terminal and shows it in a browser **overlay**. |
+| `bull check [--format json]` | Analysis only, great for CI. |
+| `@bull/eslint-plugin` | File-level rules underlined in your editor as you type. |
 
-`triad explain MVVM201` (or `201`, or `view-owns-state`) prints the full explanation with
+`bull explain MVVM201` (or `201`, or `view-owns-state`) prints the full explanation with
 "don't / do" examples. Every rule is documented in [docs/rules](docs/rules/README.md).
 
 ## Tooling
 
 ```bash
-triad g feature shopping-cart   # repository + ViewModel (injected) + test + View, registered in main.tsx
-triad g model user --kind repository
-triad fix --dry-run             # safe codemods: renames, readonly state, type re-exports (shows a diff)
-triad graph --format html --open  # interactive import graph, violating edges in red
-triad graph --format mermaid    # paste it into your docs
-triad doctor                    # Node, React, single React copy, config, tsconfig, ESLint, architecture
-triad info                      # files per layer, each ViewModel's public API and who binds it
+bull g feature shopping-cart   # repository + ViewModel (injected) + test + View, registered in main.tsx
+bull g model user --kind repository
+bull fix --dry-run             # safe codemods: renames, readonly state, type re-exports (shows a diff)
+bull graph --format html --open  # interactive import graph, violating edges in red
+bull graph --format mermaid    # paste it into your docs
+bull doctor                    # Node, React, single React copy, config, tsconfig, ESLint, architecture
+bull info                      # files per layer, each ViewModel's public API and who binds it
 ```
 
 | Command | What it does |
@@ -124,7 +124,7 @@ triad info                      # files per layer, each ViewModel's public API a
 ## Rules
 
 29 rules in 6 groups. **Structure** and **dependency direction** rules are the core of MVVM and
-cannot be disabled: if `triad.config.ts` tries to, that is itself an error (MVVM900).
+cannot be disabled: if `bull.config.ts` tries to, that is itself an error (MVVM900).
 
 - **Structure**: required layers (001), no code outside the layers (002), naming convention (003), composition root (005).
 - **Dependencies**: View ↛ Model (100), ViewModel ↛ View (101), Model ↛ upper layers (102), ViewModel/Model without React (103/104), no cycles (105).
@@ -135,8 +135,8 @@ cannot be disabled: if `triad.config.ts` tries to, that is itself an error (MVVM
 ## Configuration
 
 ```ts
-// triad.config.ts
-import { defineConfig } from "@triad/cli";
+// bull.config.ts
+import { defineConfig } from "@bull/cli";
 
 export default defineConfig({
   dev: { overlay: "blocking" },            // or "dismissible" (default) or false
@@ -151,10 +151,10 @@ export default defineConfig({
 
 | Package | What it does |
 |---|---|
-| [`@triad/core`](packages/core) | Analysis engine: scanner, AST fact extraction (ESTree), import graph, rules and formatters. No dependency on Vite or ESLint. |
-| [`@triad/runtime`](packages/runtime) | Home-grown signals (`state`, `computed`, `effect`, `batch`), `ViewModel`, `Command`, DI container and React bindings (`useViewModel`, `useBinding`). |
-| [`@triad/cli`](packages/cli) | `dev / build / preview / check / explain / create` plus the tooling (`generate / fix / graph / doctor / info`), Vite plugin and browser overlay. |
-| [`@triad/eslint-plugin`](packages/eslint-plugin) | File-level rules as ESLint 9+ rules (flat config). |
+| [`@bull/core`](packages/core) | Analysis engine: scanner, AST fact extraction (ESTree), import graph, rules and formatters. No dependency on Vite or ESLint. |
+| [`@bull/runtime`](packages/runtime) | Home-grown signals (`state`, `computed`, `effect`, `batch`), `ViewModel`, `Command`, DI container and React bindings (`useViewModel`, `useBinding`). |
+| [`@bull/cli`](packages/cli) | `dev / build / preview / check / explain / create` plus the tooling (`generate / fix / graph / doctor / info`), Vite plugin and browser overlay. |
+| [`@bull/eslint-plugin`](packages/eslint-plugin) | File-level rules as ESLint 9+ rules (flat config). |
 
 **Key design decision:** rules do not look at the AST directly but at `ModuleFacts`, a summary of
 the module (imports, hooks, globals, classes and their members…) extracted from any ESTree AST. The

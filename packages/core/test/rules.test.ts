@@ -74,7 +74,7 @@ describe("dependency direction", () => {
   });
 
   it("MVVM101: the ViewModel imports the View", () => {
-    expect(codes({ [VM]: `import { ViewModel } from "@triad/runtime";\nimport { LabelView } from "../view/label.view";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
+    expect(codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nimport { LabelView } from "../view/label.view";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
       "MVVM101",
     ]);
   });
@@ -84,13 +84,13 @@ describe("dependency direction", () => {
   });
 
   it("MVVM103: the ViewModel uses React or JSX", () => {
-    expect(codes({ [VM]: `import { useState } from "react";\nimport { ViewModel } from "@triad/runtime";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
+    expect(codes({ [VM]: `import { useState } from "react";\nimport { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}` })).toEqual([
       "MVVM103",
     ]);
   });
 
   it("MVVM104 / MVVM400: the Model uses React or the runtime", () => {
-    expect(codes({ "src/model/counter.model.ts": `import { useState } from "react";\nimport { state } from "@triad/runtime";\nexport {}` })).toEqual([
+    expect(codes({ "src/model/counter.model.ts": `import { useState } from "react";\nimport { state } from "@bull/runtime";\nexport {}` })).toEqual([
       "MVVM104",
       "MVVM400",
     ]);
@@ -122,7 +122,7 @@ describe("dependency direction", () => {
 
 describe("View", () => {
   const view = (body: string, imports = "") => ({
-    [VIEW]: `import { useBinding, useViewModel } from "@triad/runtime/react";
+    [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";
 import { CounterViewModel } from "../viewmodel/counter.viewmodel";
 ${imports}
 export function CounterView() {
@@ -165,8 +165,8 @@ export function CounterView() {
   });
 
   it("MVVM205: the View imports reactive primitives", () => {
-    expect(codes(view(``, `import { state } from "@triad/runtime";`))).toEqual(["MVVM205"]);
-    expect(codes(view(``, `import type { ReadonlyState } from "@triad/runtime";`))).toEqual([]);
+    expect(codes(view(``, `import { state } from "@bull/runtime";`))).toEqual(["MVVM205"]);
+    expect(codes(view(``, `import type { ReadonlyState } from "@bull/runtime";`))).toEqual([]);
   });
 
   it("MVVM206: reading .value without binding", () => {
@@ -176,7 +176,7 @@ export function CounterView() {
 
 describe("ViewModel", () => {
   const vm = (body: string, extra = "") => ({
-    [VM]: `import { ViewModel } from "@triad/runtime";
+    [VM]: `import { ViewModel } from "@bull/runtime";
 import { CounterRepository } from "../model/counter.repository";
 ${extra}
 export class CounterViewModel extends ViewModel {
@@ -204,9 +204,9 @@ export class CounterViewModel extends ViewModel {
   });
 
   it("MVVM303: ViewModel name or count", () => {
-    expect(codes({ [VM]: `import { ViewModel } from "@triad/runtime";\nexport class Counter extends ViewModel {}` })).toEqual(["MVVM303"]);
+    expect(codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nexport class Counter extends ViewModel {}` })).toEqual(["MVVM303"]);
     expect(
-      codes({ [VM]: `import { ViewModel } from "@triad/runtime";\nexport class CounterViewModel extends ViewModel {}\nexport class OtherViewModel extends ViewModel {}` }),
+      codes({ [VM]: `import { ViewModel } from "@bull/runtime";\nexport class CounterViewModel extends ViewModel {}\nexport class OtherViewModel extends ViewModel {}` }),
     ).toEqual(["MVVM303"]);
   });
 
@@ -238,13 +238,13 @@ describe("config", () => {
 
   it("configurable rules can be turned off or raised", () => {
     const listFilter = {
-      [VIEW]: `import { useBinding, useViewModel } from "@triad/runtime/react";
+      [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";
 import { CounterViewModel } from "../viewmodel/counter.viewmodel";
 export function CounterView() { const vm = useViewModel(CounterViewModel); const l = useBinding(vm.count); return <i>{[l].filter(Boolean).length}{l.toString()}</i>; }`,
     };
     expect(codes(listFilter)).toEqual([]);
     const result = analyze(
-      { [VIEW]: `import { useBinding, useViewModel } from "@triad/runtime/react";\nimport { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport function CounterView() { const vm = useViewModel(CounterViewModel); const l = useBinding(vm.count); l.filter(); return null; }` },
+      { [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";\nimport { CounterViewModel } from "../viewmodel/counter.viewmodel";\nexport function CounterView() { const vm = useViewModel(CounterViewModel); const l = useBinding(vm.count); l.filter(); return null; }` },
       { rules: { MVVM203: "error" } },
     );
     expect(result.diagnostics.map((d) => d.severity)).toEqual(["error"]);

@@ -1,7 +1,7 @@
 {
-  "name": "@triad/core",
+  "name": "@bull/core",
   "version": "0.2.0",
-  "description": "Triad's MVVM architecture analysis engine.",
+  "description": "Bull's MVVM architecture analysis engine.",
   "type": "module",
   "license": "MIT",
   "files": [

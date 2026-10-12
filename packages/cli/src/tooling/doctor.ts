@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ProjectAnalyzer } from "@triad/core";
+import { ProjectAnalyzer } from "@bull/core";
 import pc from "picocolors";
-import { loadTriadConfig, type TriadConfig } from "../config";
+import { loadBullConfig, type BullConfig } from "../config";
 import { bullArt } from "../ui/brand";
 
 export type CheckStatus = "ok" | "warn" | "fail";
@@ -58,12 +58,12 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   add(
     nodeMajor >= 20
       ? { status: "ok", title: `Node.js ${nodeVersion}` }
-      : { status: "fail", title: `Node.js ${nodeVersion}`, hint: "Triad needs Node.js 20 or newer." },
+      : { status: "fail", title: `Node.js ${nodeVersion}`, hint: "Bull needs Node.js 20 or newer." },
   );
 
   // package.json
   if (!fs.existsSync(path.join(root, "package.json"))) {
-    add({ status: "fail", title: "package.json not found", hint: "Run `triad doctor` from your project root, or pass the path." });
+    add({ status: "fail", title: "package.json not found", hint: "Run `bull doctor` from your project root, or pass the path." });
     return checks;
   }
 
@@ -79,11 +79,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   }
 
   // Runtime and a single copy of React
-  const runtimeDir = packageDir(root, "@triad/runtime");
+  const runtimeDir = packageDir(root, "@bull/runtime");
   if (!runtimeDir) {
-    add({ status: "fail", title: "@triad/runtime is not installed", hint: "npm install @triad/runtime" });
+    add({ status: "fail", title: "@bull/runtime is not installed", hint: "npm install @bull/runtime" });
   } else {
-    add({ status: "ok", title: `@triad/runtime ${versionOf(root, "@triad/runtime") ?? ""}`.trim() });
+    add({ status: "ok", title: `@bull/runtime ${versionOf(root, "@bull/runtime") ?? ""}`.trim() });
     const fromApp = packageDir(root, "react");
     const fromRuntime = packageDir(runtimeDir, "react");
     if (fromApp && fromRuntime && fromApp !== fromRuntime) {
@@ -98,18 +98,18 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
     }
   }
 
-  // The bundler Triad drives
+  // The bundler Bull drives
   const vite = versionOf(path.dirname(fileURLToPath(import.meta.url)), "vite");
-  add(vite ? { status: "ok", title: `Vite ${vite}` } : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @triad/cli." });
+  add(vite ? { status: "ok", title: `Vite ${vite}` } : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @bull/cli." });
 
-  // triad.config
-  let config: TriadConfig = {};
+  // bull.config
+  let config: BullConfig = {};
   try {
-    const loaded = await loadTriadConfig(root, "serve");
+    const loaded = await loadBullConfig(root, "serve");
     config = loaded.config;
-    add({ status: "ok", title: loaded.file ? `${path.basename(loaded.file)} loads` : "No triad.config.ts (defaults are used)" });
+    add({ status: "ok", title: loaded.file ? `${path.basename(loaded.file)} loads` : "No bull.config.ts (defaults are used)" });
   } catch (error) {
-    add({ status: "fail", title: "triad.config could not be loaded", detail: (error as Error).message.split("\n")[0] });
+    add({ status: "fail", title: "bull.config could not be loaded", detail: (error as Error).message.split("\n")[0] });
   }
 
   const analyzer = new ProjectAnalyzer(root, config);
@@ -149,11 +149,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   const missing = result.diagnostics.filter((d) => d.code === "MVVM001").map((d) => d.data.dir);
   add(
     missing.length
-      ? { status: "fail", title: `Missing layer folders: ${missing.join(", ")}`, hint: "Create them, or run `triad g feature <name>`." }
+      ? { status: "fail", title: `Missing layer folders: ${missing.join(", ")}`, hint: "Create them, or run `bull g feature <name>`." }
       : { status: "ok", title: "src/model, src/viewmodel and src/view exist" },
   );
   if (result.diagnostics.some((d) => d.code === "MVVM005")) {
-    add({ status: "fail", title: "The composition root is missing", hint: `Create ${entry.slice(1)} with createTriadApp().` });
+    add({ status: "fail", title: "The composition root is missing", hint: `Create ${entry.slice(1)} with createBullApp().` });
   }
 
   // ESLint
@@ -161,11 +161,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
     .map((f) => path.join(root, f))
     .find((f) => fs.existsSync(f));
   if (!eslintConfig) {
-    add({ status: "warn", title: "No ESLint flat config", hint: "Add @triad/eslint-plugin to see violations in your editor." });
-  } else if (!fs.readFileSync(eslintConfig, "utf8").includes("@triad/eslint-plugin")) {
-    add({ status: "warn", title: `${path.basename(eslintConfig)} does not use @triad/eslint-plugin`, hint: "Spread triad.configs.recommended into it." });
+    add({ status: "warn", title: "No ESLint flat config", hint: "Add @bull/eslint-plugin to see violations in your editor." });
+  } else if (!fs.readFileSync(eslintConfig, "utf8").includes("@bull/eslint-plugin")) {
+    add({ status: "warn", title: `${path.basename(eslintConfig)} does not use @bull/eslint-plugin`, hint: "Spread bull.configs.recommended into it." });
   } else {
-    add({ status: "ok", title: "ESLint uses @triad/eslint-plugin" });
+    add({ status: "ok", title: "ESLint uses @bull/eslint-plugin" });
   }
 
   // Architecture
@@ -173,9 +173,9 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   const errors = architecture.filter((d) => d.severity === "error").length;
   add(
     errors
-      ? { status: "fail", title: `Architecture: ${errors} error(s)`, hint: "Run `triad check` for details, or `triad fix` for the automatic ones." }
+      ? { status: "fail", title: `Architecture: ${errors} error(s)`, hint: "Run `bull check` for details, or `bull fix` for the automatic ones." }
       : architecture.length
-        ? { status: "warn", title: `Architecture: ${architecture.length} warning(s)`, hint: "Run `triad check` for details." }
+        ? { status: "warn", title: `Architecture: ${architecture.length} warning(s)`, hint: "Run `bull check` for details." }
         : { status: "ok", title: "Architecture respects MVVM" },
   );
   return checks;

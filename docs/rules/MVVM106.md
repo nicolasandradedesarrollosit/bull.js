@@ -1,6 +1,6 @@
 # MVVM106 · Composition root imported
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/imports-composition-root`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/imports-composition-root`
 
 Nothing can import the composition root.
 

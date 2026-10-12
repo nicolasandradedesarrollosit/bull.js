@@ -5,7 +5,7 @@ export interface KeyValueStorage {
   setItem(key: string, value: string): void;
 }
 
-const KEY = "triad.todos";
+const KEY = "bull.todos";
 
 /** Data access. Today it is localStorage, tomorrow it can be an API: the ViewModel never notices. */
 export class TodoRepository {

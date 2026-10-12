@@ -16,7 +16,7 @@ import type { ViewModel } from "./ViewModel";
 
 const ContainerContext = createContext<Container | null>(null);
 
-export function TriadProvider(props: { container: Container; children?: ReactNode }) {
+export function BullProvider(props: { container: Container; children?: ReactNode }) {
   return <ContainerContext.Provider value={props.container}>{props.children}</ContainerContext.Provider>;
 }
 
@@ -28,8 +28,8 @@ export function useViewModel<T extends ViewModel>(token: Token<T>): T {
   const container = useContext(ContainerContext);
   if (!container) {
     throw new Error(
-      `[triad] useViewModel(${token.name}) was called outside a Triad app. ` +
-        `Mount the app with createTriadApp() in src/main.tsx.`,
+      `[bull] useViewModel(${token.name}) was called outside a Bull app. ` +
+        `Mount the app with createBullApp() in src/main.tsx.`,
     );
   }
   const [vm] = useState(() => container.createViewModel(token));
@@ -59,7 +59,7 @@ export function useBinding<T>(source: Readable<T>): T {
   return useSyncExternalStore(source.subscribe, snapshot, snapshot);
 }
 
-export interface TriadAppOptions {
+export interface BullAppOptions {
   /** The root View of the application. */
   root: ComponentType;
   /** Registers the Models and ViewModels. It is the app's dependency injection. */
@@ -70,25 +70,25 @@ export interface TriadAppOptions {
   strict?: boolean;
 }
 
-export interface TriadApp {
+export interface BullApp {
   container: Container;
   unmount(): void;
 }
 
 /** Mounts the application. Called once, from the composition root. */
-export function createTriadApp(options: TriadAppOptions): TriadApp {
+export function createBullApp(options: BullAppOptions): BullApp {
   const container = new Container();
   options.register?.(container);
 
   const target = options.element ?? "#root";
   const element = typeof target === "string" ? document.querySelector(target) : target;
-  if (!element) throw new Error(`[triad] Element "${String(target)}" was not found in index.html.`);
+  if (!element) throw new Error(`[bull] Element "${String(target)}" was not found in index.html.`);
 
   const Root = options.root;
   const tree = (
-    <TriadProvider container={container}>
+    <BullProvider container={container}>
       <Root />
-    </TriadProvider>
+    </BullProvider>
   );
   const root: Root = createRoot(element);
   root.render(options.strict === false ? tree : <StrictMode>{tree}</StrictMode>);

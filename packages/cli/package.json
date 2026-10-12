@@ -1,11 +1,11 @@
 {
-  "name": "@triad/cli",
+  "name": "@bull/cli",
   "version": "0.2.0",
-  "description": "Triad: the React bundler that refuses to build unless you respect MVVM.",
+  "description": "Bull: the opinionated React framework that refuses to build unless you respect MVVM.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "triad": "./dist/bin.js"
+    "bull": "./dist/bin.js"
   },
   "files": [
     "dist",
@@ -19,10 +19,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --external @triad/core"
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean --external @bull/core"
   },
   "dependencies": {
-    "@triad/core": "^0.2.0",
+    "@bull/core": "^0.2.0",
     "@vitejs/plugin-react": "^6.1.2",
     "cac": "^6.7.14",
     "picocolors": "^1.1.1",

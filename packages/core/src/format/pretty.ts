@@ -86,7 +86,7 @@ export function formatDiagnostic(d: SerializedDiagnostic, options: PrettyOptions
     for (const line of rest) out.push(`       ${code(line, c)}`);
   }
   out.push("");
-  if (d.fixable) out.push(`  ${c.cyan("✦")} Auto-fixable: run ${c.cyan("triad fix")}`);
+  if (d.fixable) out.push(`  ${c.cyan("✦")} Auto-fixable: run ${c.cyan("bull fix")}`);
   out.push(c.dim(`  More info: ${d.explain}`));
   return out.join("\n");
 }
@@ -170,7 +170,7 @@ export function formatReport(result: AnalysisResult, options: PrettyOptions = {}
   return [...blocks, formatSummary(result, options)].join("\n\n") + "\n";
 }
 
-// ─── triad explain ────────────────────────────────────────────────────────────
+// ─── bull explain ────────────────────────────────────────────────────────────
 
 const CATEGORY_LABEL: Record<RuleMeta["category"], string> = {
   structure: "Structure",
@@ -222,7 +222,7 @@ export function formatExplain(meta: RuleMeta, options: PrettyOptions = {}): stri
 
 export function formatRuleList(options: PrettyOptions = {}): string {
   const c = colorsFor(options);
-  const out: string[] = [c.bold("Triad architecture rules"), ""];
+  const out: string[] = [c.bold("Bull architecture rules"), ""];
   let category = "";
   for (const meta of RULE_LIST) {
     if (meta.category !== category) {
@@ -234,7 +234,7 @@ export function formatRuleList(options: PrettyOptions = {}): string {
     out.push(`  ${sev} ${c.bold(meta.code)} ${lock} ${meta.summary}`);
   }
   out.push("");
-  out.push(c.dim("🔒 = part of the MVVM core, cannot be disabled.  Details: triad explain <code>"));
+  out.push(c.dim("🔒 = part of the MVVM core, cannot be disabled.  Details: bull explain <code>"));
   return out.join("\n") + "\n";
 }
 
@@ -244,8 +244,8 @@ export function ruleToMarkdown(meta: RuleMeta): string {
   out.push("");
   out.push(
     `> **${CATEGORY_LABEL[meta.category]}** · ${meta.severity === "error" ? "error" : "warning"} · ` +
-      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`triad/${meta.slug}\`` +
-      (meta.fixable ? " · auto-fixable with `triad fix`" : ""),
+      `${meta.configurable ? "configurable" : "cannot be disabled"} · ESLint rule: \`bull/${meta.slug}\`` +
+      (meta.fixable ? " · auto-fixable with `bull fix`" : ""),
   );
   out.push("");
   out.push(meta.summary);

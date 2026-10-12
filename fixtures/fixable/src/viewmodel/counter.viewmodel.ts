@@ -1,4 +1,4 @@
-import { ViewModel } from "@triad/runtime";
+import { ViewModel } from "@bull/runtime";
 import type { CounterApi } from "../model/CounterApi";
 
 export class CounterViewModel extends ViewModel {

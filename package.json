@@ -1,5 +1,5 @@
 {
-  "name": "triad-monorepo",
+  "name": "bull-monorepo",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -10,7 +10,7 @@
     "examples/*"
   ],
   "scripts": {
-    "build": "npm run build -w @triad/runtime -w @triad/core -w @triad/eslint-plugin -w @triad/cli",
+    "build": "npm run build -w @bull/runtime -w @bull/core -w @bull/eslint-plugin -w @bull/cli",
     "test": "vitest run",
     "test:e2e": "npm run build && vitest run -c vitest.e2e.config.ts",
     "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit",

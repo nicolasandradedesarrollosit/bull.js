@@ -1,6 +1,6 @@
 # MVVM101 · ViewModel imports View
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/viewmodel-imports-view`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/viewmodel-imports-view`
 
 The ViewModel cannot know about the View.
 

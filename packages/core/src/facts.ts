@@ -6,7 +6,7 @@ import type { Range } from "./types";
  *
  * They are extracted from an ESTree AST. Project analysis parses with
  * typescript-estree and the ESLint plugin receives the same kind of AST, so
- * the rules are identical in the build, in `triad check` and in the editor.
+ * the rules are identical in the build, in `bull check` and in the editor.
  */
 export interface ModuleFacts {
   imports: ImportFact[];

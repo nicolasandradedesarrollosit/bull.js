@@ -1,6 +1,6 @@
 # MVVM005 · Missing composition root
 
-> **Structure** · error · cannot be disabled · ESLint rule: `triad/composition-root`
+> **Structure** · error · cannot be disabled · ESLint rule: `bull/composition-root`
 
 The composition root must exist (src/main.tsx by default).
 
@@ -10,5 +10,5 @@ The composition root is the only place that knows all three layers: it creates t
 
 ## How to fix
 
-1. Create `src/main.tsx` with createTriadApp():
-   - createTriadApp({ root: AppView, register: (c) => { c.model(...); c.viewModel(...); } });
+1. Create `src/main.tsx` with createBullApp():
+   - createBullApp({ root: AppView, register: (c) => { c.model(...); c.viewModel(...); } });

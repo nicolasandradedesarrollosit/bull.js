@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { LAYER_LABEL, ProjectAnalyzer, type AnalysisResult, type MemberFact } from "@triad/core";
+import { LAYER_LABEL, ProjectAnalyzer, type AnalysisResult, type MemberFact } from "@bull/core";
 import pc from "picocolors";
-import { loadTriadConfig } from "../config";
+import { loadBullConfig } from "../config";
 import { banner } from "../commands/shared";
 
 export interface ViewModelInfo {
@@ -106,7 +106,7 @@ export function formatInfo(info: ProjectInfo, colors = pc.isColorSupported): str
 
   out.push("");
   out.push(`  ${c.bold("ViewModels")} ${c.dim("(public API)")}`);
-  if (!info.viewModels.length) out.push(`    ${c.dim("none yet — try `triad g feature <name>`")}`);
+  if (!info.viewModels.length) out.push(`    ${c.dim("none yet — try `bull g feature <name>`")}`);
   for (const vm of info.viewModels) {
     out.push(`    ${c.magenta(vm.name)} ${c.dim(vm.file)}`);
     row("state", vm.state, c.cyan);
@@ -134,7 +134,7 @@ export function formatInfo(info: ProjectInfo, colors = pc.isColorSupported): str
   out.push("");
   out.push(
     info.errors || info.warnings
-      ? `  ${c.red("✗")} ${info.errors} error(s), ${info.warnings} warning(s) — run ${c.cyan("triad check")}`
+      ? `  ${c.red("✗")} ${info.errors} error(s), ${info.warnings} warning(s) — run ${c.cyan("bull check")}`
       : `  ${c.green("✓")} MVVM architecture ok`,
   );
   return out.join("\n") + "\n";
@@ -142,7 +142,7 @@ export function formatInfo(info: ProjectInfo, colors = pc.isColorSupported): str
 
 export async function infoCommand(rootArg: string | undefined, options: { json?: boolean }): Promise<void> {
   const root = path.resolve(rootArg ?? ".");
-  const { config, file } = await loadTriadConfig(root, "serve");
+  const { config, file } = await loadBullConfig(root, "serve");
   const info = collectInfo(new ProjectAnalyzer(root, config).analyze(), file);
   if (options.json) {
     process.stdout.write(JSON.stringify(info, null, 2) + "\n");

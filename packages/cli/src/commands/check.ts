@@ -1,4 +1,4 @@
-import { serializeResult } from "@triad/core";
+import { serializeResult } from "@bull/core";
 import { banner, loadProject, runAnalysis } from "./shared";
 
 export async function checkCommand(rootArg: string | undefined, options: { format?: string }): Promise<void> {

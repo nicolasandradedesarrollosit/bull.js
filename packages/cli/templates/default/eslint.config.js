@@ -1,3 +1,3 @@
-import triad from "@triad/eslint-plugin";
+import bull from "@bull/eslint-plugin";
 
-export default [...triad.configs.recommended];
+export default [...bull.configs.recommended];

@@ -1,6 +1,6 @@
 # MVVM305 · ViewModel does direct I/O
 
-> **ViewModel** · error · configurable · ESLint rule: `triad/viewmodel-does-io`
+> **ViewModel** · error · configurable · ESLint rule: `bull/viewmodel-does-io`
 
 Network and storage access belong in the Model.
 

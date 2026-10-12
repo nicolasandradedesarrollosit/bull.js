@@ -1,6 +1,6 @@
 # MVVM401 · Model touches the DOM
 
-> **Model** · error · cannot be disabled · ESLint rule: `triad/model-touches-dom`
+> **Model** · error · cannot be disabled · ESLint rule: `bull/model-touches-dom`
 
 The Model does not know about the DOM.
 

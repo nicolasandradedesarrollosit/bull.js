@@ -1,2 +1,2 @@
-export { defineConfig, type TriadConfig } from "./config";
-export { triadPlugin, type TriadPluginOptions } from "./vite/plugin";
+export { defineConfig, type BullConfig } from "./config";
+export { bullPlugin, type BullPluginOptions } from "./vite/plugin";

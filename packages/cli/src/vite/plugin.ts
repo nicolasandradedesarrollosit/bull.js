@@ -4,16 +4,16 @@ import {
   ProjectAnalyzer,
   serializeResult,
   type AnalysisResult,
-  type TriadArchitectureConfig,
-} from "@triad/core";
+  type BullArchitectureConfig,
+} from "@bull/core";
 import pc from "picocolors";
 import type { Plugin, ViteDevServer } from "vite";
 import { OVERLAY_PUBLIC_PATH, overlayModuleCode, type OverlayPayload } from "./overlay-client";
 
-export interface TriadPluginOptions {
+export interface BullPluginOptions {
   /** Project root. Defaults to Vite's `root`. */
   root?: string;
-  config?: TriadArchitectureConfig;
+  config?: BullArchitectureConfig;
   /** An existing analyzer (the CLI shares it to avoid analyzing twice). */
   analyzer?: ProjectAnalyzer;
   /** Browser overlay in dev. Defaults to `dismissible`. */
@@ -22,7 +22,7 @@ export interface TriadPluginOptions {
   checkOnBuild?: boolean;
 }
 
-const VIRTUAL_OVERLAY = "\0triad-overlay";
+const VIRTUAL_OVERLAY = "\0bull-overlay";
 
 /**
  * Vite plugin that enforces the MVVM architecture.
@@ -32,7 +32,7 @@ const VIRTUAL_OVERLAY = "\0triad-overlay";
  *
  * It can also be used on its own in a `vite.config.ts`.
  */
-export function triadPlugin(options: TriadPluginOptions = {}): Plugin {
+export function bullPlugin(options: BullPluginOptions = {}): Plugin {
   let analyzer = options.analyzer;
   let isBuild = false;
   let last: AnalysisResult | undefined;
@@ -56,11 +56,11 @@ export function triadPlugin(options: TriadPluginOptions = {}): Plugin {
     } else if (previous && previous.diagnostics.length > 0) {
       console.log(`\n  ${pc.green("✓")} ${pc.bold("MVVM architecture ok")} ${pc.dim("· every violation was fixed")}\n`);
     }
-    if (overlayMode) server.ws.send("triad:diagnostics", payload());
+    if (overlayMode) server.ws.send("bull:diagnostics", payload());
   }
 
   return {
-    name: "triad:mvvm",
+    name: "bull:mvvm",
     enforce: "pre",
 
     configResolved(config) {
@@ -93,8 +93,8 @@ export function triadPlugin(options: TriadPluginOptions = {}): Plugin {
       });
 
       if (overlayMode) {
-        server.ws.on("triad:request", (_data: unknown, client: { send(event: string, payload?: unknown): void }) => {
-          if (last) client.send("triad:diagnostics", payload());
+        server.ws.on("bull:request", (_data: unknown, client: { send(event: string, payload?: unknown): void }) => {
+          if (last) client.send("bull:diagnostics", payload());
         });
       }
       runDev(server, true);

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeProject } from "@triad/core";
+import { analyzeProject } from "@bull/core";
 import { afterAll, describe, expect, it } from "vitest";
 import { applyFixPlan, miniDiff, planFixes } from "../src/tooling/fix";
 import { read, templateProject } from "./helpers";
@@ -12,13 +12,13 @@ const temps: string[] = [];
 afterAll(() => temps.forEach((d) => fs.rmSync(d, { recursive: true, force: true })));
 
 function fixableCopy(): string {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "triad-fix-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "bull-fix-"));
   temps.push(root);
   fs.cpSync(fixture, root, { recursive: true });
   return root;
 }
 
-describe("triad fix", () => {
+describe("bull fix", () => {
   it("repairs every auto-fixable diagnostic and leaves a clean project", () => {
     const root = fixableCopy();
     const before = analyzeProject(root);

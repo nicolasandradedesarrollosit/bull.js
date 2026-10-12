@@ -1,6 +1,6 @@
 # MVVM204 · View creates its ViewModel with new
 
-> **View** · error · cannot be disabled · ESLint rule: `triad/view-instantiates-viewmodel`
+> **View** · error · cannot be disabled · ESLint rule: `bull/view-instantiates-viewmodel`
 
 ViewModels are obtained with useViewModel(), not with new.
 

@@ -1,6 +1,6 @@
 # MVVM304 · ViewModel creates its dependencies
 
-> **ViewModel** · error · cannot be disabled · ESLint rule: `triad/viewmodel-instantiates-dependency`
+> **ViewModel** · error · cannot be disabled · ESLint rule: `bull/viewmodel-instantiates-dependency`
 
 Repositories and services are injected through the constructor, not created with new.
 

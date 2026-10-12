@@ -12,7 +12,7 @@ afterAll(() => {
 
 /** A fresh copy of the `create` template in a temp folder. */
 export function templateProject(overrides: Record<string, string | null> = {}): string {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "triad-cli-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "bull-cli-"));
   created.push(root);
   fs.cpSync(template, root, { recursive: true });
   for (const [rel, content] of Object.entries(overrides)) {

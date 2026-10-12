@@ -21,7 +21,7 @@ export interface SerializedDiagnostic {
   why: string;
   fix: string[];
   notes?: string[];
-  /** `triad fix` can repair it automatically. */
+  /** `bull fix` can repair it automatically. */
   fixable: boolean;
   explain: string;
   frame?: FrameLine[];
@@ -60,7 +60,7 @@ export function serializeDiagnostic(
     fix: meta.fix(d.data),
     notes: d.notes,
     fixable: isAutoFixable(d),
-    explain: `triad explain ${d.code}`,
+    explain: `bull explain ${d.code}`,
     frame: source && d.range ? buildFrame(source, d.range) : undefined,
   };
 }

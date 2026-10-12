@@ -1,6 +1,6 @@
 # MVVM206 · View reads .value without binding
 
-> **View** · warning · configurable · ESLint rule: `triad/view-reads-value`
+> **View** · warning · configurable · ESLint rule: `bull/view-reads-value`
 
 Reading `vm.x.value` in the View is not reactive: use useBinding().
 

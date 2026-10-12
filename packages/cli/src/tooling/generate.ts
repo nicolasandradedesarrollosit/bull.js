@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { formatReport, ProjectAnalyzer, toKebab, toPascalCase } from "@triad/core";
+import { formatReport, ProjectAnalyzer, toKebab, toPascalCase } from "@bull/core";
 import pc from "picocolors";
-import { loadTriadConfig } from "../config";
+import { loadBullConfig } from "../config";
 import { banner, fail } from "../commands/shared";
 
 export type GenerateType = "model" | "viewmodel" | "view" | "feature";
@@ -85,7 +85,7 @@ export class ${n.pascal}Service {
   }
 }
 `,
-  viewmodel: (n: Names) => `import { ViewModel } from "@triad/runtime";
+  viewmodel: (n: Names) => `import { ViewModel } from "@bull/runtime";
 
 export class ${n.pascal}ViewModel extends ViewModel {
   readonly #items = this.state<string[]>([]);
@@ -96,7 +96,7 @@ export class ${n.pascal}ViewModel extends ViewModel {
   readonly add = this.command((item: string) => this.#items.update((items) => [...items, item]));
 }
 `,
-  viewmodelWithRepository: (n: Names) => `import { ViewModel } from "@triad/runtime";
+  viewmodelWithRepository: (n: Names) => `import { ViewModel } from "@bull/runtime";
 import type { ${n.pascal}Repository } from "../model/${n.kebab}.repository";
 
 export class ${n.pascal}ViewModel extends ViewModel {
@@ -133,7 +133,7 @@ describe("${n.pascal}ViewModel", () => {
   });
 });
 `,
-  boundView: (n: Names) => `import { useBinding, useViewModel } from "@triad/runtime/react";
+  boundView: (n: Names) => `import { useBinding, useViewModel } from "@bull/runtime/react";
 import { ${n.pascal}ViewModel } from "../viewmodel/${n.kebab}.viewmodel";
 
 export function ${n.pascal}View() {
@@ -158,7 +158,7 @@ export function ${n.pascal}View() {
   );
 }
 `,
-  existingViewModelView: (n: Names) => `import { useViewModel } from "@triad/runtime/react";
+  existingViewModelView: (n: Names) => `import { useViewModel } from "@bull/runtime/react";
 import { ${n.pascal}ViewModel } from "../viewmodel/${n.kebab}.viewmodel";
 
 export function ${n.pascal}View() {
@@ -188,7 +188,7 @@ function file(target: string, content: string): GeneratedFile {
     : { path: target, content, action: "create" };
 }
 
-/** Computes what `triad generate` would write, without touching the disk. */
+/** Computes what `bull generate` would write, without touching the disk. */
 export function planGenerate(type: GenerateType, rawName: string, options: GenerateOptions): GeneratePlan {
   const n = normalizeName(rawName);
   const dir = (layer: string) => path.join(options.srcDir, layer);
@@ -325,14 +325,14 @@ export async function generateCommand(
   const type = TYPES[typeArg?.toLowerCase()];
   if (!type || !name) {
     fail(
-      "Usage: triad generate <feature|model|viewmodel|view> <name>",
-      "Example: `triad g feature todo-list` creates a repository, a ViewModel, its test and a View.",
+      "Usage: bull generate <feature|model|viewmodel|view> <name>",
+      "Example: `bull g feature todo-list` creates a repository, a ViewModel, its test and a View.",
     );
     return;
   }
 
   const root = path.resolve(options.root ?? ".");
-  const { config } = await loadTriadConfig(root, "serve");
+  const { config } = await loadBullConfig(root, "serve");
   const analyzer = new ProjectAnalyzer(root, config);
   let plan: GeneratePlan;
   try {

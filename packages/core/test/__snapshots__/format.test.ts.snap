@@ -16,7 +16,7 @@ How to fix
      .readonly.
   2. Read it in the View with useBinding(vm.x) and change it with a command.
   3. If it is purely visual state (an open dropdown), you can allow it with
-     view.allowHooks in triad.config.ts.
+     view.allowHooks in bull.config.ts.
 
 ✗ Don't
   │ const [count, setCount] = useState(0);
@@ -54,7 +54,7 @@ exports[`format > terminal report 1`] = `
     2. Expose the data as state/computed and the actions as command.
     3. In the View, use useViewModel(...) and useBinding(...).
 
-  More info: triad explain MVVM100
+  More info: bull explain MVVM100
 
 ── VIEW OWNS STATE ─────────────────────────────── src/view/label.view.tsx:5:27  MVVM201
 
@@ -74,9 +74,9 @@ exports[`format > terminal report 1`] = `
        .readonly.
     2. Read it in the View with useBinding(vm.x) and change it with a command.
     3. If it is purely visual state (an open dropdown), you can allow it with
-       view.allowHooks in triad.config.ts.
+       view.allowHooks in bull.config.ts.
 
-  More info: triad explain MVVM201
+  More info: bull explain MVVM201
 
   ✗ MVVM architecture: 2 errors in 1 file · Xms
 

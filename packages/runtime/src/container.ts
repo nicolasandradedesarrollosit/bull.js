@@ -32,12 +32,12 @@ export class Container {
     if (!entry) {
       if (this.#viewModels.has(token)) {
         throw new Error(
-          `[triad] ${token.name} is a ViewModel. ViewModels are not requested from the container: ` +
+          `[bull] ${token.name} is a ViewModel. ViewModels are not requested from the container: ` +
             `the View creates them with useViewModel(${token.name}).`,
         );
       }
       throw new Error(
-        `[triad] No Model is registered as ${token.name}.\n` +
+        `[bull] No Model is registered as ${token.name}.\n` +
           `Register it in the composition root (src/main.tsx):\n` +
           `  c.model(${token.name}, () => new ${token.name}())`,
       );
@@ -52,7 +52,7 @@ export class Container {
     if (factory) return factory(this) as T;
     if (token.length === 0) return new (token as unknown as new () => T)();
     throw new Error(
-      `[triad] ${token.name} needs dependencies, but no factory is registered.\n` +
+      `[bull] ${token.name} needs dependencies, but no factory is registered.\n` +
         `Register it in the composition root (src/main.tsx):\n` +
         `  c.viewModel(${token.name}, (c) => new ${token.name}(c.get(MyRepository)))`,
     );

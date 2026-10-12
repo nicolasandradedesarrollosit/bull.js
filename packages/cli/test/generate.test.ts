@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { analyzeProject } from "@triad/core";
+import { analyzeProject } from "@bull/core";
 import { describe, expect, it } from "vitest";
 import { normalizeName, planGenerate, type GenerateOptions } from "../src/tooling/generate";
 import { read, templateProject } from "./helpers";

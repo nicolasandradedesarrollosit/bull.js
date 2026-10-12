@@ -1,5 +1,5 @@
 // View: only binds and draws. Reads with useBinding, acts with commands.
-import { useBinding, useViewModel } from "@triad/runtime/react";
+import { useBinding, useViewModel } from "@bull/runtime/react";
 import { CounterViewModel } from "../viewmodel/counter.viewmodel";
 import { BullLogoView } from "./bull-logo.view";
 

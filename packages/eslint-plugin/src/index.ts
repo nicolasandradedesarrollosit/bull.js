@@ -6,25 +6,25 @@ import {
   type Diagnostic,
   type ResolvedConfig,
   type RuleMeta,
-  type TriadArchitectureConfig,
-} from "@triad/core";
+  type BullArchitectureConfig,
+} from "@bull/core";
 import tsParser from "@typescript-eslint/parser";
 import type { ESLint, Linter, Rule } from "eslint";
 
 /**
- * The same rules that run in `triad build`, now in the editor.
+ * The same rules that run in `bull build`, now in the editor.
  *
  * Each ESLint rule maps to an MVVM code. They all share a single analysis per
  * file (cached by AST), so enabling all of them costs the same as enabling one.
  */
 
-type Settings = TriadArchitectureConfig & { root?: string };
+type Settings = BullArchitectureConfig & { root?: string };
 
 const configCache = new Map<string, ResolvedConfig>();
 const resultCache = new WeakMap<object, Diagnostic[]>();
 
 function configFor(context: Rule.RuleContext): ResolvedConfig {
-  const settings = (context.settings?.triad ?? {}) as Settings;
+  const settings = (context.settings?.bull ?? {}) as Settings;
   const root = settings.root ?? context.cwd;
   const key = JSON.stringify([root, settings]);
   let config = configCache.get(key);
@@ -39,7 +39,7 @@ function diagnosticsFor(context: Rule.RuleContext): Diagnostic[] {
   const ast = context.sourceCode.ast;
   let diagnostics = resultCache.get(ast);
   if (!diagnostics) {
-    // The @typescript-eslint/parser AST is TSESTree, the same one @triad/core uses.
+    // The @typescript-eslint/parser AST is TSESTree, the same one @bull/core uses.
     const facts = extractFacts(ast as unknown as Parameters<typeof extractFacts>[0]);
     diagnostics = runFileRules(context.filename, facts, configFor(context));
     resultCache.set(ast, diagnostics);
@@ -52,7 +52,7 @@ function createRule(meta: RuleMeta): Rule.RuleModule {
     meta: {
       type: "problem",
       docs: { description: `${meta.code}: ${meta.summary}` },
-      messages: { violation: "{{message}} {{fix}} ({{code}} · triad explain {{code}})" },
+      messages: { violation: "{{message}} {{fix}} ({{code}} · bull explain {{code}})" },
       schema: [],
     },
     create(context) {
@@ -83,22 +83,22 @@ const fileRules = RULE_LIST.filter((meta) => meta.scope === "file" && meta.categ
 const rules: Record<string, Rule.RuleModule> = Object.fromEntries(fileRules.map((meta) => [meta.slug, createRule(meta)]));
 
 const plugin = {
-  meta: { name: "@triad/eslint-plugin", version: "0.2.0" },
+  meta: { name: "@bull/eslint-plugin", version: "0.2.0" },
   rules,
   configs: {} as Record<string, Linter.Config[]>,
 } satisfies ESLint.Plugin;
 
 plugin.configs.recommended = [
   {
-    name: "triad/recommended",
+    name: "bull/recommended",
     files: ["src/**/*.{ts,tsx,js,jsx}"],
     languageOptions: {
       parser: tsParser as Linter.Parser,
       parserOptions: { ecmaFeatures: { jsx: true }, sourceType: "module" },
     },
-    plugins: { triad: plugin as ESLint.Plugin },
+    plugins: { bull: plugin as ESLint.Plugin },
     rules: Object.fromEntries(
-      fileRules.map((meta) => [`triad/${meta.slug}`, meta.severity === "error" ? "error" : "warn"]),
+      fileRules.map((meta) => [`bull/${meta.slug}`, meta.severity === "error" ? "error" : "warn"]),
     ) as Linter.RulesRecord,
   },
 ];

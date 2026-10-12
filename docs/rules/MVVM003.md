@@ -1,12 +1,12 @@
 # MVVM003 · Wrong file name
 
-> **Structure** · error · cannot be disabled · ESLint rule: `triad/file-naming` · auto-fixable with `triad fix`
+> **Structure** · error · cannot be disabled · ESLint rule: `bull/file-naming` · auto-fixable with `bull fix`
 
 Each layer has its convention: *.model.ts, *.viewmodel.ts, *.view.tsx.
 
 ## Why
 
-The file name says what role it plays, and Triad uses it to verify the architecture. The Model and the ViewModel are plain TypeScript (.ts): if a file needs .tsx it is because it has JSX, and JSX can only live in the View.
+The file name says what role it plays, and Bull uses it to verify the architecture. The Model and the ViewModel are plain TypeScript (.ts): if a file needs .tsx it is because it has JSX, and JSX can only live in the View.
 
 ## How to fix
 

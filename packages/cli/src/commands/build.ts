@@ -12,7 +12,7 @@ export async function buildCommand(rootArg: string | undefined, options: { outDi
     console.log();
     fail(
       `Build cancelled: ${result.errorCount} MVVM architecture ${result.errorCount === 1 ? "violation" : "violations"}.`,
-      "Fix them and run `triad build` again.",
+      "Fix them and run `bull build` again.",
     );
     return;
   }

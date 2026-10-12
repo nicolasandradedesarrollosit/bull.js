@@ -1,6 +1,6 @@
 # MVVM301 · ViewModel touches the DOM
 
-> **ViewModel** · error · cannot be disabled · ESLint rule: `triad/viewmodel-touches-dom`
+> **ViewModel** · error · cannot be disabled · ESLint rule: `bull/viewmodel-touches-dom`
 
 The ViewModel does not access document, window, elements or DOM events.
 

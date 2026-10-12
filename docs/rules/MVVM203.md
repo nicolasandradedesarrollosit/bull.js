@@ -1,6 +1,6 @@
 # MVVM203 · Business logic in the View
 
-> **View** · warning · configurable · ESLint rule: `triad/view-business-logic`
+> **View** · warning · configurable · ESLint rule: `bull/view-business-logic`
 
 Filtering, sorting or aggregating data is the job of a ViewModel computed.
 

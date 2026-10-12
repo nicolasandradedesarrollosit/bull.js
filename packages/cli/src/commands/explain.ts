@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { formatExplain, formatRuleList, RULE_LIST, ruleBySlug, RULES, ruleToMarkdown, type RuleCode } from "@triad/core";
+import { formatExplain, formatRuleList, RULE_LIST, ruleBySlug, RULES, ruleToMarkdown, type RuleCode } from "@bull/core";
 import pc from "picocolors";
 import { fail } from "./shared";
 
@@ -8,7 +8,7 @@ export function explainCommand(code: string | undefined, options: { all?: boolea
   if (options.all && options.format === "md") {
     const outDir = path.resolve(options.out ?? "docs/rules");
     fs.mkdirSync(outDir, { recursive: true });
-    const index = ["# Triad architecture rules", "", "| Code | Rule | Severity | Can be disabled |", "|---|---|---|---|"];
+    const index = ["# Bull architecture rules", "", "| Code | Rule | Severity | Can be disabled |", "|---|---|---|---|"];
     for (const meta of RULE_LIST) {
       fs.writeFileSync(path.join(outDir, `${meta.code}.md`), ruleToMarkdown(meta));
       index.push(
@@ -28,7 +28,7 @@ export function explainCommand(code: string | undefined, options: { all?: boolea
   const normalized = /^\d+$/.test(code) ? `MVVM${code.padStart(3, "0")}` : code.toUpperCase();
   const meta = RULES[normalized as RuleCode] ?? ruleBySlug(code);
   if (!meta) {
-    fail(`There is no rule "${code}".`, "See the full list with `triad explain`.");
+    fail(`There is no rule "${code}".`, "See the full list with `bull explain`.");
     return;
   }
   process.stdout.write(options.format === "md" ? ruleToMarkdown(meta) : formatExplain(meta));

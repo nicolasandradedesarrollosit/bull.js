@@ -1,5 +1,5 @@
 /**
- * Code of the overlay that runs in the browser during `triad dev`.
+ * Code of the overlay that runs in the browser during `bull dev`.
  *
  * It is served as a virtual module: the plugin takes the source of
  * `overlayMain` with `toString()` and calls it with `import.meta.hot`.
@@ -117,7 +117,7 @@ export function overlayMain(hot: HotLike | undefined): void {
     .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
   `;
 
-  // The Triad bull (assets/brand/triad-bull.svg), inlined so the overlay has no dependencies.
+  // The Bull logo (assets/brand/bull-logo.svg), inlined so the overlay has no dependencies.
   const bull = `<svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
     <path d="M19 20C10.5 20 4.5 15 4 5.5c3.5 5.8 9 8.6 17 9.2Z" fill="#ffd9bf"/>
     <path d="M45 20c8.5 0 14.5-5 15-14.5c-3.5 5.8-9 8.6-17 9.2Z" fill="#ffd9bf"/>
@@ -166,12 +166,12 @@ export function overlayMain(hot: HotLike | undefined): void {
         <p class="why">${inline(d.why)}</p>
         <div class="fix-title">How to fix</div>
         <ol>${fix}</ol>
-        ${d.fixable ? `<div class="fixable">✦ Auto-fixable: run <code>triad fix</code></div>` : ""}
+        ${d.fixable ? `<div class="fixable">✦ Auto-fixable: run <code>bull fix</code></div>` : ""}
         <div class="explain">More info in the terminal: <code>${esc(d.explain)}</code></div>
       </section>`;
   }
 
-  class TriadOverlay extends HTMLElement {
+  class BullOverlay extends HTMLElement {
     payload: OverlayPayload | null = null;
     collapsed = false;
     readonly root: ShadowRoot;
@@ -254,22 +254,22 @@ export function overlayMain(hot: HotLike | undefined): void {
     }
   }
 
-  const TAG = "triad-mvvm-overlay";
-  if (!customElements.get(TAG)) customElements.define(TAG, TriadOverlay);
-  let element = document.querySelector(TAG) as TriadOverlay | null;
+  const TAG = "bull-mvvm-overlay";
+  if (!customElements.get(TAG)) customElements.define(TAG, BullOverlay);
+  let element = document.querySelector(TAG) as BullOverlay | null;
   const ensure = () => {
     if (!element) {
-      element = document.createElement(TAG) as TriadOverlay;
+      element = document.createElement(TAG) as BullOverlay;
       document.documentElement.appendChild(element);
     }
     return element;
   };
 
-  hot.on("triad:diagnostics", (payload) => ensure().update(payload));
-  hot.send("triad:request");
+  hot.on("bull:diagnostics", (payload) => ensure().update(payload));
+  hot.send("bull:request");
 }
 
-export const OVERLAY_PUBLIC_PATH = "/@triad/overlay.js";
+export const OVERLAY_PUBLIC_PATH = "/@bull/overlay.js";
 
 /** Code of the virtual module served to the browser. */
 export function overlayModuleCode(): string {

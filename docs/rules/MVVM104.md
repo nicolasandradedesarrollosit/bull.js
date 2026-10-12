@@ -1,6 +1,6 @@
 # MVVM104 · Model uses React
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/model-uses-react`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/model-uses-react`
 
 The Model cannot depend on React.
 

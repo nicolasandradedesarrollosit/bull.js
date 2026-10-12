@@ -37,7 +37,7 @@ describe("buildImportGraph", () => {
 });
 
 describe("auto-fixable diagnostics", () => {
-  it("flags only the cases triad fix can repair", () => {
+  it("flags only the cases bull fix can repair", () => {
     const result = analyze({
       "src/view/label.view.tsx": `import type { Count } from "../model/counter.model";\nimport { CounterRepository } from "../model/counter.repository";\nexport const L = (p: { c: Count }) => null;`,
     });

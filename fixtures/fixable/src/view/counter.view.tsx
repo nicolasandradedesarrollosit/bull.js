@@ -1,4 +1,4 @@
-import { useBinding, useViewModel } from "@triad/runtime/react";
+import { useBinding, useViewModel } from "@bull/runtime/react";
 import type { Count } from "../model/counter.model";
 import { CounterViewModel } from "../viewmodel/counter.viewmodel";
 

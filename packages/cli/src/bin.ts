@@ -13,7 +13,7 @@ import { generateCommand } from "./tooling/generate";
 import { graphCommand } from "./tooling/graph";
 import { bullArt, VERSION } from "./ui/brand";
 
-const cli = cac("triad");
+const cli = cac("bull");
 
 cli
   .command("[root]", "Dev server with live architecture checks")
@@ -57,8 +57,8 @@ cli
   .option("--dry-run", "Show what would be written without writing it")
   .option("--no-test", "Do not generate a ViewModel test")
   .option("--root <dir>", "Project root (defaults to the current folder)")
-  .example("  triad g feature todo-list")
-  .example("  triad g model user --kind repository")
+  .example("  bull g feature todo-list")
+  .example("  bull g model user --kind repository")
   .action((type: string, name: string | undefined, options) =>
     generateCommand(type, name, { ...options, test: options.test === false ? false : undefined }),
   );
@@ -66,10 +66,10 @@ cli
 cli
   .command("graph [root]", "Shows the import graph between layers and the edges that break MVVM")
   .option("--format <format>", "tree | mermaid | dot | html | json", { default: "tree" })
-  .option("--out <file>", "Write the output to a file (html defaults to triad-graph.html)")
+  .option("--out <file>", "Write the output to a file (html defaults to bull-graph.html)")
   .option("--open", "Open the HTML graph in the browser")
-  .example("  triad graph --format html --open")
-  .example("  triad graph --format mermaid > docs/architecture.mmd")
+  .example("  bull graph --format html --open")
+  .example("  bull graph --format mermaid > docs/architecture.mmd")
   .action((root: string | undefined, options) => graphCommand(root, options));
 
 cli
@@ -93,10 +93,10 @@ const GROUPS: Array<[title: string, commands: string[]]> = [
 ];
 
 cli.help((sections) => {
-  // cac's first section is "triad/<version>": the bull replaces it.
+  // cac's first section is "bull/<version>": the bull replaces it.
   sections[0] = { body: `\n${bullArt()}\n` };
   const commands = sections.findIndex((s) => s.title === "Commands");
-  // Only the global help lists every command; `triad <cmd> --help` keeps cac's sections.
+  // Only the global help lists every command; `bull <cmd> --help` keeps cac's sections.
   if (commands >= 0 && (!cli.matchedCommand || cli.matchedCommand.name === "")) {
     const label = (name: string) => {
       const cmd = cli.commands.find((c) => c.name === name)!;
@@ -111,7 +111,7 @@ cli.help((sections) => {
     ).join("\n\n");
     sections.splice(commands, 1, { body });
     const more = sections.findIndex((s) => s.title?.startsWith("For more info"));
-    if (more >= 0) sections.splice(more, 1, { body: pc.dim("Run `triad <command> --help` for the options of each command.") });
+    if (more >= 0) sections.splice(more, 1, { body: pc.dim("Run `bull <command> --help` for the options of each command.") });
   }
   return sections;
 });

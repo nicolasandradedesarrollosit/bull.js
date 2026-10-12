@@ -1,7 +1,7 @@
 {
-  "name": "@triad/eslint-plugin",
+  "name": "@bull/eslint-plugin",
   "version": "0.2.0",
-  "description": "Triad's MVVM architecture rules, in your editor.",
+  "description": "Bull's MVVM architecture rules, in your editor.",
   "type": "module",
   "license": "MIT",
   "files": [
@@ -15,13 +15,13 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --external @triad/core"
+    "build": "tsup src/index.ts --format esm --dts --clean --external @bull/core"
   },
   "peerDependencies": {
     "eslint": ">=9"
   },
   "dependencies": {
-    "@triad/core": "^0.2.0",
+    "@bull/core": "^0.2.0",
     "@typescript-eslint/parser": "^8.71.1"
   }
 }

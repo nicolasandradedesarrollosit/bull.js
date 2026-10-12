@@ -1,5 +1,5 @@
 // ViewModel: screen state and actions. Does not know how it is drawn.
-import { ViewModel } from "@triad/runtime";
+import { ViewModel } from "@bull/runtime";
 import type { CounterRepository } from "../model/counter.repository";
 
 export class CounterViewModel extends ViewModel {

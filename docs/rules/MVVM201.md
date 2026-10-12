@@ -1,6 +1,6 @@
 # MVVM201 · View owns state
 
-> **View** · error · configurable · ESLint rule: `triad/view-owns-state`
+> **View** · error · configurable · ESLint rule: `bull/view-owns-state`
 
 State and effects live in the ViewModel, not in View hooks.
 
@@ -12,7 +12,7 @@ In MVVM the View has no state: it only reflects the ViewModel's and delegates ac
 
 1. Move that state to the ViewModel with `this.state(...)` and expose it with `.readonly`.
 2. Read it in the View with `useBinding(vm.x)` and change it with a `command`.
-3. If it is purely visual state (an open dropdown), you can allow it with `view.allowHooks` in triad.config.ts.
+3. If it is purely visual state (an open dropdown), you can allow it with `view.allowHooks` in bull.config.ts.
 
 ## Example
 

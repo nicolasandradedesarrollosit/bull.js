@@ -3,7 +3,7 @@ export {
   defineConfig,
   resolveConfig,
   type ResolvedConfig,
-  type TriadArchitectureConfig,
+  type BullArchitectureConfig,
 } from "./config";
 export { extractFacts, parseModule, type ClassFact, type ImportFact, type MemberFact, type ModuleFacts } from "./facts";
 export {

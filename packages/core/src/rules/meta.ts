@@ -10,11 +10,11 @@ export interface RuleMeta {
   title: string;
   category: RuleCategory;
   severity: Severity;
-  /** Whether it can be changed or turned off from `triad.config.ts`. */
+  /** Whether it can be changed or turned off from `bull.config.ts`. */
   configurable: boolean;
   /** `file` when it can be evaluated by looking at a single file (it also runs in ESLint). */
   scope: "file" | "project";
-  /** `triad fix` can repair it automatically (see `isAutoFixable` for per-case limits). */
+  /** `bull fix` can repair it automatically (see `isAutoFixable` for per-case limits). */
   fixable?: boolean;
   /** One-line summary. */
   summary: string;
@@ -39,12 +39,12 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     scope: "project",
     summary: "The project must have the src/model, src/viewmodel and src/view folders.",
     why:
-      "Triad organizes the app in three layers with separate responsibilities: the Model (data and " +
+      "Bull organizes the app in three layers with separate responsibilities: the Model (data and " +
       "business rules), the ViewModel (screen state and actions) and the View (what gets drawn). Each " +
       "layer lives in its own folder so the direction of dependencies is visible and verifiable.",
     fix: (d) => [
       `Create the \`${d.dir ?? "src/<layer>"}\` folder.`,
-      "Move the files that belong to that layer into it (see `triad explain MVVM003` for naming).",
+      "Move the files that belong to that layer into it (see `bull explain MVVM003` for naming).",
     ],
   }),
   MVVM002: rule({
@@ -58,14 +58,14 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     summary: "All code in src/ must belong to a layer (or be the composition root).",
     why:
       "A loose `utils/`, `hooks/` or `services/` folder is a back door: any layer can import it and " +
-      "skip the View → ViewModel → Model direction. In Triad every piece of code has an owner: domain " +
+      "skip the View → ViewModel → Model direction. In Bull every piece of code has an owner: domain " +
       "logic goes to the Model, presentation logic to the ViewModel and components to the View.",
     fix: (d) => [
       `Decide which layer \`${d.file ?? "the file"}\` belongs to:`,
       "  · data, business rules or API access    →  src/model/",
       "  · state or actions of a screen          →  src/viewmodel/",
       "  · components that render                →  src/view/",
-      "If they are static resources (images, styles), add their folder to `allowDirs` in triad.config.ts.",
+      "If they are static resources (images, styles), add their folder to `allowDirs` in bull.config.ts.",
     ],
   }),
   MVVM003: rule({
@@ -79,7 +79,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     fixable: true,
     summary: "Each layer has its convention: *.model.ts, *.viewmodel.ts, *.view.tsx.",
     why:
-      "The file name says what role it plays, and Triad uses it to verify the architecture. The Model " +
+      "The file name says what role it plays, and Bull uses it to verify the architecture. The Model " +
       "and the ViewModel are plain TypeScript (.ts): if a file needs .tsx it is because it has JSX, and " +
       "JSX can only live in the View.",
     fix: (d) => [
@@ -119,8 +119,8 @@ export const RULES: Record<RuleCode, RuleMeta> = {
       "the container how to build each ViewModel and mounts the root View. Keeping it in one place is " +
       "what lets the rest of the code depend only on the layer below.",
     fix: (d) => [
-      `Create \`${d.file ?? "src/main.tsx"}\` with createTriadApp():`,
-      "  createTriadApp({ root: AppView, register: (c) => { c.model(...); c.viewModel(...); } });",
+      `Create \`${d.file ?? "src/main.tsx"}\` with createBullApp():`,
+      "  createBullApp({ root: AppView, register: (c) => { c.model(...); c.viewModel(...); } });",
     ],
   }),
 
@@ -304,7 +304,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
           ? `Replace \`useMemo\` with \`this.computed(...)\` in ${d.viewModel ?? "the ViewModel"}.`
           : `Move that state to ${d.viewModel ?? "the ViewModel"} with \`this.state(...)\` and expose it with \`.readonly\`.`,
       "Read it in the View with `useBinding(vm.x)` and change it with a `command`.",
-      "If it is purely visual state (an open dropdown), you can allow it with `view.allowHooks` in triad.config.ts.",
+      "If it is purely visual state (an open dropdown), you can allow it with `view.allowHooks` in bull.config.ts.",
     ],
     example: {
       bad: "const [count, setCount] = useState(0);\n<button onClick={() => setCount(count + 1)}>",
@@ -373,13 +373,13 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
-    summary: "The View can only import @triad/runtime/react, not the reactive primitives.",
+    summary: "The View can only import @bull/runtime/react, not the reactive primitives.",
     why:
       "`state`, `computed` and `effect` are ViewModel tools. If the View uses them, it owns state " +
       "again, just through a different API.",
     fix: (d) => [
       `Remove \`${d.imported ?? "the import"}\` from the View and declare it in the ViewModel.`,
-      'In the View, only import from "@triad/runtime/react" (useViewModel, useBinding).',
+      'In the View, only import from "@bull/runtime/react" (useViewModel, useBinding).',
     ],
   }),
   MVVM206: rule({
@@ -411,7 +411,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
       "The base class provides the primitives (`state`, `computed`, `command`, `effect`) and the " +
       "lifecycle `useViewModel` relies on. Without it, the View has no uniform contract to bind to.",
     fix: (d) => [
-      'Import the base class: `import { ViewModel } from "@triad/runtime";`.',
+      'Import the base class: `import { ViewModel } from "@bull/runtime";`.',
       `Declare it as \`export class ${d.className ?? "XViewModel"} extends ViewModel { … }\`.`,
     ],
   }),
@@ -524,12 +524,12 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
-    summary: "The Model does not use @triad/runtime: observable state is the ViewModel's business.",
+    summary: "The Model does not use @bull/runtime: observable state is the ViewModel's business.",
     why:
       "Reactive primitives exist so the View can observe the ViewModel. The Model is pure domain " +
       "(functions, classes and promises), so it can be used from anywhere.",
     fix: (d) => [
-      `Remove the import of \`${d.imported ?? "@triad/runtime"}\`.`,
+      `Remove the import of \`${d.imported ?? "@bull/runtime"}\`.`,
       "Return data (or promises) and let the ViewModel store it in its `state`.",
     ],
   }),
@@ -555,9 +555,9 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "project",
-    summary: "triad.config.ts has an invalid value.",
-    why: "Triad is strict on purpose: the structure and the direction of dependencies are not optional.",
-    fix: (d) => [`Check \`${d.setting ?? "the option"}\` in triad.config.ts.`],
+    summary: "bull.config.ts has an invalid value.",
+    why: "Bull is strict on purpose: the structure and the direction of dependencies are not optional.",
+    fix: (d) => [`Check \`${d.setting ?? "the option"}\` in bull.config.ts.`],
   }),
   MVVM901: rule({
     code: "MVVM901",
@@ -568,7 +568,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     configurable: false,
     scope: "file",
     summary: "The file has a syntax error.",
-    why: "Triad needs to read the file to verify the architecture.",
+    why: "Bull needs to read the file to verify the architecture.",
     fix: () => ["Fix the syntax error."],
   }),
 };
@@ -577,7 +577,7 @@ function lowerFirst(s: string): string {
   return s[0]!.toLowerCase() + s.slice(1);
 }
 
-/** Whether `triad fix` can repair this specific diagnostic. */
+/** Whether `bull fix` can repair this specific diagnostic. */
 export function isAutoFixable(d: { code: RuleCode; data: Record<string, string> }): boolean {
   if (!RULES[d.code].fixable) return false;
   // Only type-only imports can be re-exported from the ViewModel automatically.

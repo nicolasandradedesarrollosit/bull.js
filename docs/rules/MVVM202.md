@@ -1,6 +1,6 @@
 # MVVM202 · View mutates ViewModel
 
-> **View** · error · cannot be disabled · ESLint rule: `triad/view-mutates-viewmodel`
+> **View** · error · cannot be disabled · ESLint rule: `bull/view-mutates-viewmodel`
 
 The View never writes state: it asks the ViewModel to do it through commands.
 

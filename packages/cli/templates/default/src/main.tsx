@@ -1,11 +1,11 @@
 // Composition root: the only file that knows all three layers.
 import "./styles/app.css";
-import { createTriadApp } from "@triad/runtime/react";
+import { createBullApp } from "@bull/runtime/react";
 import { CounterRepository } from "./model/counter.repository";
 import { CounterView } from "./view/counter.view";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";
 
-createTriadApp({
+createBullApp({
   root: CounterView,
   register: (c) => {
     c.model(CounterRepository, () => new CounterRepository());

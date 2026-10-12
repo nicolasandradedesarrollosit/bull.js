@@ -3,8 +3,8 @@ import { RULES } from "./rules/meta";
 import { normalizePath } from "./paths";
 import type { Diagnostic, RuleCode, Severity, SeveritySetting } from "./types";
 
-/** What the user writes in `triad.config.ts`. */
-export interface TriadArchitectureConfig {
+/** What the user writes in `bull.config.ts`. */
+export interface BullArchitectureConfig {
   /** Source folder, relative to the root. Defaults to `src`. */
   srcDir?: string;
   /** The composition root, the only file that sees all three layers. Defaults to `src/main.tsx`. */
@@ -34,14 +34,14 @@ export interface ResolvedConfig {
   view: { allowHooks: Set<string> };
 }
 
-export function defineConfig<T extends TriadArchitectureConfig>(config: T): T {
+export function defineConfig<T extends BullArchitectureConfig>(config: T): T {
   return config;
 }
 
 /** Validates and completes the config. Errors are returned as MVVM900 diagnostics. */
 export function resolveConfig(
   root: string,
-  user: TriadArchitectureConfig = {},
+  user: BullArchitectureConfig = {},
 ): { config: ResolvedConfig; diagnostics: Diagnostic[] } {
   const diagnostics: Diagnostic[] = [];
   const configError = (message: string, data: Record<string, string> = {}) =>
@@ -63,7 +63,7 @@ export function resolveConfig(
   for (const [code, setting] of Object.entries(user.rules ?? {}) as Array<[string, SeveritySetting]>) {
     const meta = RULES[code as RuleCode];
     if (!meta) {
-      configError(`"${code}" is not a Triad rule. See the list with \`triad explain\`.`, { setting: "rules" });
+      configError(`"${code}" is not a Bull rule. See the list with \`bull explain\`.`, { setting: "rules" });
       continue;
     }
     if (!meta.configurable) {

@@ -1,6 +1,6 @@
 # MVVM303 · Wrong ViewModel name
 
-> **ViewModel** · error · cannot be disabled · ESLint rule: `triad/viewmodel-per-file`
+> **ViewModel** · error · cannot be disabled · ESLint rule: `bull/viewmodel-per-file`
 
 One ViewModel per file, and the class is named after the file.
 

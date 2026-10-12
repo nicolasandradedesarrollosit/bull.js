@@ -37,13 +37,13 @@ export function LabelView(props: { text: string }) {
       file: "src/view/label.view.tsx",
       line: 2,
       column: 1,
-      explain: "triad explain MVVM100",
+      explain: "bull explain MVVM100",
     });
     expect(json.diagnostics[0]!.frame?.find((l) => l.highlight)?.line).toBe(2);
   });
 
   it("explain and markdown", () => {
     expect(formatExplain(RULES.MVVM201, { colors: false })).toMatchSnapshot();
-    expect(ruleToMarkdown(RULES.MVVM100)).toContain("ESLint rule: `triad/view-imports-model`");
+    expect(ruleToMarkdown(RULES.MVVM100)).toContain("ESLint rule: `bull/view-imports-model`");
   });
 });

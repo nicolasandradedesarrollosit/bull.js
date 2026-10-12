@@ -1,6 +1,6 @@
 # MVVM105 · Import cycle
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/import-cycle`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/import-cycle`
 
 Some modules import each other in a circle.
 

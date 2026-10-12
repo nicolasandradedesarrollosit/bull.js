@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import { formatReport, ProjectAnalyzer, type AnalysisResult } from "@triad/core";
+import { formatReport, ProjectAnalyzer, type AnalysisResult } from "@bull/core";
 import react from "@vitejs/plugin-react";
 import pc from "picocolors";
 import { mergeConfig, type InlineConfig } from "vite";
-import { loadTriadConfig, type TriadConfig } from "../config";
-import { triadPlugin } from "../vite/plugin";
+import { loadBullConfig, type BullConfig } from "../config";
+import { bullPlugin } from "../vite/plugin";
 
 export { banner, VERSION } from "../ui/brand";
 
@@ -17,14 +17,14 @@ export function fail(message: string, hint?: string): void {
 
 export interface Project {
   root: string;
-  config: TriadConfig;
+  config: BullConfig;
   configFile?: string;
   analyzer: ProjectAnalyzer;
 }
 
 export async function loadProject(rootArg: string | undefined, command: "serve" | "build"): Promise<Project> {
   const root = path.resolve(rootArg ?? ".");
-  const { config, file } = await loadTriadConfig(root, command);
+  const { config, file } = await loadBullConfig(root, command);
   return { root, config, configFile: file, analyzer: new ProjectAnalyzer(root, config) };
 }
 
@@ -49,7 +49,7 @@ export function viteConfig(project: Project, extra: InlineConfig = {}): InlineCo
     root: project.root,
     configFile: false,
     clearScreen: false,
-    // @triad/runtime/react imports react-dom/client. If Vite discovers it late, it
+    // @bull/runtime/react imports react-dom/client. If Vite discovers it late, it
     // optimizes it separately and the app ends up with two copies of React ("Invalid hook call").
     resolve: { dedupe: ["react", "react-dom"] },
     optimizeDeps: {
@@ -57,7 +57,7 @@ export function viteConfig(project: Project, extra: InlineConfig = {}): InlineCo
     },
     plugins: [
       react(),
-      triadPlugin({
+      bullPlugin({
         analyzer: project.analyzer,
         overlay: project.config.dev?.overlay,
         checkOnBuild: false,

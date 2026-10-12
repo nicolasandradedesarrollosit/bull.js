@@ -1,6 +1,6 @@
 # MVVM200 · View does I/O
 
-> **View** · error · cannot be disabled · ESLint rule: `triad/view-does-io`
+> **View** · error · cannot be disabled · ESLint rule: `bull/view-does-io`
 
 The View does not access the network or storage.
 

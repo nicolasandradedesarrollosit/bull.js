@@ -1,6 +1,6 @@
 # MVVM102 · Model imports an upper layer
 
-> **Dependency direction** · error · cannot be disabled · ESLint rule: `triad/model-imports-upper-layer`
+> **Dependency direction** · error · cannot be disabled · ESLint rule: `bull/model-imports-upper-layer`
 
 The Model is the foundation: it cannot import ViewModels or Views.
 

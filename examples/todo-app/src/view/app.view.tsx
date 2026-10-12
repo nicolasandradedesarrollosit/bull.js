@@ -6,7 +6,7 @@ export function AppView() {
     <main className="app">
       <header className="app-header">
         <span className="brand">
-          <BullLogoView /> triad
+          <BullLogoView /> bull
         </span>
         <h1>Tasks</h1>
         <p className="layers">

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll } from "vitest";
-import { analyzeProject, type TriadArchitectureConfig } from "../src/index";
+import { analyzeProject, type BullArchitectureConfig } from "../src/index";
 
 const created: string[] = [];
 afterAll(() => {
@@ -12,11 +12,11 @@ afterAll(() => {
 /** A minimal valid app. Tests override it file by file. */
 export const VALID_APP: Record<string, string> = {
   "src/main.tsx": `
-import { createTriadApp } from "@triad/runtime/react";
+import { createBullApp } from "@bull/runtime/react";
 import { CounterRepository } from "./model/counter.repository";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";
 import { CounterView } from "./view/counter.view";
-createTriadApp({ root: CounterView, register: (c) => {
+createBullApp({ root: CounterView, register: (c) => {
   c.model(CounterRepository, () => new CounterRepository());
   c.viewModel(CounterViewModel, (c) => new CounterViewModel(c.get(CounterRepository)));
 }});
@@ -29,7 +29,7 @@ export class CounterRepository {
 `,
   "src/model/counter.model.ts": `export interface Count { value: number }\n`,
   "src/viewmodel/counter.viewmodel.ts": `
-import { ViewModel } from "@triad/runtime";
+import { ViewModel } from "@bull/runtime";
 import type { CounterRepository } from "../model/counter.repository";
 export type { Count } from "../model/counter.model";
 
@@ -46,7 +46,7 @@ export class CounterViewModel extends ViewModel {
 }
 `,
   "src/view/counter.view.tsx": `
-import { useBinding, useViewModel } from "@triad/runtime/react";
+import { useBinding, useViewModel } from "@bull/runtime/react";
 import { CounterViewModel, type Count } from "../viewmodel/counter.viewmodel";
 import { LabelView } from "./label.view";
 
@@ -63,7 +63,7 @@ export function CounterView() {
 };
 
 export function makeProject(files: Record<string, string | null>): string {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "triad-test-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "bull-test-"));
   created.push(root);
   for (const [rel, content] of Object.entries(files)) {
     if (content === null) continue;
@@ -76,11 +76,11 @@ export function makeProject(files: Record<string, string | null>): string {
 }
 
 /** Analyzes the valid app with files replaced (`null` deletes a file). */
-export function analyze(overrides: Record<string, string | null> = {}, config?: TriadArchitectureConfig) {
+export function analyze(overrides: Record<string, string | null> = {}, config?: BullArchitectureConfig) {
   const root = makeProject({ ...VALID_APP, ...overrides });
   return analyzeProject(root, config);
 }
 
-export function codes(overrides: Record<string, string | null> = {}, config?: TriadArchitectureConfig): string[] {
+export function codes(overrides: Record<string, string | null> = {}, config?: BullArchitectureConfig): string[] {
   return analyze(overrides, config).diagnostics.map((d) => d.code);
 }
