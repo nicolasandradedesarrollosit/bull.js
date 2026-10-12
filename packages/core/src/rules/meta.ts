@@ -329,7 +329,8 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     summary: "The View never writes state: it asks the ViewModel to do it through commands.",
     why:
       "Communication from the View to the ViewModel only happens through commands. That way every state " +
-      "change has a single place where it happens, with its validation, loading state and errors.",
+      "change has a single place where it happens, with its validation, loading state and errors. " +
+      "Destructuring does not change it: after `const { count } = useViewModel(X)`, `count.set(1)` is the same violation.",
     fix: (d) => [
       `Instead of \`${d.target ?? "changing the state"}\`, add a command to the ViewModel.`,
       "  readonly rename = this.command((name: string) => this.#name.set(name));",
@@ -397,7 +398,8 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     summary: "Reading `vm.x.value` in the View is not reactive: use useBinding().",
     why:
       "`.value` returns the value at that moment, but the View is not notified when it changes. " +
-      "`useBinding` subscribes the component and re-renders it on every change.",
+      "`useBinding` subscribes the component and re-renders it on every change. The same applies to members " +
+      "destructured from the ViewModel: `const { count } = useViewModel(X)` still needs `useBinding(count)`.",
     fix: (d) => [
       `Replace \`${d.target ?? "vm.x.value"}\` with \`useBinding(${d.binding ?? "vm.x"})\` at the top of the component.`,
     ],

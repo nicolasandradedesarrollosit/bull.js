@@ -198,6 +198,64 @@ export function CounterView() {
   it("MVVM206: reading .value without binding", () => {
     expect(codes(view(`const n = vm.count.value;`))).toEqual(["MVVM206"]);
   });
+
+  describe("with the ViewModel destructured", () => {
+    const destructured = (declare: string, body: string) => ({
+      [VIEW]: `import { useBinding, useViewModel } from "@bull/runtime/react";
+import { CounterViewModel } from "../viewmodel/counter.viewmodel";
+export function CounterView() {
+  ${declare}
+  ${body}
+  return <div />;
+}`,
+    });
+    const fromHook = (body: string) =>
+      destructured(`const { count, increment } = useViewModel(CounterViewModel);`, body);
+
+    it("is valid when it binds and executes", () => {
+      expect(
+        codes(
+          fromHook(`const n = useBinding(count); const busy = useBinding(increment.isRunning); increment.execute();`),
+        ),
+      ).toEqual([]);
+    });
+
+    it("MVVM202: mutating a destructured member", () => {
+      expect(codes(fromHook(`count.set(3);`))).toEqual(["MVVM202"]);
+      expect(codes(fromHook(`count.update((n) => n + 1);`))).toEqual(["MVVM202"]);
+      expect(codes(fromHook(`count.value = 3;`))).toEqual(["MVVM202"]);
+    });
+
+    it("MVVM206: reading .value of a destructured member", () => {
+      expect(codes(fromHook(`const n = count.value;`))).toEqual(["MVVM206"]);
+      expect(codes(fromHook(`const busy = increment.isRunning.value;`))).toEqual(["MVVM206"]);
+    });
+
+    it("follows aliases, nesting, rest and destructuring in steps", () => {
+      const alias = destructured(`const { count: total } = useViewModel(CounterViewModel);`, `total.set(1);`);
+      expect(codes(alias)).toEqual(["MVVM202"]);
+      const nested = destructured(
+        `const { increment: { isRunning } } = useViewModel(CounterViewModel);`,
+        `const busy = isRunning.value;`,
+      );
+      expect(codes(nested)).toEqual(["MVVM206"]);
+      const rest = destructured(`const { ...all } = useViewModel(CounterViewModel);`, `all.count.set(1);`);
+      expect(codes(rest)).toEqual(["MVVM202"]);
+      const steps = destructured(
+        `const vm = useViewModel(CounterViewModel); const { increment } = vm; const { isRunning } = increment;`,
+        `const busy = isRunning.value;`,
+      );
+      expect(codes(steps)).toEqual(["MVVM206"]);
+    });
+
+    it("MVVM203: logic on destructured bound data (warning)", () => {
+      const view = destructured(
+        `const vm = useViewModel(CounterViewModel); const { items } = useBinding(vm.page);`,
+        `const done = items.filter((x) => x);`,
+      );
+      expect(codes(view)).toEqual(["MVVM203"]);
+    });
+  });
 });
 
 describe("ViewModel", () => {

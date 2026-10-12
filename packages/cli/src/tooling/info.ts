@@ -42,7 +42,13 @@ export function collectInfo(result: AnalysisResult, configFile?: string): Projec
     .map((f) => ({
       file: rel(f.file),
       name: path.posix.basename(f.file).replace(/\.view\.tsx$/, ""),
-      binds: f.facts!.declarators.filter((d) => d.callee === "useViewModel" && d.arg).map((d) => d.arg!),
+      binds: [
+        ...f.facts!.declarators.filter((d) => d.callee === "useViewModel" && d.arg).map((d) => d.arg!),
+        // `const { pay } = useViewModel(CartViewModel)` binds it too.
+        ...f.facts!.destructurings.flatMap((d) =>
+          "callee" in d.init && d.init.callee === "useViewModel" && d.init.arg ? [d.init.arg] : [],
+        ),
+      ],
     }));
 
   const viewModels: ViewModelInfo[] = [];
