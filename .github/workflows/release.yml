@@ -19,8 +19,8 @@ jobs:
     name: Version or publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -30,15 +30,16 @@ jobs:
       - run: npm test
 
       # With pending changesets it opens (or updates) the "Version packages" pull request.
-      # Once that pull request is merged there are none left, and it publishes to npm.
-      - uses: changesets/action@v1
+      # Once that pull request is merged there are none left: it publishes to npm, then pushes a
+      # tag and creates a GitHub release for each published package.
+      # v2 is the action for Changesets CLI v3 (v1 publishes but does not see what it published).
+      - uses: changesets/action@v2.1.2
         with:
-          version: npm run version-packages
-          publish: npm run release
-          title: "chore(release): version packages"
-          commit: "chore(release): version packages"
+          version-script: npm run version-packages
+          publish-script: npm run release
+          pr-title: "chore(release): version packages"
+          commit-message: "chore(release): version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
