@@ -31,7 +31,7 @@ jobs:
 
       # With pending changesets it opens (or updates) the "Version packages" pull request.
       # Once that pull request is merged there are none left, and it publishes to npm.
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           version: npm run version-packages
           publish: npm run release
