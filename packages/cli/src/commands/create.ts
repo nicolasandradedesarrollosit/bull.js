@@ -72,9 +72,32 @@ export function scaffoldProject({ name, template = "default" }: ScaffoldOptions)
   return { target, files: copyTemplate(from, target, { name: pkgName, bullVersion: VERSION }) };
 }
 
-function run(command: string, args: string[], cwd: string, stdio: "inherit" | "ignore" = "ignore"): boolean {
-  // Package managers are .cmd shims on Windows, which only run through a shell.
-  const result = spawnSync(command, args, { cwd, stdio, shell: process.platform === "win32" });
+/** Quotes an argument for a Windows command line when it needs it. */
+function quote(arg: string): string {
+  return /^[\w@./:=+-]+$/.test(arg) ? arg : `"${arg.replace(/"/g, '\\"')}"`;
+}
+
+/** The command line a shell runs: a shell joins an argument list without quoting it (DEP0190). */
+export function commandLine(command: string, args: string[]): string {
+  return [command, ...args.map(quote)].join(" ");
+}
+
+/**
+ * Runs a command and reports whether it succeeded. Package managers are .cmd shims on Windows that
+ * only run through a shell, so `viaShell` builds a quoted command line there. Everything else, git
+ * included, runs directly with its arguments untouched.
+ */
+function run(
+  command: string,
+  args: string[],
+  cwd: string,
+  stdio: "inherit" | "ignore" = "ignore",
+  viaShell = false,
+): boolean {
+  const result =
+    viaShell && process.platform === "win32"
+      ? spawnSync(commandLine(command, args), { cwd, stdio, shell: true })
+      : spawnSync(command, args, { cwd, stdio });
   return result.status === 0;
 }
 
@@ -159,7 +182,7 @@ export async function createCommand(nameArg: string | undefined, options: Create
   let installed = false;
   if (install) {
     console.log(`\n  ${pc.dim(`Installing dependencies with ${pm}…`)}\n`);
-    installed = run(pm, ["install"], target, "inherit");
+    installed = run(pm, ["install"], target, "inherit", true);
     if (!installed) console.log(`\n  ${pc.yellow("!")} ${pm} install failed. Run it yourself inside the folder.`);
   }
   if (git && initGit(target)) console.log(`\n  ${pc.green("✓")} Initialized a git repository`);

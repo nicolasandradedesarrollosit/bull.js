@@ -174,6 +174,26 @@ describe("tooling", () => {
     expect(fs.existsSync(path.join(dir, "bull.config.ts"))).toBe(true);
   });
 
+  it("create initializes git with a first commit", () => {
+    // Outside the repo: inside it, create skips git so as not to nest repositories.
+    const dir = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "bull-git-")), "my app");
+    const identity = {
+      GIT_AUTHOR_NAME: "Bull Test",
+      GIT_AUTHOR_EMAIL: "test@example.com",
+      GIT_COMMITTER_NAME: "Bull Test",
+      GIT_COMMITTER_EMAIL: "test@example.com",
+    };
+    const created = spawnSync(process.execPath, [bin, "create", dir, "--no-install"], {
+      cwd: os.tmpdir(),
+      encoding: "utf8",
+      env: { ...process.env, ...identity, NO_COLOR: "1" },
+    });
+    expect(created.status).toBe(0);
+    const log = spawnSync("git", ["log", "--format=%s"], { cwd: dir, encoding: "utf8" });
+    expect(log.stdout.trim()).toBe("Initial commit from bull create");
+    fs.rmSync(path.dirname(dir), { recursive: true, force: true });
+  });
+
   it("preview explains that there is no build yet", () => {
     const dir = tempProject("preview-");
     expect(bull(["create", dir, "--no-install", "--no-git"]).code).toBe(0);
