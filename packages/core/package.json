@@ -4,14 +4,14 @@
   "description": "Bull's MVVM architecture analysis engine.",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull.js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.js.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+    "url": "https://github.com/nicolasandradedesarrollosit/bull.js/issues"
   },
   "keywords": [
     "mvvm",

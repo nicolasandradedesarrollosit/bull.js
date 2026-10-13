@@ -1,6 +1,6 @@
 # @bull/eslint-plugin
 
-[Bull](https://github.com/nicolasandradedesarrollosit/bull)'s file-level MVVM rules, underlined in
+[Bull](https://github.com/nicolasandradedesarrollosit/bull.js)'s file-level MVVM rules, underlined in
 your editor as you type. Same code and same messages as `bull build`.
 
 ```bash

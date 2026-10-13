@@ -1,6 +1,6 @@
 # @bull/create
 
-Creates a new [Bull](https://github.com/nicolasandradedesarrollosit/bull) project, the opinionated
+Creates a new [Bull](https://github.com/nicolasandradedesarrollosit/bull.js) project, the opinionated
 React framework that refuses to build unless you respect MVVM.
 
 ```bash

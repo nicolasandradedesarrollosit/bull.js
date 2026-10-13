@@ -4,14 +4,14 @@
   "description": "Creates a new Bull project: npm create @bull@latest my-app",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://github.com/nicolasandradedesarrollosit/bull#readme",
+  "homepage": "https://github.com/nicolasandradedesarrollosit/bull.js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.git",
+    "url": "git+https://github.com/nicolasandradedesarrollosit/bull.js.git",
     "directory": "packages/create"
   },
   "bugs": {
-    "url": "https://github.com/nicolasandradedesarrollosit/bull/issues"
+    "url": "https://github.com/nicolasandradedesarrollosit/bull.js/issues"
   },
   "keywords": [
     "bull",

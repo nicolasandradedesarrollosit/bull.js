@@ -1,6 +1,6 @@
 # @bull/core
 
-The architecture analysis engine of [Bull](https://github.com/nicolasandradedesarrollosit/bull): it
+The architecture analysis engine of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js): it
 scans a project, extracts facts from every module, builds the import graph and checks the MVVM rules.
 
 You rarely install it directly: [`@bull/cli`](https://www.npmjs.com/package/@bull/cli) runs it before
@@ -16,7 +16,7 @@ process.exitCode = result.errorCount > 0 ? 1 : 0;
 ```
 
 It has no dependency on Vite or ESLint. Every rule is documented in the
-[rule reference](https://github.com/nicolasandradedesarrollosit/bull/tree/main/docs/rules).
+[rule reference](https://github.com/nicolasandradedesarrollosit/bull.js/tree/main/docs/rules).
 
 ## License
 

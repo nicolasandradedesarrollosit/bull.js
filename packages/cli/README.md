@@ -1,6 +1,6 @@
 # @bull/cli
 
-**Stubborn about architecture.** The CLI of [Bull](https://github.com/nicolasandradedesarrollosit/bull),
+**Stubborn about architecture.** The CLI of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js),
 the opinionated React framework that refuses to build unless you respect Model–View–ViewModel.
 Vite does the bundling; Bull checks the architecture before it runs.
 

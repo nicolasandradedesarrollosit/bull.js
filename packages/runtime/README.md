@@ -1,6 +1,6 @@
 # @bull/runtime
 
-The MVVM runtime of [Bull](https://github.com/nicolasandradedesarrollosit/bull): observable state,
+The MVVM runtime of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js): observable state,
 ViewModels, commands, a dependency-injection container and the React bindings.
 
 ```bash
