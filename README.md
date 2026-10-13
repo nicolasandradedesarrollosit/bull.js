@@ -12,6 +12,8 @@ Bull is a React framework with a Vite/Next-style CLI (`bull dev`, `bull build`) 
 missing, if the View talks to the Model or if the ViewModel touches the DOM, the build stops. And it
 does not stop with a cryptic error: it tells you what happened, why it breaks MVVM and how to fix it.
 
+<p align="center"><img src="assets/demo/bull-demo.gif" width="860" alt="A View imports the Model and keeps its own state: ESLint underlines it, bull build stops with MVVM100 and MVVM201, the View is rewritten with useViewModel and useBinding, and the build passes"></p>
+
 ```bash
 npm create @bull@latest my-app
 ```
