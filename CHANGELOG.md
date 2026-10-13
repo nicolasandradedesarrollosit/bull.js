@@ -19,7 +19,7 @@ each package keeps its own `CHANGELOG.md` (for example [packages/cli/CHANGELOG.m
 - `bull fix`: safe codemods for MVVM003, MVVM302 and type-only MVVM100, with a `--dry-run` diff.
 - `bull graph`: import graph as a terminal tree, Mermaid, DOT, JSON or a self-contained HTML page.
 - `bull doctor` and `bull info`.
-- `@bull/core`: `buildImportGraph()`, `isAutoFixable()`, `RuleMeta.fixable`, declarator arguments
+- `@bull-js/core`: `buildImportGraph()`, `isAutoFixable()`, `RuleMeta.fixable`, declarator arguments
   and constructor dependency types in `ModuleFacts`.
 - Auto-fixable diagnostics are flagged in the terminal report, `explain`, JSON and the overlay.
 
@@ -33,12 +33,12 @@ each package keeps its own `CHANGELOG.md` (for example [packages/cli/CHANGELOG.m
 
 ### Added
 
-- `@bull/runtime`: signals (`state`, `computed`, `effect`, `batch`), `ViewModel` base class,
+- `@bull-js/runtime`: signals (`state`, `computed`, `effect`, `batch`), `ViewModel` base class,
   `Command`, `Container` and React bindings (`useViewModel`, `useChildViewModel`, `useBinding`,
   `createBullApp`).
-- `@bull/core`: architecture analyzer with 29 rules (structure, dependency direction, View,
+- `@bull-js/core`: architecture analyzer with 29 rules (structure, dependency direction, View,
   ViewModel, Model), cycle detection, terminal/JSON/markdown formatters.
-- `@bull/cli`: `dev`, `build`, `preview`, `check`, `explain` and `create`, a Vite plugin and a
+- `@bull-js/cli`: `dev`, `build`, `preview`, `check`, `explain` and `create`, a Vite plugin and a
   browser overlay for architecture violations.
-- `@bull/eslint-plugin`: file-level rules as ESLint rules with a recommended flat config.
+- `@bull-js/eslint-plugin`: file-level rules as ESLint rules with a recommended flat config.
 - `examples/todo-app`, broken fixtures, end-to-end tests and a CI workflow.
