@@ -23,28 +23,35 @@ export const TAGLINE = "Stubborn about architecture.";
 /** Taurus sign with the text variation selector, so terminals draw it single-width. */
 export const BULL = "♉︎";
 
+/** A bull's head, front on: horns curving up, a frown, the muzzle with its nostrils and the ring. */
 const ART = [
-  "▄▄             ▄▄",
-  " ▀█▄▄       ▄▄█▀",
-  "    ▀█▄▄▄▄▄▄▄█▀",
-  "     █ o   o █",
-  "      █  ▄  █",
-  "       ▀▄▄▄▀",
+  "▄                      ▄",
+  "█▙▖                  ▗▟█",
+  "▝▜█▙▄▖            ▗▄▟█▛▘",
+  "  ▝▀▜█▄▄▄▄▄▄▄▄▄▄▄▄█▛▀▘",
+  "▗▄▄▄▟██████████████▙▄▄▄▖",
+  " ▀▀▀▜█▛ ●▜████▛● ▜█▛▀▀▀",
+  "     ▜████████████▛",
+  "      ▐█▀▀▀▀▀▀▀▀█▌",
+  "      ▐▌ ▀▄  ▄▀ ▐▌",
+  "       ▀▙▄▄▄▄▄▄▟▀",
+  "           ◖◗",
 ];
+const ART_WIDTH = Math.max(...ART.map((line) => line.length));
+/** The first rows are only horns: drawn in the horn color, the rest of the head in the bull's. */
+const HORN_ROWS = 3;
 
 /** The bull in ASCII art, with the name and tagline on its right. */
 export function bullArt(subtitle?: string): string {
-  const side = [
-    "",
-    "",
-    `${pc.bold("bull")} ${pc.dim(`v${VERSION}`)}`,
-    pc.dim(TAGLINE),
-    subtitle ? pc.cyan(subtitle) : "",
-    "",
-  ];
+  const side: Record<number, string> = {
+    4: `${pc.bold("bull")} ${pc.dim(`v${VERSION}`)}`,
+    5: pc.dim(TAGLINE),
+    6: subtitle ? pc.cyan(subtitle) : "",
+  };
   return ART.map((line, i) => {
-    const text = side[i] ? `${" ".repeat(21 - line.length)}${side[i]}` : "";
-    return `  ${pc.magenta(line)}${text}`;
+    const art = i < HORN_ROWS ? pc.yellow(line) : pc.magenta(line);
+    const text = side[i] ? `${" ".repeat(ART_WIDTH - line.length + 4)}${side[i]}` : "";
+    return `  ${art}${text}`;
   }).join("\n");
 }
 

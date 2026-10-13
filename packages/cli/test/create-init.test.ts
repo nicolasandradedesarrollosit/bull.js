@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { completionScript } from "../src/commands/completion";
-import { detectPackageManager, runScript } from "../src/commands/create";
+import { commandLine, detectPackageManager, runScript } from "../src/commands/create";
 import { planInit } from "../src/tooling/init";
 import { VERSION } from "../src/ui/brand";
 import { templateProject } from "./helpers";
@@ -36,6 +36,14 @@ describe("package manager", () => {
   it("names scripts the way each one runs them", () => {
     expect(runScript("npm", "dev")).toBe("npm run dev");
     expect(runScript("pnpm", "dev")).toBe("pnpm dev");
+  });
+});
+
+describe("command line for a shell", () => {
+  it("quotes arguments with spaces or quotes, and leaves plain ones alone", () => {
+    expect(commandLine("npm", ["install"])).toBe("npm install");
+    expect(commandLine("git", ["commit", "-q", "-m", "Initial commit"])).toBe('git commit -q -m "Initial commit"');
+    expect(commandLine("x", ['say "hi"'])).toBe('x "say \\"hi\\""');
   });
 });
 

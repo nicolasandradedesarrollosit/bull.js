@@ -4,3 +4,6 @@ dist
 .DS_Store
 coverage
 .tmp
+.env
+.env.*
+!.env.example

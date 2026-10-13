@@ -189,7 +189,8 @@ compiler run exactly the same code.
 
 ## Development
 
-Node 20 or later (`.nvmrc` pins 22).
+Developing Bull needs Node 22.12 or later (`.nvmrc` pins 22), because the test tooling does. Projects that
+use Bull need Node 20.19+ or 22.12+, the versions Vite supports.
 
 ```bash
 npm install
@@ -214,7 +215,8 @@ published package adds one with `npm run changeset`. On `main`, the release work
 `CHANGELOG.md` and publishes to npm with provenance. It needs an `NPM_TOKEN` secret with publish
 rights on the `@bull-js` scope.
 
-CI runs lint, typecheck, unit and e2e tests on Ubuntu and Windows with Node 20 and 22.
+CI runs lint, typecheck, unit and e2e tests on Ubuntu and Windows with Node 22 and 24, and checks and builds the
+example app with the built CLI on Node 20.19.
 
 ## License
 
