@@ -1,6 +1,6 @@
 {
   "name": "@bull-js/create",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Creates a new Bull project: npm create @bull-js@latest my-app",
   "type": "module",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "build": "tsup src/index.ts --format esm --clean --external @bull-js/cli"
   },
   "dependencies": {
-    "@bull-js/cli": "^0.3.0",
+    "@bull-js/cli": "^0.3.1",
     "cac": "^6.7.14"
   }
 }

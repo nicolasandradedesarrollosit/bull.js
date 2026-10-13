@@ -1,5 +1,17 @@
 # @bull-js/create
 
+## 0.3.1
+
+### Patch Changes
+
+- 3293be0: `bull create` makes the first git commit on Windows too: commands no longer go through a shell that
+  joined their arguments unquoted, which broke the commit message and printed a DEP0190 warning. New
+  projects also ignore `.env` files.
+- Updated dependencies [3293be0]
+- Updated dependencies [3293be0]
+- Updated dependencies [3293be0]
+  - @bull-js/cli@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes

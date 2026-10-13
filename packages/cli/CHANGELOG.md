@@ -1,5 +1,17 @@
 # @bull-js/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- 3293be0: A new bull in `--help`, `create` and `doctor`: a proper head with curved horns, a frown, nostrils and the ring.
+- 3293be0: `bull create` makes the first git commit on Windows too: commands no longer go through a shell that
+  joined their arguments unquoted, which broke the commit message and printed a DEP0190 warning. New
+  projects also ignore `.env` files.
+- 3293be0: `engines` and `bull doctor` now accept exactly the Node versions Vite supports, 20.19+ or 22.12+,
+  instead of any Node 20 or later.
+- @bull-js/core@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes
