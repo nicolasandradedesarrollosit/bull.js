@@ -14,14 +14,15 @@ jobs:
     name: Lint and format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run lint
 
+  # The dev tooling (Vitest 5, jsdom) needs Node 22.12+, so the full suite runs on 22 and 24.
   test:
     name: Test (Node ${{ matrix.node }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -29,10 +30,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [20, 22]
+        node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -42,4 +43,25 @@ jobs:
       - run: npm test
       - run: npx vitest run -c vitest.e2e.config.ts
       - name: Architecture check of the example app
-        run: npx bull check examples/todo-app
+        # Through the built file: `npm ci` links the `bull` binary before dist/ exists.
+        run: node packages/cli/dist/bin.js check examples/todo-app
+
+  # The published packages support Node 20.19+: build with 22, then run the CLI on 20.
+  node20:
+    name: Runtime on Node 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "20.19"
+      - run: node --version
+      - run: node packages/cli/dist/bin.js check examples/todo-app
+      - run: node packages/cli/dist/bin.js build examples/todo-app --out-dir "$RUNNER_TEMP/todo-dist"
+      - run: node packages/cli/dist/bin.js doctor examples/todo-app
