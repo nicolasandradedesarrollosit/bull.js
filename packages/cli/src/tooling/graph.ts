@@ -1,7 +1,7 @@
 import { exec } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { buildImportGraph, type FileKind, type ImportGraph, LAYER_LABEL, ProjectAnalyzer } from "@bull/core";
+import { buildImportGraph, type FileKind, type ImportGraph, LAYER_LABEL, ProjectAnalyzer } from "@bull-js/core";
 import pc from "picocolors";
 import { banner, fail } from "../commands/shared";
 import { loadBullConfig } from "../config";

@@ -7,9 +7,9 @@ export default defineConfig({
   resolve: {
     // Tests use the packages' source code, not `dist/`.
     alias: [
-      { find: /^@bull\/runtime\/react$/, replacement: pkg("runtime/src/react.tsx") },
-      { find: /^@bull\/runtime$/, replacement: pkg("runtime/src/index.ts") },
-      { find: /^@bull\/core$/, replacement: pkg("core/src/index.ts") },
+      { find: /^@bull-js\/runtime\/react$/, replacement: pkg("runtime/src/react.tsx") },
+      { find: /^@bull-js\/runtime$/, replacement: pkg("runtime/src/index.ts") },
+      { find: /^@bull-js\/core$/, replacement: pkg("core/src/index.ts") },
     ],
   },
   test: {

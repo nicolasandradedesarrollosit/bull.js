@@ -1,3 +1,3 @@
-import bull from "@bull/eslint-plugin";
+import bull from "@bull-js/eslint-plugin";
 
 export default [...bull.configs.recommended];

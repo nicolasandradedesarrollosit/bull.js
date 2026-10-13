@@ -1,4 +1,4 @@
-import { useBinding, useViewModel } from "@bull/runtime/react";
+import { useBinding, useViewModel } from "@bull-js/runtime/react";
 import { type TodoFilter, TodoListViewModel } from "../viewmodel/todo-list.viewmodel";
 import { TodoItemView } from "./todo-item.view";
 

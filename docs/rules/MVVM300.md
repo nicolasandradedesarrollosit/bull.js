@@ -10,5 +10,5 @@ The base class provides the primitives (`state`, `computed`, `command`, `effect`
 
 ## How to fix
 
-1. Import the base class: `import { ViewModel } from "@bull/runtime";`.
+1. Import the base class: `import { ViewModel } from "@bull-js/runtime";`.
 2. Declare it as `export class XViewModel extends ViewModel { … }`.

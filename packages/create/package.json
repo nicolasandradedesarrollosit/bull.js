@@ -1,7 +1,7 @@
 {
-  "name": "@bull/create",
+  "name": "@bull-js/create",
   "version": "0.2.0",
-  "description": "Creates a new Bull project: npm create @bull@latest my-app",
+  "description": "Creates a new Bull project: npm create @bull-js@latest my-app",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/nicolasandradedesarrollosit/bull.js#readme",
@@ -34,10 +34,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --clean --external @bull/cli"
+    "build": "tsup src/index.ts --format esm --clean --external @bull-js/cli"
   },
   "dependencies": {
-    "@bull/cli": "^0.2.0",
+    "@bull-js/cli": "^0.2.0",
     "cac": "^6.7.14"
   }
 }

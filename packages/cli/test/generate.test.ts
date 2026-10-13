@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { analyzeProject } from "@bull/core";
+import { analyzeProject } from "@bull-js/core";
 import { describe, expect, it } from "vitest";
 import { type GenerateOptions, normalizeName, planGenerate } from "../src/tooling/generate";
 import { read, templateProject } from "./helpers";

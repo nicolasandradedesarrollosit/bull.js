@@ -1,5 +1,5 @@
 {
-  "name": "@bull/core",
+  "name": "@bull-js/core",
   "version": "0.2.0",
   "description": "Bull's MVVM architecture analysis engine.",
   "type": "module",

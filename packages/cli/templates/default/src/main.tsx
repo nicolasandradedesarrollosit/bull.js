@@ -1,6 +1,6 @@
 // Composition root: the only file that knows all three layers.
 import "./styles/app.css";
-import { createBullApp } from "@bull/runtime/react";
+import { createBullApp } from "@bull-js/runtime/react";
 import { CounterRepository } from "./model/counter.repository";
 import { CounterView } from "./view/counter.view";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { formatReport, ProjectAnalyzer, toKebab, toPascalCase } from "@bull/core";
+import { formatReport, ProjectAnalyzer, toKebab, toPascalCase } from "@bull-js/core";
 import pc from "picocolors";
 import { banner, fail } from "../commands/shared";
 import { loadBullConfig } from "../config";
@@ -90,7 +90,7 @@ export class ${n.pascal}Service {
   }
 }
 `,
-  viewmodel: (n: Names) => `import { ViewModel } from "@bull/runtime";
+  viewmodel: (n: Names) => `import { ViewModel } from "@bull-js/runtime";
 
 export class ${n.pascal}ViewModel extends ViewModel {
   readonly #items = this.state<string[]>([]);
@@ -101,7 +101,7 @@ export class ${n.pascal}ViewModel extends ViewModel {
   readonly add = this.command((item: string) => this.#items.update((items) => [...items, item]));
 }
 `,
-  viewmodelWithRepository: (n: Names) => `import { ViewModel } from "@bull/runtime";
+  viewmodelWithRepository: (n: Names) => `import { ViewModel } from "@bull-js/runtime";
 import type { ${n.pascal}Repository } from "../model/${n.kebab}.repository";
 
 export class ${n.pascal}ViewModel extends ViewModel {
@@ -141,7 +141,7 @@ describe("${n.pascal}ViewModel", () => {
   });
 });
 `,
-  boundView: (n: Names) => `import { useBinding, useViewModel } from "@bull/runtime/react";
+  boundView: (n: Names) => `import { useBinding, useViewModel } from "@bull-js/runtime/react";
 import { ${n.pascal}ViewModel } from "../viewmodel/${n.kebab}.viewmodel";
 
 export function ${n.pascal}View() {
@@ -166,7 +166,7 @@ export function ${n.pascal}View() {
   );
 }
 `,
-  existingViewModelView: (n: Names) => `import { useViewModel } from "@bull/runtime/react";
+  existingViewModelView: (n: Names) => `import { useViewModel } from "@bull-js/runtime/react";
 import { ${n.pascal}ViewModel } from "../viewmodel/${n.kebab}.viewmodel";
 
 export function ${n.pascal}View() {

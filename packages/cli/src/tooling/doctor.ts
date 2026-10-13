@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ProjectAnalyzer } from "@bull/core";
+import { ProjectAnalyzer } from "@bull-js/core";
 import pc from "picocolors";
 import { type BullConfig, loadBullConfig } from "../config";
 import { bullArt } from "../ui/brand";
@@ -89,11 +89,11 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   }
 
   // Runtime and a single copy of React
-  const runtimeDir = packageDir(root, "@bull/runtime");
+  const runtimeDir = packageDir(root, "@bull-js/runtime");
   if (!runtimeDir) {
-    add({ status: "fail", title: "@bull/runtime is not installed", hint: "npm install @bull/runtime" });
+    add({ status: "fail", title: "@bull-js/runtime is not installed", hint: "npm install @bull-js/runtime" });
   } else {
-    add({ status: "ok", title: `@bull/runtime ${versionOf(root, "@bull/runtime") ?? ""}`.trim() });
+    add({ status: "ok", title: `@bull-js/runtime ${versionOf(root, "@bull-js/runtime") ?? ""}`.trim() });
     const fromApp = packageDir(root, "react");
     const fromRuntime = packageDir(runtimeDir, "react");
     if (fromApp && fromRuntime && fromApp !== fromRuntime) {
@@ -113,7 +113,7 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   add(
     vite
       ? { status: "ok", title: `Vite ${vite}` }
-      : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @bull/cli." },
+      : { status: "warn", title: "Vite could not be resolved", hint: "Reinstall @bull-js/cli." },
   );
 
   // bull.config
@@ -201,16 +201,16 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
     add({
       status: "warn",
       title: "No ESLint flat config",
-      hint: "Add @bull/eslint-plugin to see violations in your editor.",
+      hint: "Add @bull-js/eslint-plugin to see violations in your editor.",
     });
-  } else if (!fs.readFileSync(eslintConfig, "utf8").includes("@bull/eslint-plugin")) {
+  } else if (!fs.readFileSync(eslintConfig, "utf8").includes("@bull-js/eslint-plugin")) {
     add({
       status: "warn",
-      title: `${path.basename(eslintConfig)} does not use @bull/eslint-plugin`,
+      title: `${path.basename(eslintConfig)} does not use @bull-js/eslint-plugin`,
       hint: "Spread bull.configs.recommended into it.",
     });
   } else {
-    add({ status: "ok", title: "ESLint uses @bull/eslint-plugin" });
+    add({ status: "ok", title: "ESLint uses @bull-js/eslint-plugin" });
   }
 
   // Architecture

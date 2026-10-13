@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { BullArchitectureConfig } from "@bull/core";
+import type { BullArchitectureConfig } from "@bull-js/core";
 import { loadConfigFromFile, type UserConfig } from "vite";
 
 export interface BullConfig extends BullArchitectureConfig {
@@ -58,8 +58,8 @@ export async function loadBullConfig(
     return { config: (loaded?.config ?? {}) as BullConfig, file };
   } catch (error) {
     const message = (error as Error).message.split("\n")[0];
-    const hint = /Cannot find (package|module) '@bull\//.test(message ?? "")
-      ? "Did you run `npm install`? The config imports from @bull/cli."
+    const hint = /Cannot find (package|module) '@bull-js\//.test(message ?? "")
+      ? "Did you run `npm install`? The config imports from @bull-js/cli."
       : "Make sure it default-exports `defineConfig({ ... })`.";
     throw new Error(`Could not load ${path.basename(file)}: ${message}\n    ${hint}`);
   }

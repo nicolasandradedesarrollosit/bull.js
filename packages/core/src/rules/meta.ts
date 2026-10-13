@@ -378,13 +378,13 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
-    summary: "The View can only import @bull/runtime/react, not the reactive primitives.",
+    summary: "The View can only import @bull-js/runtime/react, not the reactive primitives.",
     why:
       "`state`, `computed` and `effect` are ViewModel tools. If the View uses them, it owns state " +
       "again, just through a different API.",
     fix: (d) => [
       `Remove \`${d.imported ?? "the import"}\` from the View and declare it in the ViewModel.`,
-      'In the View, only import from "@bull/runtime/react" (useViewModel, useBinding).',
+      'In the View, only import from "@bull-js/runtime/react" (useViewModel, useBinding).',
     ],
   }),
   MVVM206: rule({
@@ -419,7 +419,7 @@ export const RULES: Record<RuleCode, RuleMeta> = {
       "The base class provides the primitives (`state`, `computed`, `command`, `effect`) and the " +
       "lifecycle `useViewModel` relies on. Without it, the View has no uniform contract to bind to.",
     fix: (d) => [
-      'Import the base class: `import { ViewModel } from "@bull/runtime";`.',
+      'Import the base class: `import { ViewModel } from "@bull-js/runtime";`.',
       `Declare it as \`export class ${d.className ?? "XViewModel"} extends ViewModel { … }\`.`,
     ],
   }),
@@ -532,12 +532,12 @@ export const RULES: Record<RuleCode, RuleMeta> = {
     severity: "error",
     configurable: false,
     scope: "file",
-    summary: "The Model does not use @bull/runtime: observable state is the ViewModel's business.",
+    summary: "The Model does not use @bull-js/runtime: observable state is the ViewModel's business.",
     why:
       "Reactive primitives exist so the View can observe the ViewModel. The Model is pure domain " +
       "(functions, classes and promises), so it can be used from anywhere.",
     fix: (d) => [
-      `Remove the import of \`${d.imported ?? "@bull/runtime"}\`.`,
+      `Remove the import of \`${d.imported ?? "@bull-js/runtime"}\`.`,
       "Return data (or promises) and let the ViewModel store it in its `state`.",
     ],
   }),

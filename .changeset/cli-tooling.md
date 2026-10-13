@@ -1,11 +1,11 @@
 ---
-"@bull/cli": minor
-"@bull/create": minor
+"@bull-js/cli": minor
+"@bull-js/create": minor
 ---
 
 New tooling in the CLI:
 
-- `npm create @bull@latest` (new `@bull/create` package) and an interactive `bull create` that installs
+- `npm create @bull-js@latest` (new `@bull-js/create` package) and an interactive `bull create` that installs
   the dependencies with the package manager that ran it and initializes git (`--pm`, `--no-install`,
   `--no-git`).
 - `bull init` adds Bull to an existing project without overwriting anything (`--dry-run`).

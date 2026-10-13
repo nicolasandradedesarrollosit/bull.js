@@ -1,4 +1,4 @@
-import { ViewModel } from "@bull/runtime";
+import { ViewModel } from "@bull-js/runtime";
 import { UserRepository, type User } from "../model/user.repository";
 
 export class UserListViewModel extends ViewModel {

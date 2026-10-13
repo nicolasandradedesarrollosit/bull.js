@@ -10,7 +10,7 @@ import {
   ProjectAnalyzer,
   stripExtension,
   toKebab,
-} from "@bull/core";
+} from "@bull-js/core";
 import pc from "picocolors";
 import { banner } from "../commands/shared";
 import { loadBullConfig } from "../config";

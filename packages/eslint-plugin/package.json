@@ -1,5 +1,5 @@
 {
-  "name": "@bull/eslint-plugin",
+  "name": "@bull-js/eslint-plugin",
   "version": "0.2.0",
   "description": "Bull's MVVM architecture rules, in your editor.",
   "type": "module",
@@ -38,13 +38,13 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --external @bull/core"
+    "build": "tsup src/index.ts --format esm --dts --clean --external @bull-js/core"
   },
   "peerDependencies": {
     "eslint": ">=9"
   },
   "dependencies": {
-    "@bull/core": "^0.2.0",
+    "@bull-js/core": "^0.2.0",
     "@typescript-eslint/parser": "^8.71.1"
   }
 }

@@ -13,13 +13,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@bull/runtime": "^{{bullVersion}}",
+    "@bull-js/runtime": "^{{bullVersion}}",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@bull/cli": "^{{bullVersion}}",
-    "@bull/eslint-plugin": "^{{bullVersion}}",
+    "@bull-js/cli": "^{{bullVersion}}",
+    "@bull-js/eslint-plugin": "^{{bullVersion}}",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^10.0.0",

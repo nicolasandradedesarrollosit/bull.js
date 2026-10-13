@@ -1,14 +1,14 @@
-# @bull/runtime
+# @bull-js/runtime
 
 The MVVM runtime of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js): observable state,
 ViewModels, commands, a dependency-injection container and the React bindings.
 
 ```bash
-npm install @bull/runtime react react-dom
+npm install @bull-js/runtime react react-dom
 ```
 
 ```ts
-import { ViewModel } from "@bull/runtime";
+import { ViewModel } from "@bull-js/runtime";
 
 export class CounterViewModel extends ViewModel {
   readonly #count = this.state(0);
@@ -19,7 +19,7 @@ export class CounterViewModel extends ViewModel {
 ```
 
 ```tsx
-import { useBinding, useViewModel } from "@bull/runtime/react";
+import { useBinding, useViewModel } from "@bull-js/runtime/react";
 
 export function CounterView() {
   const vm = useViewModel(CounterViewModel);
@@ -30,10 +30,10 @@ export function CounterView() {
 
 | Entry | Exports |
 |---|---|
-| `@bull/runtime` | `ViewModel`, `Command`, `Container`, `Token`, `state`, `computed`, `effect`, `batch`, `untracked` |
-| `@bull/runtime/react` | `createBullApp`, `BullProvider`, `useViewModel`, `useChildViewModel`, `useBinding` |
+| `@bull-js/runtime` | `ViewModel`, `Command`, `Container`, `Token`, `state`, `computed`, `effect`, `batch`, `untracked` |
+| `@bull-js/runtime/react` | `createBullApp`, `BullProvider`, `useViewModel`, `useChildViewModel`, `useBinding` |
 
-The runtime works on its own, but Bull is meant to be used with [`@bull/cli`](https://www.npmjs.com/package/@bull/cli),
+The runtime works on its own, but Bull is meant to be used with [`@bull-js/cli`](https://www.npmjs.com/package/@bull-js/cli),
 which refuses to build when the code breaks MVVM.
 
 ## License

@@ -10,7 +10,7 @@ function readVersion(): string {
     const file = path.join(dir, "package.json");
     if (fs.existsSync(file)) {
       const pkg = JSON.parse(fs.readFileSync(file, "utf8")) as { name?: string; version?: string };
-      if (pkg.name === "@bull/cli" && pkg.version) return pkg.version;
+      if (pkg.name === "@bull-js/cli" && pkg.version) return pkg.version;
     }
     dir = path.dirname(dir);
   }

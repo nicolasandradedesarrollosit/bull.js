@@ -4,7 +4,7 @@ import pc from "picocolors";
 import { detectPackageManager, runScript } from "../commands/create";
 import { banner, fail, VERSION } from "../commands/shared";
 
-const CONFIG = `import { defineConfig } from "@bull/cli";
+const CONFIG = `import { defineConfig } from "@bull-js/cli";
 
 export default defineConfig({});
 `;
@@ -16,8 +16,8 @@ const SCRIPTS: Record<string, string> = {
   check: "bull check",
 };
 
-const DEPENDENCIES = ["@bull/runtime"];
-const DEV_DEPENDENCIES = ["@bull/cli", "@bull/eslint-plugin"];
+const DEPENDENCIES = ["@bull-js/runtime"];
+const DEV_DEPENDENCIES = ["@bull-js/cli", "@bull-js/eslint-plugin"];
 const LAYERS = ["model", "viewmodel", "view"];
 
 interface PackageJson {

@@ -1,6 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
-import { formatExplain, formatRuleList, RULE_LIST, RULES, type RuleCode, ruleBySlug, ruleToMarkdown } from "@bull/core";
+import {
+  formatExplain,
+  formatRuleList,
+  RULE_LIST,
+  RULES,
+  type RuleCode,
+  ruleBySlug,
+  ruleToMarkdown,
+} from "@bull-js/core";
 import pc from "picocolors";
 import { fail } from "./shared";
 

@@ -15,7 +15,7 @@ does not stop with a cryptic error: it tells you what happened, why it breaks MV
 <p align="center"><img src="assets/demo/bull-demo.gif" width="860" alt="A View imports the Model and keeps its own state: ESLint underlines it, bull build stops with MVVM100 and MVVM201, the View is rewritten with useViewModel and useBinding, and the build passes"></p>
 
 ```bash
-npm create @bull@latest my-app
+npm create @bull-js@latest my-app
 ```
 
 <p align="center"><img src="docs/overlay.png" width="760" alt="Bull dev overlay showing MVVM violations"></p>
@@ -64,8 +64,8 @@ src/
 
 | Layer | May import | Never |
 |---|---|---|
-| **View** | ViewModels, other Views, `@bull/runtime/react` | the Model, `useState`/`useEffect`, `fetch`, writing state |
-| **ViewModel** | the Model, `@bull/runtime` | React, JSX, the DOM, direct I/O, exposing mutable state |
+| **View** | ViewModels, other Views, `@bull-js/runtime/react` | the Model, `useState`/`useEffect`, `fetch`, writing state |
+| **ViewModel** | the Model, `@bull-js/runtime` | React, JSX, the DOM, direct I/O, exposing mutable state |
 | **Model** | other Models, domain libraries | React, the reactive runtime, the DOM, upper layers |
 
 Communication is strict too: the View **reads** with `useBinding(vm.x)` and **acts** with
@@ -104,7 +104,7 @@ Because the ViewModel is a plain TypeScript class, it is tested without React or
 
 ## Where the architecture linter runs
 
-The rules exist once (`@bull/core`) and are enforced in four places, always with the same code and
+The rules exist once (`@bull-js/core`) and are enforced in four places, always with the same code and
 message:
 
 | | |
@@ -112,7 +112,7 @@ message:
 | `bull build` | Analyzes **before** calling Vite. On errors it exits with code 1 and produces no `dist/`. |
 | `bull dev` | Re-analyzes on every change, prints the report in the terminal and shows it in a browser **overlay**. |
 | `bull check [--format json]` | Analysis only, great for CI. |
-| `@bull/eslint-plugin` | File-level rules underlined in your editor as you type. |
+| `@bull-js/eslint-plugin` | File-level rules underlined in your editor as you type. |
 
 `bull explain MVVM201` (or `201`, or `view-owns-state`) prints the full explanation with
 "don't / do" examples. Every rule is documented in [docs/rules](docs/rules/README.md).
@@ -120,7 +120,7 @@ message:
 ## Tooling
 
 ```bash
-npm create @bull@latest my-app # asks for the details, installs with your package manager, git init
+npm create @bull-js@latest my-app # asks for the details, installs with your package manager, git init
 bull init                      # adds Bull to an existing project, without overwriting anything
 bull g feature shopping-cart   # repository + ViewModel (injected) + test + View, registered in main.tsx
 bull g model user --kind repository
@@ -134,7 +134,7 @@ bull completion powershell     # shell completions (bash, zsh, fish, powershell)
 
 | Command | What it does |
 |---|---|
-| `create` | New project from the template. Without a name it asks; `--pm`, `--no-install` and `--no-git` skip the questions. Also available as `npm create @bull`. |
+| `create` | New project from the template. Without a name it asks; `--pm`, `--no-install` and `--no-git` skip the questions. Also available as `npm create @bull-js`. |
 | `init` | Adds `bull.config.ts`, the layer folders, the scripts and the dependencies to an existing project. Skips what exists; `--dry-run` shows the plan. |
 | `generate` (`g`) | Scaffolds `feature`, `model` (`--kind model\|entity\|repository\|service`), `viewmodel` or `view` with the right names and folders. Never overwrites, supports `--dry-run`. |
 | `fix` | Repairs what has a single correct answer: MVVM003 (rename + update imports), MVVM302 (privatize state, add `readonly`, make dependencies private), MVVM100 for type-only imports (re-export from the ViewModel). |
@@ -161,7 +161,7 @@ cannot be disabled: if `bull.config.ts` tries to, that is itself an error (MVVM9
 
 ```ts
 // bull.config.ts
-import { defineConfig } from "@bull/cli";
+import { defineConfig } from "@bull-js/cli";
 
 export default defineConfig({
   dev: { overlay: "blocking" },            // or "dismissible" (default) or false
@@ -176,11 +176,11 @@ export default defineConfig({
 
 | Package | What it does |
 |---|---|
-| [`@bull/core`](packages/core) | Analysis engine: scanner, AST fact extraction (ESTree), import graph, rules and formatters. No dependency on Vite or ESLint. |
-| [`@bull/runtime`](packages/runtime) | Home-grown signals (`state`, `computed`, `effect`, `batch`), `ViewModel`, `Command`, DI container and React bindings (`useViewModel`, `useBinding`). |
-| [`@bull/cli`](packages/cli) | `dev / build / preview / check / explain / create / init` plus the tooling (`generate / fix / graph / doctor / info / completion`), Vite plugin and browser overlay. |
-| [`@bull/create`](packages/create) | `npm create @bull`: the same `create`, as its own package. |
-| [`@bull/eslint-plugin`](packages/eslint-plugin) | File-level rules as ESLint 9+ rules (flat config). |
+| [`@bull-js/core`](packages/core) | Analysis engine: scanner, AST fact extraction (ESTree), import graph, rules and formatters. No dependency on Vite or ESLint. |
+| [`@bull-js/runtime`](packages/runtime) | Home-grown signals (`state`, `computed`, `effect`, `batch`), `ViewModel`, `Command`, DI container and React bindings (`useViewModel`, `useBinding`). |
+| [`@bull-js/cli`](packages/cli) | `dev / build / preview / check / explain / create / init` plus the tooling (`generate / fix / graph / doctor / info / completion`), Vite plugin and browser overlay. |
+| [`@bull-js/create`](packages/create) | `npm create @bull-js`: the same `create`, as its own package. |
+| [`@bull-js/eslint-plugin`](packages/eslint-plugin) | File-level rules as ESLint 9+ rules (flat config). |
 
 **Key design decision:** rules do not look at the AST directly but at `ModuleFacts`, a summary of
 the module (imports, hooks, globals, classes and their members…) extracted from any ESTree AST. The
@@ -212,7 +212,7 @@ Releases use [Changesets](https://github.com/changesets/changesets). A pull requ
 published package adds one with `npm run changeset`. On `main`, the release workflow opens a
 "Version packages" pull request; merging it bumps the versions, writes each package's
 `CHANGELOG.md` and publishes to npm with provenance. It needs an `NPM_TOKEN` secret with publish
-rights on the `@bull` scope.
+rights on the `@bull-js` scope.
 
 CI runs lint, typecheck, unit and e2e tests on Ubuntu and Windows with Node 20 and 22.
 

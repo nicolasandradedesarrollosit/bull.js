@@ -1,4 +1,4 @@
-// Entry point for `@bull/create` (`npm create @bull`): the same `create` as `bull create`.
+// Entry point for `@bull-js/create` (`npm create @bull-js`): the same `create` as `bull create`.
 export {
   type CreateOptions,
   createCommand,

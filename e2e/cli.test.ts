@@ -79,7 +79,7 @@ describe("bull explain", () => {
 
 describe("bull create", () => {
   it("generates a project that passes the check", () => {
-    // Inside the repo, so @bull/* resolves from node_modules like in an installed project.
+    // Inside the repo, so @bull-js/* resolves from node_modules like in an installed project.
     const dir = fs.mkdtempSync(path.join(repo, ".tmp", "create-"));
     fs.rmSync(dir, { recursive: true });
     const created = bull(["create", dir, "--no-install", "--no-git"]);
@@ -158,7 +158,7 @@ describe("tooling", () => {
     }
   });
 
-  it("npm create @bull runs the same create", () => {
+  it("npm create @bull-js runs the same create", () => {
     const dir = tempProject("npm-create-");
     const createBin = path.join(repo, "packages/create/dist/index.js");
     // Windows environment keys are case-insensitive: drop the inherited user agent in any casing.

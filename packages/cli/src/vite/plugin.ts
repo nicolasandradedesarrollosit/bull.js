@@ -5,7 +5,7 @@ import {
   normalizePath,
   ProjectAnalyzer,
   serializeResult,
-} from "@bull/core";
+} from "@bull-js/core";
 import pc from "picocolors";
 import type { Plugin, ViteDevServer } from "vite";
 import { OVERLAY_PUBLIC_PATH, type OverlayPayload, overlayModuleCode } from "./overlay-client";

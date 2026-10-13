@@ -282,7 +282,7 @@ export function overlayMain(hot: HotLike | undefined): void {
   hot.send("bull:request");
 }
 
-export const OVERLAY_PUBLIC_PATH = "/@bull/overlay.js";
+export const OVERLAY_PUBLIC_PATH = "/@bull-js/overlay.js";
 
 /** Code of the virtual module served to the browser. */
 export function overlayModuleCode(): string {

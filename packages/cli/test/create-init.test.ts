@@ -55,8 +55,8 @@ describe("bull init", () => {
       preview: "bull preview",
       check: "bull check",
     });
-    expect(plan.pkg?.dependencies?.["@bull/runtime"]).toBe(`^${VERSION}`);
-    expect(plan.pkg?.devDependencies?.["@bull/cli"]).toBe(`^${VERSION}`);
+    expect(plan.pkg?.dependencies?.["@bull-js/runtime"]).toBe(`^${VERSION}`);
+    expect(plan.pkg?.devDependencies?.["@bull-js/cli"]).toBe(`^${VERSION}`);
     expect(plan.changes.find((c) => c.action === "skip" && c.path === "package.json")?.detail).toContain(
       'scripts.dev ("vite")',
     );

@@ -15,7 +15,7 @@
     "examples/*"
   ],
   "scripts": {
-    "build": "npm run build -w @bull/runtime -w @bull/core -w @bull/eslint-plugin -w @bull/cli -w @bull/create",
+    "build": "npm run build -w @bull-js/runtime -w @bull-js/core -w @bull-js/eslint-plugin -w @bull-js/cli -w @bull-js/create",
     "test": "vitest run",
     "test:e2e": "npm run build && vitest run -c vitest.e2e.config.ts",
     "typecheck": "tsc -p packages/runtime --noEmit && tsc -p packages/core --noEmit && tsc -p packages/cli --noEmit && tsc -p packages/eslint-plugin --noEmit && tsc -p packages/create --noEmit",

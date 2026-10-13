@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeProject } from "@bull/core";
+import { analyzeProject } from "@bull-js/core";
 import { describe, expect, it } from "vitest";
 import { runDoctor } from "../src/tooling/doctor";
 import { collectInfo, formatInfo } from "../src/tooling/info";

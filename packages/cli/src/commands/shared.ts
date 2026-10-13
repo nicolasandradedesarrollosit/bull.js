@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { type AnalysisResult, formatReport, ProjectAnalyzer } from "@bull/core";
+import { type AnalysisResult, formatReport, ProjectAnalyzer } from "@bull-js/core";
 import react from "@vitejs/plugin-react";
 import pc from "picocolors";
 import { type InlineConfig, mergeConfig } from "vite";
@@ -55,7 +55,7 @@ export function viteConfig(project: Project, extra: InlineConfig = {}): InlineCo
     mode: project.mode,
     configFile: false,
     clearScreen: false,
-    // @bull/runtime/react imports react-dom/client. If Vite discovers it late, it
+    // @bull-js/runtime/react imports react-dom/client. If Vite discovers it late, it
     // optimizes it separately and the app ends up with two copies of React ("Invalid hook call").
     resolve: { dedupe: ["react", "react-dom"] },
     optimizeDeps: {

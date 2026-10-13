@@ -1,14 +1,14 @@
-# @bull/core
+# @bull-js/core
 
 The architecture analysis engine of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js): it
 scans a project, extracts facts from every module, builds the import graph and checks the MVVM rules.
 
-You rarely install it directly: [`@bull/cli`](https://www.npmjs.com/package/@bull/cli) runs it before
+You rarely install it directly: [`@bull-js/cli`](https://www.npmjs.com/package/@bull-js/cli) runs it before
 every build, in the dev server and in `bull check`, and
-[`@bull/eslint-plugin`](https://www.npmjs.com/package/@bull/eslint-plugin) runs it in your editor.
+[`@bull-js/eslint-plugin`](https://www.npmjs.com/package/@bull-js/eslint-plugin) runs it in your editor.
 
 ```ts
-import { formatReport, ProjectAnalyzer } from "@bull/core";
+import { formatReport, ProjectAnalyzer } from "@bull-js/core";
 
 const result = new ProjectAnalyzer(process.cwd(), {}).analyze();
 console.log(formatReport(result));

@@ -1,4 +1,4 @@
-import { ViewModel } from "@bull/runtime";
+import { ViewModel } from "@bull-js/runtime";
 import { createTodo, matchesFilter, type Todo, type TodoFilter, validateTitle } from "../model/todo.entity";
 import type { TodoRepository } from "../model/todo.repository";
 

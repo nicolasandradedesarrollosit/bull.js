@@ -1,5 +1,5 @@
 ---
-"@bull/core": patch
+"@bull-js/core": patch
 ---
 
 The View rules follow members destructured from the ViewModel: after `const { count } = useViewModel(X)`,

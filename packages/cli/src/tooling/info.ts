@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { type AnalysisResult, LAYER_LABEL, type MemberFact, ProjectAnalyzer } from "@bull/core";
+import { type AnalysisResult, LAYER_LABEL, type MemberFact, ProjectAnalyzer } from "@bull-js/core";
 import pc from "picocolors";
 import { banner } from "../commands/shared";
 import { loadBullConfig } from "../config";

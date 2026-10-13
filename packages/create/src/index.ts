@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// `npm create @bull@latest my-app` (or pnpm, yarn, bun) runs this binary: it is `bull create`.
-import { createCommand } from "@bull/cli/create";
+// `npm create @bull-js@latest my-app` (or pnpm, yarn, bun) runs this binary: it is `bull create`.
+import { createCommand } from "@bull-js/cli/create";
 import { cac } from "cac";
 
 const cli = cac("create-bull");
@@ -11,8 +11,8 @@ cli
   .option("--pm <pm>", "Package manager: npm | pnpm | yarn | bun (defaults to the one running the command)")
   .option("--no-install", "Do not install the dependencies")
   .option("--no-git", "Do not initialize a git repository")
-  .example("  npm create @bull@latest my-app")
-  .example("  pnpm create @bull my-app --no-git")
+  .example("  npm create @bull-js@latest my-app")
+  .example("  pnpm create @bull-js my-app --no-git")
   .action((name: string | undefined, options) => createCommand(name, options));
 
 cli.help();

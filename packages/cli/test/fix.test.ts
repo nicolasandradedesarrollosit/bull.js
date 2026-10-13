@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { analyzeProject } from "@bull/core";
+import { analyzeProject } from "@bull-js/core";
 import { afterAll, describe, expect, it } from "vitest";
 import { applyFixPlan, miniDiff, planFixes } from "../src/tooling/fix";
 import { read, templateProject } from "./helpers";

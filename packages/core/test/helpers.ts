@@ -12,7 +12,7 @@ afterAll(() => {
 /** A minimal valid app. Tests override it file by file. */
 export const VALID_APP: Record<string, string> = {
   "src/main.tsx": `
-import { createBullApp } from "@bull/runtime/react";
+import { createBullApp } from "@bull-js/runtime/react";
 import { CounterRepository } from "./model/counter.repository";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";
 import { CounterView } from "./view/counter.view";
@@ -29,7 +29,7 @@ export class CounterRepository {
 `,
   "src/model/counter.model.ts": `export interface Count { value: number }\n`,
   "src/viewmodel/counter.viewmodel.ts": `
-import { ViewModel } from "@bull/runtime";
+import { ViewModel } from "@bull-js/runtime";
 import type { CounterRepository } from "../model/counter.repository";
 export type { Count } from "../model/counter.model";
 
@@ -46,7 +46,7 @@ export class CounterViewModel extends ViewModel {
 }
 `,
   "src/view/counter.view.tsx": `
-import { useBinding, useViewModel } from "@bull/runtime/react";
+import { useBinding, useViewModel } from "@bull-js/runtime/react";
 import { CounterViewModel, type Count } from "../viewmodel/counter.viewmodel";
 import { LabelView } from "./label.view";
 

@@ -1,15 +1,15 @@
-# @bull/eslint-plugin
+# @bull-js/eslint-plugin
 
 [Bull](https://github.com/nicolasandradedesarrollosit/bull.js)'s file-level MVVM rules, underlined in
 your editor as you type. Same code and same messages as `bull build`.
 
 ```bash
-npm install -D @bull/eslint-plugin eslint
+npm install -D @bull-js/eslint-plugin eslint
 ```
 
 ```js
 // eslint.config.js
-import bull from "@bull/eslint-plugin";
+import bull from "@bull-js/eslint-plugin";
 
 export default [...bull.configs.recommended];
 ```

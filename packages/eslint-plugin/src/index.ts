@@ -7,7 +7,7 @@ import {
   type RuleMeta,
   resolveConfig,
   runFileRules,
-} from "@bull/core";
+} from "@bull-js/core";
 import tsParser from "@typescript-eslint/parser";
 import type { ESLint, Linter, Rule } from "eslint";
 
@@ -39,7 +39,7 @@ function diagnosticsFor(context: Rule.RuleContext): Diagnostic[] {
   const ast = context.sourceCode.ast;
   let diagnostics = resultCache.get(ast);
   if (!diagnostics) {
-    // The @typescript-eslint/parser AST is TSESTree, the same one @bull/core uses.
+    // The @typescript-eslint/parser AST is TSESTree, the same one @bull-js/core uses.
     const facts = extractFacts(ast as unknown as Parameters<typeof extractFacts>[0]);
     diagnostics = runFileRules(context.filename, facts, configFor(context));
     resultCache.set(ast, diagnostics);
@@ -85,7 +85,7 @@ const rules: Record<string, Rule.RuleModule> = Object.fromEntries(
 );
 
 const plugin = {
-  meta: { name: "@bull/eslint-plugin", version: "0.2.0" },
+  meta: { name: "@bull-js/eslint-plugin", version: "0.2.0" },
   rules,
   configs: {} as Record<string, Linter.Config[]>,
 } satisfies ESLint.Plugin;

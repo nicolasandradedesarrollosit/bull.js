@@ -1,4 +1,4 @@
-import { defineConfig } from "@bull/cli";
+import { defineConfig } from "@bull-js/cli";
 
 export default defineConfig({
   dev: {

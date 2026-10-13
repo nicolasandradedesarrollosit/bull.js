@@ -11,7 +11,7 @@ updates:
         dependency-type: production
     ignore:
       # The packages of this repo are linked through npm workspaces.
-      - dependency-name: "@bull/*"
+      - dependency-name: "@bull-js/*"
 
   - package-ecosystem: github-actions
     directory: /

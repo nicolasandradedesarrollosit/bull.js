@@ -213,17 +213,17 @@ function checkDependencies(ctx: Ctx): void {
 }
 
 function checkPackageImport(ctx: Ctx, imp: ImportFact, pkg: string): void {
-  const isReact = REACT_PACKAGES.test(imp.source) || imp.source === "@bull/runtime/react";
+  const isReact = REACT_PACKAGES.test(imp.source) || imp.source === "@bull-js/runtime/react";
   if (ctx.kind === "view") {
-    if (imp.source === "@bull/runtime" && !imp.typeOnly) {
+    if (imp.source === "@bull-js/runtime" && !imp.typeOnly) {
       const values = imp.specifiers.filter((s) => !s.typeOnly).map((s) => s.imported);
       if (values.length || imp.specifiers.length === 0) {
         ctx.report(
           "MVVM205",
           imp.range,
-          `The View imports \`${values.join(", ") || "@bull/runtime"}\` from the reactive runtime.`,
+          `The View imports \`${values.join(", ") || "@bull-js/runtime"}\` from the reactive runtime.`,
           {
-            imported: values.join(", ") || "@bull/runtime",
+            imported: values.join(", ") || "@bull-js/runtime",
           },
         );
       }
@@ -243,8 +243,8 @@ function checkPackageImport(ctx: Ctx, imp: ImportFact, pkg: string): void {
   } else if (ctx.kind === "model") {
     if (isReact) {
       ctx.report("MVVM104", imp.range, `The Model imports \`${imp.source}\`.`, { source: imp.source });
-    } else if (imp.source === "@bull/runtime" || imp.source.startsWith("@bull/runtime/")) {
-      ctx.report("MVVM400", imp.range, `The Model imports \`${importedNames(imp)}\` from @bull/runtime.`, {
+    } else if (imp.source === "@bull-js/runtime" || imp.source.startsWith("@bull-js/runtime/")) {
+      ctx.report("MVVM400", imp.range, `The Model imports \`${importedNames(imp)}\` from @bull-js/runtime.`, {
         imported: importedNames(imp),
       });
     }

@@ -1,4 +1,4 @@
-import { createBullApp } from "@bull/runtime/react";
+import { createBullApp } from "@bull-js/runtime/react";
 import { CounterApi } from "./model/CounterApi";
 import { CounterView } from "./view/counter.view";
 import { CounterViewModel } from "./viewmodel/counter.viewmodel";

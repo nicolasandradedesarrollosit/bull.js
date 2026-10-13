@@ -9,7 +9,7 @@ function lint(file: string, code: string) {
   return linter.verify(code, plugin.configs.recommended, { filename: `${cwd}/${file}` });
 }
 
-describe("@bull/eslint-plugin", () => {
+describe("@bull-js/eslint-plugin", () => {
   it("exposes one rule per file-level code", () => {
     expect(Object.keys(plugin.rules)).toContain("view-imports-model");
     expect(Object.keys(plugin.rules)).not.toContain("required-layers"); // project-level rule
@@ -34,7 +34,7 @@ export function TodoView() { const [a] = useState(0); return <p>{a}</p>; }`,
     expect(
       lint(
         "src/viewmodel/todo.viewmodel.ts",
-        `import { ViewModel } from "@bull/runtime";
+        `import { ViewModel } from "@bull-js/runtime";
 export class TodoViewModel extends ViewModel { readonly #n = this.state(0); readonly n = this.#n.readonly; }`,
       ),
     ).toEqual([]);
@@ -43,7 +43,7 @@ export class TodoViewModel extends ViewModel { readonly #n = this.state(0); read
   it("follows members destructured from the ViewModel", () => {
     const messages = lint(
       "src/view/todo.view.tsx",
-      `import { useBinding, useViewModel } from "@bull/runtime/react";
+      `import { useBinding, useViewModel } from "@bull-js/runtime/react";
 import { TodoViewModel } from "../viewmodel/todo.viewmodel";
 export function TodoView() {
   const { count, add } = useViewModel(TodoViewModel);
@@ -74,13 +74,13 @@ tester.run("viewmodel-touches-dom", plugin.rules["viewmodel-touches-dom"]!, {
   valid: [
     {
       filename: `${process.cwd()}/src/viewmodel/a.viewmodel.ts`,
-      code: `import { ViewModel } from "@bull/runtime";\nexport class AViewModel extends ViewModel {}`,
+      code: `import { ViewModel } from "@bull-js/runtime";\nexport class AViewModel extends ViewModel {}`,
     },
   ],
   invalid: [
     {
       filename: `${process.cwd()}/src/viewmodel/a.viewmodel.ts`,
-      code: `import { ViewModel } from "@bull/runtime";\nexport class AViewModel extends ViewModel { readonly t = this.computed(() => document.title); }`,
+      code: `import { ViewModel } from "@bull-js/runtime";\nexport class AViewModel extends ViewModel { readonly t = this.computed(() => document.title); }`,
       errors: [{ messageId: "violation" }],
     },
   ],

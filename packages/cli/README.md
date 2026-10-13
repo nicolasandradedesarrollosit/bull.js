@@ -1,11 +1,11 @@
-# @bull/cli
+# @bull-js/cli
 
 **Stubborn about architecture.** The CLI of [Bull](https://github.com/nicolasandradedesarrollosit/bull.js),
 the opinionated React framework that refuses to build unless you respect Model–View–ViewModel.
 Vite does the bundling; Bull checks the architecture before it runs.
 
 ```bash
-npm create @bull@latest my-app
+npm create @bull-js@latest my-app
 cd my-app
 npm run dev
 ```
@@ -27,7 +27,7 @@ npm run dev
 Configure it in `bull.config.ts`:
 
 ```ts
-import { defineConfig } from "@bull/cli";
+import { defineConfig } from "@bull-js/cli";
 
 export default defineConfig({
   dev: { overlay: "blocking" },

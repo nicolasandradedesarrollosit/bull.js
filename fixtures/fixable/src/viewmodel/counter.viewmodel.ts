@@ -1,4 +1,4 @@
-import { ViewModel } from "@bull/runtime";
+import { ViewModel } from "@bull-js/runtime";
 import type { CounterApi } from "../model/CounterApi";
 
 export class CounterViewModel extends ViewModel {
