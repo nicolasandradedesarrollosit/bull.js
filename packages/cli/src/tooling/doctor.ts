@@ -55,12 +55,13 @@ export async function runDoctor(root: string, nodeVersion = process.versions.nod
   const checks: Check[] = [];
   const add = (c: Check) => checks.push(c);
 
-  // Node
-  const nodeMajor = Number(nodeVersion.split(".")[0]);
+  // Node: the versions Vite supports, ^20.19 or >=22.12.
+  const [nodeMajor = 0, nodeMinor = 0] = nodeVersion.split(".").map(Number);
+  const supported = (nodeMajor === 20 && nodeMinor >= 19) || (nodeMajor === 22 && nodeMinor >= 12) || nodeMajor > 22;
   add(
-    nodeMajor >= 20
+    supported
       ? { status: "ok", title: `Node.js ${nodeVersion}` }
-      : { status: "fail", title: `Node.js ${nodeVersion}`, hint: "Bull needs Node.js 20 or newer." },
+      : { status: "fail", title: `Node.js ${nodeVersion}`, hint: "Bull needs Node.js 20.19+ or 22.12+." },
   );
 
   // package.json

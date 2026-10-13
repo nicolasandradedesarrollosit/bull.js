@@ -23,6 +23,18 @@ describe("bull doctor", () => {
     expect(byTitle["No ESLint flat config"]?.status).toBe("warn");
   });
 
+  it("accepts the Node versions Vite supports: ^20.19 or >=22.12", async () => {
+    const root = templateProject();
+    const status = async (version: string) =>
+      (await runDoctor(root, version)).find((c) => c.title === `Node.js ${version}`)?.status;
+    expect(await status("20.18.0")).toBe("fail");
+    expect(await status("20.19.0")).toBe("ok");
+    expect(await status("21.7.3")).toBe("fail");
+    expect(await status("22.11.0")).toBe("fail");
+    expect(await status("22.12.0")).toBe("ok");
+    expect(await status("24.1.0")).toBe("ok");
+  });
+
   it("flags missing layers and architecture errors", async () => {
     const root = templateProject({
       "src/view/bull-logo.view.tsx": `import { useState } from "react";\nexport function BullLogoView() { const [a] = useState(0); return <i>{a}</i>; }`,
